@@ -122,8 +122,7 @@ def get_details(request):
         if obj.time_required:
             details['time_required'] = obj.ticket_price
         if obj.photo:
-            s =  obj.photo.url
-            details['picture'] = s[s.index("/images/")+8:]
+            details['picture'] = obj.photo.url
         else:
             print "no photo"
         return HttpResponse(json.dumps(details));

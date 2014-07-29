@@ -37,6 +37,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'geoposition',
+    'storages',
     'jquery',
     'search',
 )
@@ -86,9 +87,16 @@ STATIC_URL = '/static/'
 
 STATIC_ROOT = '/search/static/'
 
-MEDIA_ROOT='/Users/aju/Documents/django/mysite/search/images'
+MEDIA_ROOT='search/images/'
 MEDIA_URL='/media/'
 #STATICFILES_DIRS = '/Users/aju/Documents/django/mysite/search/'
 
 MAX_UPLOAD_SIZE = 10240000  # 20MB
 CONTENT_TYPES = ['image/jpeg', 'image/png']  # .pdf, .jpeg and .png
+
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+AWS_S3_SECURE_URLS = False       # use http instead of https
+AWS_QUERYSTRING_AUTH = False     # don't add complex authentication-related query parameters for requests
+AWS_S3_ACCESS_KEY_ID = 'AKIAI6A5ZKM6W3YJGISA'     # enter your access key id
+AWS_S3_SECRET_ACCESS_KEY = 'tVJRM7Q8HUnVbydJbNh+4bNnbhzgreMrSWAMBZzm' # enter your secret access key
+AWS_STORAGE_BUCKET_NAME = 'aju-site'

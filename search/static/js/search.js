@@ -171,8 +171,9 @@ function addMarker(id, latlng, info) {
                 $("#detail_time_required").html(response.time_required);
 
                 //var $img = $('#detail_picture');
+                alert(response.picture)
                 d = new Date();
-                $("#detail_picture").attr("src", "/search/media/"+ response.picture + "?" + d.getTime());
+                $("#detail_picture").attr("src", response.picture + "?" + d.getTime());
 
                 $('#detailstable').show();
                 //alert('set url')
