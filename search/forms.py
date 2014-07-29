@@ -1,7 +1,5 @@
 from django import forms
 from search.models import PointOfInterestCategory, DestinationCategory, Destination, PointOfInterest, State, Country
-from gmapi import maps
-from gmapi.forms.widgets import GoogleMap
 from datetime import datetime 
 from pygeocoder import Geocoder
 from geoposition.fields import GeopositionField, Geoposition
