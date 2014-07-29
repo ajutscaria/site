@@ -169,9 +169,6 @@ function addMarker(id, latlng, info) {
                 $("#detail_open_hours").html(response.open_hours);
                 $("#detail_ticket_price").html(response.ticket_price);
                 $("#detail_time_required").html(response.time_required);
-
-                //var $img = $('#detail_picture');
-                alert(response.picture)
                 d = new Date();
                 $("#detail_picture").attr("src", response.picture + "?" + d.getTime());
 
