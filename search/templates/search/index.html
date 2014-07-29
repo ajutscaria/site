@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>XPLOR</title>
+        <style type="text/css">
+          html { height: 100% }
+          body { height: 100%; margin: 0; padding: 0 }
+          #map-canvas { height: 500px; width:500px }
+
+          body {
+              text-align: center;
+          }
+
+          #page-wrap {
+              text-align: left;
+              width: 1200px;
+              margin: 0 auto;
+          }
+        </style>
+        <script type='text/javascript' src='/static/js/jquery-1.11.1.min.js'></script>
+        <script type="text/javascript" src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBF_ghimLOB28fkKBKv6Nn8c7k1cbaSD-A&libraries=places'></script>
+        <script type='text/javascript' src='/static/js/search.js'></script>
+    </head>
+    <body>
+      <div id="page-wrap">
+        <h1>Search for a destination</h1>
+        <table>
+          <tr>
+            <td width="550px">
+              <form action="" method="post" id="searchform">{% csrf_token %}
+                  <!--<label> {{ form.searchfor.help_text }} </label> {{ form.searchfor }}-->
+                  <input id="id_autocomplete" placeholder="Enter the address"
+                      onFocus="geolocate()" type="text" size="50"></input>
+                  <input type="submit" name="submit" value="Search!" />
+                  <div id="mapdiv" style="display: none;">
+                      <label>You searched for:&nbsp;</label><label id="address"></label> <br/><br/>
+                      <label><b>Choose your range:</b></label><input type="range" min="0" max="100" value="52.5" id="slider" step=".5"/>
+                      <span id="range">200</span><span>&nbsp;miles</span><br/><br/>
+                  </div>
+                  <div id="map-canvas"></div>
+              </form>
+            </td>
+            <td width="600px" id="detailstable" style="display: none;">
+              <table>
+                <tr><td colspan="2" align="center"><b>Details</b></td></tr>
+                <tr><td>Point of interest</td><td><div id="detail_address"></div></td></tr>
+                <tr><td>Description</td><td><div id="detail_description"></div></td></tr>
+                <tr><td>Category</td><td><div id="detail_category"></div></td></tr>
+                <tr><td>Best time to visit</td><td><div id="detail_best_time"></div></td></tr>
+                <tr><td>Open hours</td><td><div id="detail_open_hours"></div></td></tr>
+                <tr><td>Ticket price</td><td><div id="detail_ticket_price"></div></td></tr>
+                <tr><td>Time required</td><td><div id="detail_time_required"></div></td></tr>
+                <tr><td>Picture</td><td><img id="detail_picture" width="400" height="300"></img></td></tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </div>
+   </body>
+
+</html>

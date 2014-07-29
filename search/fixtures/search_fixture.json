@@ -1,0 +1,445 @@
+[
+{
+    "pk": 1, 
+    "model": "search.destinationcategory", 
+    "fields": {
+        "name": "National Park"
+    }
+},
+{
+    "pk": 2, 
+    "model": "search.destinationcategory", 
+    "fields": {
+        "name": "Airport"
+    }
+},
+{
+    "pk": 3, 
+    "model": "search.destinationcategory", 
+    "fields": {
+        "name": "Island"
+    }
+},
+{
+    "pk": 1, 
+    "model": "search.pointofinterestcategory", 
+    "fields": {
+        "name": "Unassigned"
+    }
+},
+{
+    "pk": 2, 
+    "model": "search.pointofinterestcategory", 
+    "fields": {
+        "name": "Hiking trail"
+    }
+},
+{
+    "pk": 3, 
+    "model": "search.pointofinterestcategory", 
+    "fields": {
+        "name": "Historic"
+    }
+},
+{
+    "pk": 4, 
+    "model": "search.pointofinterestcategory", 
+    "fields": {
+        "name": "Vista point"
+    }
+},
+{
+    "pk": 5, 
+    "model": "search.pointofinterestcategory", 
+    "fields": {
+        "name": "Architecture"
+    }
+},
+{
+    "pk": 6, 
+    "model": "search.pointofinterestcategory", 
+    "fields": {
+        "name": "Art"
+    }
+},
+{
+    "pk": 7, 
+    "model": "search.pointofinterestcategory", 
+    "fields": {
+        "name": "Waterfalls"
+    }
+},
+{
+    "pk": 8, 
+    "model": "search.pointofinterestcategory", 
+    "fields": {
+        "name": "Lake"
+    }
+},
+{
+    "pk": 9, 
+    "model": "search.pointofinterestcategory", 
+    "fields": {
+        "name": "Beach"
+    }
+},
+{
+    "pk": 10, 
+    "model": "search.pointofinterestcategory", 
+    "fields": {
+        "name": "Drive"
+    }
+},
+{
+    "pk": 1, 
+    "model": "search.country", 
+    "fields": {
+        "name": "United States"
+    }
+},
+{
+    "pk": 2, 
+    "model": "search.country", 
+    "fields": {
+        "name": "Canada"
+    }
+},
+{
+    "pk": 3, 
+    "model": "search.country", 
+    "fields": {
+        "name": "Costa Rica"
+    }
+},
+{
+    "pk": 4, 
+    "model": "search.country", 
+    "fields": {
+        "name": "Mexico"
+    }
+},
+{
+    "pk": 1, 
+    "model": "search.state", 
+    "fields": {
+        "country": 1, 
+        "name": "Hawaii"
+    }
+},
+{
+    "pk": 2, 
+    "model": "search.state", 
+    "fields": {
+        "country": 1, 
+        "name": "California"
+    }
+},
+{
+    "pk": 3, 
+    "model": "search.state", 
+    "fields": {
+        "country": 1, 
+        "name": "Oregon"
+    }
+},
+{
+    "pk": 4, 
+    "model": "search.state", 
+    "fields": {
+        "country": 1, 
+        "name": "Washington"
+    }
+},
+{
+    "pk": 5, 
+    "model": "search.state", 
+    "fields": {
+        "country": 1, 
+        "name": "Nevada"
+    }
+},
+{
+    "pk": 6, 
+    "model": "search.state", 
+    "fields": {
+        "country": 1, 
+        "name": "Utah"
+    }
+},
+{
+    "pk": 7, 
+    "model": "search.state", 
+    "fields": {
+        "country": 1, 
+        "name": "Montana"
+    }
+},
+{
+    "pk": 8, 
+    "model": "search.state", 
+    "fields": {
+        "country": 1, 
+        "name": "Arizona"
+    }
+},
+{
+    "pk": 1, 
+    "model": "search.destination", 
+    "fields": {
+        "category": 1, 
+        "rating": "0", 
+        "name": "Yosemite National Park", 
+        "open_hours": "24 hours", 
+        "best_time": "Spring, Summer", 
+        "country": 1, 
+        "number_of_ratings": 0, 
+        "longitude": "-119.5383294", 
+        "photos": "", 
+        "state": 2, 
+        "time_required": "2-3 days", 
+        "added_by": "aju", 
+        "address": "Yosemite National Park", 
+        "latitude": "37.8651011", 
+        "added_on": "2014-07-16", 
+        "description": "Yosemite is an amazing place to visit due the beautiful landscapes. Must see for anyone traveling to California."
+    }
+},
+{
+    "pk": 2, 
+    "model": "search.destination", 
+    "fields": {
+        "category": 2, 
+        "rating": "0", 
+        "name": "Lihue International Airport", 
+        "open_hours": "24 hours", 
+        "best_time": "All through the year", 
+        "country": 1, 
+        "number_of_ratings": 0, 
+        "longitude": "-159.3437585", 
+        "photos": "", 
+        "state": 1, 
+        "time_required": "4-5 days", 
+        "added_by": "aju", 
+        "address": "Lihue airport, Kauai", 
+        "latitude": "21.9788489", 
+        "added_on": "2014-07-16", 
+        "description": "This is the main airport in Kauai"
+    }
+},
+{
+    "pk": 1, 
+    "model": "search.pointofinterest", 
+    "fields": {
+        "category": 4, 
+        "rating": "0", 
+        "photo": "", 
+        "name": "Waimea Canyon Lookout", 
+        "open_hours": "24 hours", 
+        "best_time": "Summer morning", 
+        "url": "", 
+        "country": 1, 
+        "number_of_ratings": 0, 
+        "longitude": "-159.6616083", 
+        "state": 1, 
+        "time_required": "1 hour", 
+        "added_by": "aju", 
+        "address": "Waimea Canyon Lookout, Hawaii", 
+        "latitude": "22.0718055", 
+        "ticket_price": "7", 
+        "added_on": "2014-07-16", 
+        "description": "This is one of the most beautiful places to be in Kauai"
+    }
+},
+{
+    "pk": 2, 
+    "model": "search.pointofinterest", 
+    "fields": {
+        "category": 7, 
+        "rating": "0", 
+        "photo": "/Users/aju/Documents/django/mysite/search/images/2/bridalveil.jpeg", 
+        "name": "Bridalveil Fall", 
+        "open_hours": "24 hours", 
+        "best_time": "Spring, Summer", 
+        "url": "f", 
+        "country": 1, 
+        "number_of_ratings": 0, 
+        "longitude": "-119.646505", 
+        "state": 2, 
+        "time_required": "1 hour", 
+        "added_by": "aju", 
+        "address": "Bridalveil Fall, Yosemite", 
+        "latitude": "37.716753", 
+        "ticket_price": "14", 
+        "added_on": "2014-07-16", 
+        "description": "This is a beautiful water fall at the Yosemite valley."
+    }
+},
+{
+    "pk": 3, 
+    "model": "search.pointofinterest", 
+    "fields": {
+        "category": 2, 
+        "rating": "0", 
+        "photo": "/Users/aju/Documents/django/mysite/search/images/3/half dome.jpg", 
+        "name": "Half Dome", 
+        "open_hours": "Sunrise to sunset", 
+        "best_time": "Summer", 
+        "url": "dd", 
+        "country": 1, 
+        "number_of_ratings": 0, 
+        "longitude": "-119.5330555", 
+        "state": 2, 
+        "time_required": "7 hours", 
+        "added_by": "aju", 
+        "address": "Half Dome, Yosemite", 
+        "latitude": "37.7461111", 
+        "ticket_price": "11", 
+        "added_on": "2014-07-16", 
+        "description": "Half dome is the main attraction of Yosemite. This is a pretty hard hike though."
+    }
+},
+{
+    "pk": 4, 
+    "model": "search.pointofinterest", 
+    "fields": {
+        "category": 4, 
+        "rating": "0", 
+        "photo": "/Users/aju/Documents/django/mysite/search/images/4/half moon bay.jpg", 
+        "name": "Half Moon Bay", 
+        "open_hours": "e", 
+        "best_time": "w", 
+        "url": "s", 
+        "country": 1, 
+        "number_of_ratings": 0, 
+        "longitude": "-122.4285862", 
+        "state": 2, 
+        "time_required": "t", 
+        "added_by": "aju", 
+        "address": "Half Moon Bay, CA, USA", 
+        "latitude": "37.4635519", 
+        "ticket_price": "r", 
+        "added_on": "2014-07-23", 
+        "description": "Half moon bay offers a nice view of the Pacific with an amazing location to spend hours during sunset."
+    }
+},
+{
+    "pk": 5, 
+    "model": "search.pointofinterest", 
+    "fields": {
+        "category": 8, 
+        "rating": "0", 
+        "photo": "/Users/aju/Documents/django/mysite/search/images/5/craterlake.jpg", 
+        "name": "Crater Lake National Park", 
+        "open_hours": "d", 
+        "best_time": "s", 
+        "url": "g", 
+        "country": 1, 
+        "number_of_ratings": 0, 
+        "longitude": "-122.1684785", 
+        "state": 3, 
+        "time_required": "ff", 
+        "added_by": "aju", 
+        "address": "Crater Lake National Park, OR", 
+        "latitude": "42.8684411", 
+        "ticket_price": "6", 
+        "added_on": "2014-07-24", 
+        "description": "Amazing lake on a crater. The lake has a beautiful blue color that you won't see anywhere else."
+    }
+},
+{
+    "pk": 6, 
+    "model": "search.pointofinterest", 
+    "fields": {
+        "category": 9, 
+        "rating": "0", 
+        "photo": "", 
+        "name": "Poipu Beach", 
+        "open_hours": "", 
+        "best_time": "", 
+        "url": "", 
+        "country": 1, 
+        "number_of_ratings": 0, 
+        "longitude": "-159.4541994", 
+        "state": 1, 
+        "time_required": "", 
+        "added_by": "aju", 
+        "address": "Poipu Beach, Koloa, HI 96756, USA", 
+        "latitude": "21.8733704", 
+        "ticket_price": "", 
+        "added_on": "2014-07-24", 
+        "description": "Great beach on the South West edge of Kauai. "
+    }
+},
+{
+    "pk": 7, 
+    "model": "search.pointofinterest", 
+    "fields": {
+        "category": 3, 
+        "rating": "0", 
+        "photo": "/Users/aju/Documents/django/mysite/search/images/7/image_1.jpg", 
+        "name": "Kilauea Lighthouse", 
+        "open_hours": "d", 
+        "best_time": "s", 
+        "url": "dd", 
+        "country": 1, 
+        "number_of_ratings": 0, 
+        "longitude": "-159.4020077", 
+        "state": 1, 
+        "time_required": "d", 
+        "added_by": "aju", 
+        "address": "Kilauea Lighthouse, Kilauea, HI 96754, USA", 
+        "latitude": "22.2316145", 
+        "ticket_price": "4", 
+        "added_on": "2014-07-24", 
+        "description": "A light house in a land projecting into the ocean."
+    }
+},
+{
+    "pk": 8, 
+    "model": "search.pointofinterest", 
+    "fields": {
+        "category": 10, 
+        "rating": "0", 
+        "photo": "/Users/aju/Documents/django/mysite/search/images/8/17 mile.jpeg", 
+        "name": "17 Mile Drive", 
+        "open_hours": "d", 
+        "best_time": "d", 
+        "url": "d", 
+        "country": 1, 
+        "number_of_ratings": 0, 
+        "longitude": "-121.9303503", 
+        "state": 2, 
+        "time_required": "d", 
+        "added_by": "aju", 
+        "address": "17 Mile Drive, Pacific Grove, CA 93950, USA", 
+        "latitude": "36.6205285", 
+        "ticket_price": "66", 
+        "added_on": "2014-07-24", 
+        "description": "An amazing drive along the pacific coast. On a sunny day you would see amazing colors of the ocean."
+    }
+},
+{
+    "pk": 9, 
+    "model": "search.pointofinterest", 
+    "fields": {
+        "category": 7, 
+        "rating": "0", 
+        "photo": "/Users/aju/Documents/django/mysite/search/images/9/Opaekaa.jpg", 
+        "name": "Opaeka'a Falls", 
+        "open_hours": "3", 
+        "best_time": "2", 
+        "url": "4", 
+        "country": 1, 
+        "number_of_ratings": 0, 
+        "longitude": "-159.3620539", 
+        "state": 1, 
+        "time_required": "4", 
+        "added_by": "aju", 
+        "address": "'Opaeka'a Falls, Wailua Homesteads, HI, USA", 
+        "latitude": "22.0480955", 
+        "ticket_price": "4", 
+        "added_on": "2014-07-24", 
+        "description": "A good waterfall. But not so accessible to foot. We can just see the waterfall from a distance."
+    }
+}
+]
