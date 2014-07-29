@@ -3,8 +3,6 @@ from django.template import RequestContext
 from django.shortcuts import render_to_response
 from search.models import PointOfInterest, Destination
 from pygeocoder import Geocoder
-from gmapi import maps
-from gmapi.forms.widgets import GoogleMap
 from django.http import HttpResponse
 import json
 import math
