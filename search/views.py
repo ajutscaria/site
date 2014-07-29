@@ -120,7 +120,7 @@ def get_details(request):
         if obj.ticket_price:
             details['ticket_price'] = obj.ticket_price
         if obj.time_required:
-            details['time_required'] = obj.ticket_price
+            details['time_required'] = obj.time_required
         if obj.photo:
             details['picture'] = obj.photo.url
         else:
