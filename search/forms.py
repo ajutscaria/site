@@ -104,8 +104,11 @@ class PointOfInterestForm(forms.ModelForm):
         searchlocation = self.cleaned_data['address']
         geoloc = Geocoder.geocode(searchlocation)[0]
         instance.name = str(geoloc).split(',')[0].strip()
-        instance.state_id = State.objects.get(name=geoloc.state).id
-        instance.country_id = Country.objects.get(name=geoloc.country).id
+        country, created = Country.objects.get_or_create(name=geoloc.country)
+        instance.country_id = country.id
+        state, created = State.objects.get_or_create(name=geoloc.state, country_id=instance.country_id)
+        instance.state_id = state.id
+        #instance.country_id = Country.objects.get(name=geoloc.country).id
         instance.latitude = geoloc.coordinates[0]
         instance.longitude = geoloc.coordinates[1]
         instance.rating = 0

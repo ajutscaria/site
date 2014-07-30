@@ -59,11 +59,10 @@ def add_point_of_interest(request):
         if form.is_valid():
             print "form is valid"
             form.save()
-            form.instance.photo = request.FILES['photo'];
-            form.save()
-            #formwithpic
-            print "Uploas file name", request.FILES['photo'].name, form.instance.id
-            ##save_file(request.FILES['photo'],"1/")
+            if 'photo' in request.FILES:
+                form.instance.photo = request.FILES['photo'];
+                form.save()
+                print "Uploas file name", request.FILES['photo'].name, form.instance.id
             print "Got ID", form.instance.id
         else:
             print "form is not valid"
