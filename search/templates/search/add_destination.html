@@ -2,11 +2,14 @@
 <head>
     <script type='text/javascript' src='/static/js/jquery-1.11.1.min.js'></script>
     <script type='text/javascript' src='/static/js/add_destination.js'></script>
+    <script type="text/javascript" src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBF_ghimLOB28fkKBKv6Nn8c7k1cbaSD-A&libraries=places'></script>
 </head>
 <body>
     <h1>Add a destination</h1>
     <form action="" method="post" id="searchform">{% csrf_token %}
-        <label>Enter place to search for:</label><input id="searchfor"/>
+        <label>Enter place to search for:</label>
+        <input id="autocomplete" placeholder="Enter the address"
+            onFocus="geolocate()" type="text" size="50"></input>
         <input type="submit" value="Search" />
         <div id="result"></div>
     </form>

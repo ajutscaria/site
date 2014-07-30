@@ -36,6 +36,13 @@ function clearFormFields() {
 }
 
 $(document).ready(function() {
+    autocomplete = new google.maps.places.Autocomplete(
+      (document.getElementById('autocomplete')),
+      { types: ['geocode'] });
+    google.maps.event.addListener(autocomplete, 'place_changed', function() {
+        searchForLocation($('#autocomplete').val());
+    });
+
 	$('#searchform').submit(function(e){
 	    var urlSubmit = '/search/search_for_location/'
 	    $.ajax({  
@@ -54,7 +61,6 @@ $(document).ready(function() {
 	    	}
 	    });
 	    e.preventDefault();
-	    $('#looksgood').hide();
 	});
 
 	$('#looksgood').click(function(e) {
@@ -95,3 +101,22 @@ $(document).ready(function() {
 		e.preventDefault();
 	});
 });
+
+function searchForLocation(location) {
+	var urlSubmit = '/search/search_for_location/'
+    $.ajax({  
+        type: "POST",
+        url: urlSubmit,             
+        data      : {'searchfor' : location},
+        success: function(response){
+        	var jsonData = $.parseJSON(response);
+            $('#result').html(jsonData.message);
+            $('#result').show();
+            $('#looksgood').show();
+            $('#reset').show();
+        },
+        failure: function(data) { 
+        	alert('Got an error!');
+    	}
+    });
+}
