@@ -13,7 +13,7 @@
         <input type="submit" value="Search" />
         <div id="result"></div>
     </form>
-    <form action="" method="post" id="looksgoodform">{% csrf_token %}
+    <form action="" method="post" id="looksgoodform" enctype="multipart/form-data">{% csrf_token %}
         <input type="submit" value="Looks Good?" style="display: none;" id="looksgood"/>
         <input type="submit" value="Search Again?" style="display: none;" id="searchagain"/>
         <div id="infobox" style="display: none;">

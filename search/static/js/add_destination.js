@@ -83,7 +83,7 @@ $(document).ready(function() {
         $('#success').hide();
 		e.preventDefault();
 	});
-
+    /*
 	$('#looksgoodform').submit(function(e){
 		var urlSubmit = '/search/add_destination/'
 		$.ajax({  
@@ -99,7 +99,7 @@ $(document).ready(function() {
 	    	}
 	    });
 		e.preventDefault();
-	});
+	});*/
 });
 
 function searchForLocation(location) {

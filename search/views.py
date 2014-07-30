@@ -42,6 +42,9 @@ def add_destination(request):
         if form.is_valid():
             print "Destination form is valid"
             form.save()
+            if 'photo' in request.FILES:
+                form.instance.photo = request.FILES['photo'];
+                form.save()
         else:
             print form.errors
     else:

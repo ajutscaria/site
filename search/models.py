@@ -31,6 +31,11 @@ class State(models.Model):
     def __unicode__(self):
         return self.name
 
+def get_destination_image_path(instance, filename):
+    if (instance.id):
+        return os.path.join(settings.MEDIA_ROOT, "destination", str(instance.id), filename)
+    return os.path.join(settings.MEDIA_ROOT, filename)
+
 class Destination(models.Model):
     name = models.CharField(max_length=50)
     state = models.ForeignKey(State, default=2)
@@ -45,7 +50,7 @@ class Destination(models.Model):
     best_time = models.CharField(max_length=50, default="")
     open_hours = models.CharField(max_length=50, default="")
     time_required = models.CharField(max_length=50, default="")
-    photos = models.CharField(max_length=50, default="")
+    photo = models.ImageField("Picture", upload_to=get_destination_image_path, blank=True, null=True)
     added_on = models.DateField(default="1/1/1")
     added_by = models.CharField(max_length=20, default="aju")
 
@@ -56,7 +61,7 @@ class Destination(models.Model):
         return self.name + ", " + str(self.state) + ", " + str(self.country)
 
 
-def get_image_path(instance, filename):
+def get_point_of_interest_image_path(instance, filename):
     if (instance.id):
         return os.path.join(settings.MEDIA_ROOT, "point_of_interest", str(instance.id), filename)
     return os.path.join(settings.MEDIA_ROOT, filename)
@@ -78,7 +83,7 @@ class PointOfInterest(models.Model):
     added_on = models.DateTimeField(default="2001-01-01 00:00")
     added_by = models.CharField(max_length=20, default="aju")
     url = models.CharField(max_length=50, default="")
-    photo = models.ImageField("Picture", upload_to=get_image_path, blank=True, null=True)
+    photo = models.ImageField("Picture", upload_to=get_point_of_interest_image_path, blank=True, null=True)
     ticket_price = models.CharField(max_length=50, default="")
     last_updated_on = models.DateTimeField(default="2001-01-01 00:00")
     latest_update = models.CharField(max_length=100, default="")

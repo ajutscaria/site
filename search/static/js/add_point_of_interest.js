@@ -80,52 +80,6 @@ $(document).ready(function() {
         $('#success').hide();
 		e.preventDefault();
 	});
-
-	/*$('#looksgoodform').submit(function(e){
-		var urlSubmit = '/search/add_point_of_interest/'
-		var dialog=$(this);
-		$.ajax({  
-	        type: "POST",
-	        url: urlSubmit,             
-	        enctype: "multipart/form-data",
-	        //data      : $(this).serialize(),
-	        success: function(response){
-	        	$('#success').show();
-	        	$('#savepointofinterest').hide();
-	        },
-	        failure: function(data) { 
-	        	alert('Got an error!');
-	    	}
-	    });
-		e.preventDefault();
-	});
-    */
-    /*
-	$(function () {
-	    $(function () {
-            'use strict';
-            // Change this to the location of your server-side upload handler:
-            var url = '/search/point_of_interest_upload/';
-            $('#fileupload').fileupload({
-                url: url,
-                dataType: 'json',
-                done: function (e, data) {
-                    $.each(data.result.files, function (index, file) {
-                        $('<p/>').text(file.name).appendTo('#files');
-                        $('<p/>').html("<img src='" + file.url + "' width=160px/>").appendTo('#files');
-                    });
-                },
-                progressall: function (e, data) {
-                    var progress = parseInt(data.loaded / data.total * 100, 10);
-                    $('#progress .progress-bar').css(
-                        'width',
-                        progress + '%'
-                    );
-                }
-            }).prop('disabled', !$.support.fileInput)
-                .parent().addClass($.support.fileInput ? undefined : 'disabled');
-        });
-	});*/
 });
 
 function searchForLocation(location) {
