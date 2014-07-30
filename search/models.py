@@ -75,12 +75,12 @@ class PointOfInterest(models.Model):
     best_time = models.CharField(max_length=50, default="")
     open_hours = models.CharField(max_length=50, default="")
     time_required = models.CharField(max_length=50, default="")
-    added_on = models.DateField(default="1/1/1")
+    added_on = models.DateTimeField(default="2001-01-01 00:00")
     added_by = models.CharField(max_length=20, default="aju")
     url = models.CharField(max_length=50, default="")
     photo = models.ImageField("Picture", upload_to=get_image_path, blank=True, null=True)
     ticket_price = models.CharField(max_length=50, default="")
-    last_updated_on = models.DateField(default="1/1/1")
+    last_updated_on = models.DateTimeField(default="2001-01-01 00:00")
     latest_update = models.CharField(max_length=100, default="")
 
     def __unicode__(self):
