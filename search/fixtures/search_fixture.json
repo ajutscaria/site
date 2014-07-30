@@ -256,7 +256,7 @@
     "fields": {
         "category": 7, 
         "rating": "0", 
-        "photo": "/Users/aju/Documents/django/mysite/search/images/2/bridalveil.jpeg", 
+        "photo": "search/images/point_of_interest/2/bridalveil.jpeg", 
         "name": "Bridalveil Fall", 
         "open_hours": "24 hours", 
         "best_time": "Spring, Summer", 
@@ -280,7 +280,7 @@
     "fields": {
         "category": 2, 
         "rating": "0", 
-        "photo": "/Users/aju/Documents/django/mysite/search/images/3/half dome.jpg", 
+        "photo": "/search/images/point_of_interest/3/half dome.jpg", 
         "name": "Half Dome", 
         "open_hours": "Sunrise to sunset", 
         "best_time": "Summer", 
@@ -304,7 +304,7 @@
     "fields": {
         "category": 4, 
         "rating": "0", 
-        "photo": "/Users/aju/Documents/django/mysite/search/images/4/half moon bay.jpg", 
+        "photo": "search/images/point_of_interest/4/half moon bay.jpg", 
         "name": "Half Moon Bay", 
         "open_hours": "e", 
         "best_time": "w", 
@@ -328,7 +328,7 @@
     "fields": {
         "category": 8, 
         "rating": "0", 
-        "photo": "/Users/aju/Documents/django/mysite/search/images/5/craterlake.jpg", 
+        "photo": "search/images/point_of_interest/5/craterlake.jpg", 
         "name": "Crater Lake National Park", 
         "open_hours": "d", 
         "best_time": "s", 
@@ -376,7 +376,7 @@
     "fields": {
         "category": 3, 
         "rating": "0", 
-        "photo": "/Users/aju/Documents/django/mysite/search/images/7/image_1.jpg", 
+        "photo": "search/images/point_of_interest/7/image_1.jpg", 
         "name": "Kilauea Lighthouse", 
         "open_hours": "d", 
         "best_time": "s", 
@@ -400,7 +400,7 @@
     "fields": {
         "category": 10, 
         "rating": "0", 
-        "photo": "/Users/aju/Documents/django/mysite/search/images/8/17 mile.jpeg", 
+        "photo": "search/images/point_of_interest/8/17 mile.jpeg", 
         "name": "17 Mile Drive", 
         "open_hours": "d", 
         "best_time": "d", 
@@ -424,7 +424,7 @@
     "fields": {
         "category": 7, 
         "rating": "0", 
-        "photo": "/Users/aju/Documents/django/mysite/search/images/9/Opaekaa.jpg", 
+        "photo": "search/images/point_of_interest/9/Opaekaa.jpg", 
         "name": "Opaeka'a Falls", 
         "open_hours": "3", 
         "best_time": "2", 

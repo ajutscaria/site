@@ -57,13 +57,9 @@ class Destination(models.Model):
 
 
 def get_image_path(instance, filename):
-    #print os.path.join(settings.MEDIA_ROOT, settings.MEDIA_URL, "1", filename)
     if (instance.id):
-        print "print instance id", instance.id
-        return os.path.join(settings.MEDIA_ROOT, str(instance.id), filename)
+        return os.path.join(settings.MEDIA_ROOT, "point_of_interest", str(instance.id), filename)
     return os.path.join(settings.MEDIA_ROOT, filename)
-    #return "."
-    #return os.path.join(settings.MEDIA_ROOT, settings.MEDIA_URL, "1", filename)
 
 class PointOfInterest(models.Model):
     name = models.CharField(max_length=50)
@@ -82,9 +78,10 @@ class PointOfInterest(models.Model):
     added_on = models.DateField(default="1/1/1")
     added_by = models.CharField(max_length=20, default="aju")
     url = models.CharField(max_length=50, default="")
-    #photo_url = models.CharField(max_length=50, default="")
     photo = models.ImageField("Picture", upload_to=get_image_path, blank=True, null=True)
     ticket_price = models.CharField(max_length=50, default="")
+    last_updated_on = models.DateField(default="1/1/1")
+    latest_update = models.CharField(max_length=100, default="")
 
     def __unicode__(self):
         return self.full_name()

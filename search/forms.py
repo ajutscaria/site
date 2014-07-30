@@ -119,4 +119,4 @@ class PointOfInterestForm(forms.ModelForm):
 
     class Meta:
         model = PointOfInterest
-        exclude = ('state', 'country',)
+        exclude = ('state', 'country', 'last_updated_on', 'latest_update')
