@@ -1,0 +1,24 @@
+ul {list-style-type:none; margin:0; padding:0; overflow:hidden;}
+ul li {float:left;}
+ul li a {display:block; text-decoration:none; text-align:center; padding:9px 20px 9px 20px; font-family:Arial; font-size:8pt; font-weight:bold; color:#ffffff; text-transform:uppercase; border-top:1px solid #9cbed2; border-right:1px solid #607987; border-left:1px solid #94b5c8; background: #7195aa url(../images/bg.gif) repeat-x; text-transform:uppercase; letter-spacing:.08em}
+ul li a:hover,
+#explore #nav-explore,
+#add_destination #nav-add_destination,
+#add_point_of_interest #nav-add_point_of_interest,
+#contact #nav-contact
+{color:#a2becf; border-top:1px solid #72a0ba; border-right:1px solid #2a4a5f; border-left:1px solid #8cb3c9; background: #3b6a85 url(../images/bg2.gif) repeat-x}
+ul li a.first {border-left:0}
+ul li a.last {border-right:0}
+
+html { height: 100% }
+body { height: 100%; margin: 0; padding: 0 }
+
+body {
+  text-align: center;
+}
+
+#page-wrap {
+  text-align: left;
+  width: 1200px;
+  margin: 0 auto;
+}
