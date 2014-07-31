@@ -3,7 +3,7 @@
     <!-- jQuery Upload Files -->
     <!--<link rel="stylesheet" type="text/css" href='/static/fileupload/css/style.css'>
     <link rel="stylesheet" type="text/css" href='/static/fileupload/css/jquery.fileupload.css'>-->
-
+    <link rel="stylesheet" type="text/css" href='/static/css/style.css'>
     <script type='text/javascript' src='/static/js/jquery-1.11.1.min.js'></script>
     <script type='text/javascript' src='/static/js/add_point_of_interest.js'></script>
     <script type="text/javascript" src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBF_ghimLOB28fkKBKv6Nn8c7k1cbaSD-A&libraries=places'></script>
@@ -12,7 +12,8 @@
     <script src="/static/fileupload/js/jquery.iframe-transport.js"></script>
     <script src="/static/fileupload/js/jquery.fileupload.js"></script>-->
 </head>
-<body>
+<body id="add_point_of_interest">
+    {% include "search/menu.html" %}
     <h1>Add a point of interest</h1>
     <form action="" method="post" id="searchform">{% csrf_token %}
         <label>Enter place to search for:</label>
