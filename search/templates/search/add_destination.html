@@ -7,33 +7,34 @@
 </head>
 <body id="add_destination">
     {% include "search/menu.html" %}
-    <h1>Add a destination</h1>
-    <form action="" method="post" id="searchform">{% csrf_token %}
-        <label>Enter place to search for:</label>
-        <input id="autocomplete" placeholder="Enter the address"
-            onFocus="geolocate()" type="text" size="50"></input>
-        <input type="submit" value="Search" />
-        <div id="result"></div>
-    </form>
-    <form action="" method="post" id="looksgoodform" enctype="multipart/form-data">{% csrf_token %}
-        <input type="submit" value="Looks Good?" style="display: none;" id="looksgood"/>
-        <input type="submit" value="Search Again?" style="display: none;" id="searchagain"/>
-        <div id="infobox" style="display: none;">
-            <table>
-                {% for field in form.visible_fields %}
-                    <tr>
-                        <td>{{ field.help_text }}</td>
-                        <td>{{ field }}</td>
-                        <td>{{ field.errors }}</td>
-                    </tr>
-                {% endfor %}
-            </table>
-            <input type="submit" value="Save!" id="savedestination"/>
+    <div id="content">
+        <h2>Add a destination</h2>
+        <form action="" method="post" id="searchform">{% csrf_token %}
+            <input id="autocomplete" placeholder="Enter the address"
+                onFocus="geolocate()" type="text" size="50"></input>
+            <input type="submit" value="Search" />
+            <div id="result"></div>
+        </form>
+        <form action="" method="post" id="looksgoodform" enctype="multipart/form-data">{% csrf_token %}
+            <input type="submit" value="Looks Good?" style="display: none;" id="looksgood"/>
+            <input type="submit" value="Search Again?" style="display: none;" id="searchagain"/>
+            <div id="infobox" style="display: none;">
+                <table>
+                    {% for field in form.visible_fields %}
+                        <tr>
+                            <td>{{ field.help_text }}</td>
+                            <td>{{ field }}</td>
+                            <td>{{ field.errors }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+                <input type="submit" value="Save!" id="savedestination"/>
+            </div>
+        </form>
+        <div id="success" style="display: none;">
+            <label>Destination added!</label>
         </div>
-    </form>
-    <div id="success" style="display: none;">
-        <label>Destination added!</label>
+        <a href="" id="reset" style="display: none;">Start again!</a>
     </div>
-    <a href="" id="reset">Start again!</a>
 </body>
 </html>

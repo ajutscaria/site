@@ -44,22 +44,7 @@ $(document).ready(function() {
     });
 
 	$('#searchform').submit(function(e){
-	    var urlSubmit = '/search/search_for_location/'
-	    $.ajax({  
-	        type: "POST",
-	        url: urlSubmit,             
-	        data      : {'searchfor' : $('#searchfor').val()},
-	        success: function(response){
-	        	var jsonData = $.parseJSON(response);
-	            $('#result').html(jsonData.message);
-	            $('#result').show();
-	            $('#looksgood').show();
-	            $('#reset').show();
-	        },
-	        failure: function(data) { 
-	        	alert('Got an error!');
-	    	}
-	    });
+	    searchForLocation($('#autocomplete').val());
 	    e.preventDefault();
 	});
 
@@ -83,23 +68,6 @@ $(document).ready(function() {
         $('#success').hide();
 		e.preventDefault();
 	});
-    /*
-	$('#looksgoodform').submit(function(e){
-		var urlSubmit = '/search/add_destination/'
-		$.ajax({  
-	        type: "POST",
-	        url: urlSubmit,             
-	        data      : $(this).serialize(),
-	        success: function(response){
-	        	$('#success').show();
-	        	$('#savedestination').hide();
-	        },
-	        failure: function(data) { 
-	        	alert('Got an error!');
-	    	}
-	    });
-		e.preventDefault();
-	});*/
 });
 
 function searchForLocation(location) {

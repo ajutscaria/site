@@ -46,7 +46,16 @@ html { height: 100% }
 body { height: 100%; margin: 0; padding: 0; text-align: center;}
 
 #nav-bar {
-	background: #7999aa;
+	background: #abd7f5;
+}
+
+#content {
+  width: 800px ;
+  height: 700px;
+  margin-left: auto ;
+  margin-right: auto ;
+  color: black ;
+  /* border: 1px solid black ; */
 }
 
 #page-wrap {

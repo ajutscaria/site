@@ -90,6 +90,7 @@ function searchForLocation(location) {
         data      : {'searchfor' : location},
         success: function(response){
         	var jsonData = $.parseJSON(response);
+        	$('#reset').show();
             $('#result').html(jsonData.message);
             $('#result').show();
             $('#looksgood').show();
