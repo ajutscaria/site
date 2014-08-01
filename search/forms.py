@@ -15,10 +15,11 @@ class DestinationForm(forms.ModelForm):
                               required=False)
     category = forms.ModelChoiceField(queryset=DestinationCategory.objects.all(),
                                       help_text="Choose category", required=False, initial=1, empty_label=None)
-    description = forms.CharField(max_length=200, help_text="Add description", required=False)
-    best_time = forms.CharField(max_length=50, help_text="Best time to visit", required=False)
-    open_hours = forms.CharField(max_length=50, help_text="Open hours", required=False)
-    time_required = forms.CharField(max_length=50, help_text="Time required", required=False)
+    description = forms.CharField(max_length=200, widget=forms.Textarea(attrs={'cols': 57, 'rows': 10}),
+                                  help_text="Add description", required=False)
+    best_time = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'size':80}), help_text="Best time to visit", required=False)
+    open_hours = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'size':80}), help_text="Open hours", required=False)
+    time_required = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'size':80}), help_text="Time required", required=False)
     photo = forms.ImageField(help_text="Upload picture", required=False)
     added_on = forms.DateTimeField(widget=forms.HiddenInput(), required=False)
     added_by = forms.CharField(max_length=20, widget=forms.HiddenInput(), required=False);
@@ -64,11 +65,12 @@ class PointOfInterestForm(forms.ModelForm):
     longitude = forms.DecimalField(widget=forms.HiddenInput(), required=False)
     category = forms.ModelChoiceField(queryset=PointOfInterestCategory.objects.all(),
                                       help_text="Choose category", required=False, initial=1, empty_label=None)
-    description = forms.CharField(max_length=200, help_text="Add description", required=False)
-    best_time = forms.CharField(max_length=50, help_text="Best time to visit", required=False)
-    open_hours = forms.CharField(max_length=50, help_text="Open hours", required=False)
-    ticket_price = forms.CharField(max_length=50, help_text="Ticket price", required=False)
-    time_required = forms.CharField(max_length=50, help_text="Time required", required=False)
+    description = forms.CharField(max_length=200, widget=forms.Textarea(attrs={'cols': 57, 'rows': 10}), 
+                                  help_text="Add description", required=False)
+    best_time = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'size':80}), help_text="Best time to visit", required=False)
+    open_hours = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'size':80}), help_text="Open hours", required=False)
+    ticket_price = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'size':80}), help_text="Ticket price", required=False)
+    time_required = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'size':80}), help_text="Time required", required=False)
     url = forms.CharField(max_length=50, widget=forms.HiddenInput(), required=False)
     photo = forms.ImageField(help_text="Upload picture", required=False)
     added_on = forms.DateTimeField(widget=forms.HiddenInput(), required=False)
