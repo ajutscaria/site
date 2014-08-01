@@ -45,6 +45,10 @@ ul li a.last {border-right:0}
 html { height: 100% }
 body { height: 100%; margin: 0; padding: 0; text-align: center;}
 
+#nav-bar {
+	background: #7999aa;
+}
+
 #page-wrap {
   text-align: left;
   width: 1200px;
