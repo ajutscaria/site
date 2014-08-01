@@ -74,6 +74,9 @@ def add_point_of_interest(request):
         form = PointOfInterestForm()
     return render_to_response('search/add_point_of_interest.html', {'form': form}, context);
 
+def contact(request):
+    return render_to_response('search/index.html');
+
 def save_file(file, path=''):
     ''' Little helper to save a file
     '''

@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'^search_for_location/$', views.search_for_location, name='search_for_location'),
     url(r'^filter_results/$', views.filter_results, name='filter_results'),
     url(r'^get_details/$', views.get_details, name='get_details'),
+    url(r'^contact/$', views.contact, name='contact'),
 ]
 
 #urlpatterns += staticfiles_urlpatterns()
