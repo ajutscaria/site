@@ -72,6 +72,7 @@ $(document).ready(function() {
 	$('#reset').click(function(e) {
 		// Show the rest of the form here
 		clearFormFields();
+		$('#reset').hide();
 		$('#searchfor').val('');
 		$('#searchfor').focus();
 	    $('#result').hide();
@@ -83,6 +84,9 @@ $(document).ready(function() {
 });
 
 function searchForLocation(location) {
+	clearFormFields();
+    $('#infobox').hide();
+    $('#result').hide();
 	var urlSubmit = '/search/search_for_location/'
     $.ajax({  
         type: "POST",

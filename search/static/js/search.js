@@ -35,10 +35,10 @@ $(document).ready(function() {
         $('#range').val($(this).val);
     });*/
     autocomplete = new google.maps.places.Autocomplete(
-      /** @type {HTMLInputElement} */(document.getElementById('id_autocomplete')),
+      /** @type {HTMLInputElement} */(document.getElementById('autocomplete')),
       { types: ['geocode'] });
     google.maps.event.addListener(autocomplete, 'place_changed', function() {
-        searchForPointsOfInterest($('#id_autocomplete').val());
+        searchForPointsOfInterest($('#autocomplete').val());
     });
 
     $('#slider').on('change', function(){
@@ -67,7 +67,7 @@ $(document).ready(function() {
     });
 
 	$('#searchform').submit(function(e){
-	    searchForPointsOfInterest($('#id_autocomplete').val());
+	    searchForPointsOfInterest($('#autocomplete').val());
 	    e.preventDefault();
 	});
 });
