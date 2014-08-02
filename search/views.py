@@ -41,10 +41,23 @@ def add_destination(request):
         print "Going to check if form is valid"
         if form.is_valid():
             print "Destination form is valid"
-            form.save()
-            if 'photo' in request.FILES:
-                form.instance.photo = request.FILES['photo'];
+            destinations = Destination.objects.filter(address=form.cleaned_data['address']);
+            if destinations.exists():
+                print "##Already added##"
+                destination = destinations[0]
+                destination.description = form.cleaned_data['description']
+                destination.category = form.cleaned_data['category']
+                destination.open_hours = form.cleaned_data['open_hours']
+                destination.time_required = form.cleaned_data['time_required']
+                destination.best_time = form.cleaned_data['best_time']
+                if 'photo' in request.FILES:
+                    destination.photo = request.FILES['photo'];
+                destination.save()
+            else:
                 form.save()
+                if 'photo' in request.FILES:
+                    form.instance.photo = request.FILES['photo'];
+                    form.save()
         else:
             print form.errors
     else:
@@ -60,12 +73,26 @@ def add_point_of_interest(request):
         print request.FILES
         print "Going to check if form is valid", form.is_multipart()
         if form.is_valid():
-            print "form is valid"
-            form.save()
-            if 'photo' in request.FILES:
-                form.instance.photo = request.FILES['photo'];
+            print "PointOfInterest form is valid"
+            interests = PointOfInterest.objects.filter(address=form.cleaned_data['address']);
+            if interests.exists():
+                print "##Already added##"
+                interest = interests[0]
+                interest.description = form.cleaned_data['description']
+                interest.category = form.cleaned_data['category']
+                interest.open_hours = form.cleaned_data['open_hours']
+                interest.time_required = form.cleaned_data['time_required']
+                interest.ticket_price = form.cleaned_data['ticket_price']
+                interest.best_time = form.cleaned_data['best_time']
+                if 'photo' in request.FILES:
+                    interest.photo = request.FILES['photo'];
+                interest.save()
+            else:
                 form.save()
-                print "Uploas file name", request.FILES['photo'].name, form.instance.id
+                if 'photo' in request.FILES:
+                    form.instance.photo = request.FILES['photo'];
+                    form.save()
+                    print "Uploas file name", request.FILES['photo'].name, form.instance.id
             print "Got ID", form.instance.id
         else:
             print "form is not valid"
@@ -95,6 +122,67 @@ def search_for_location(request):
         geoloc = Geocoder.geocode(searchlocation)[0]
         # TODO: Do something if we can't find the place
         return HttpResponse(json.dumps({'message': str(geoloc)}))
+
+def search_to_add_destination(request):
+    # To handle AJAX requests from the form
+    if request.method == "POST":
+        searchlocation = request.POST['searchfor']
+        print "View:search_to_add_destination! searchfor:", request.POST['searchfor']
+        address = str(Geocoder.geocode(searchlocation)[0])
+        destinations = Destination.objects.filter(address=address);
+        if destinations.exists():
+            print "##Already added##"
+            destination = destinations[0]
+            response = {'exists':1}
+            print destination.description
+            if destination.address:
+                response['address'] = destination.address
+            if destination.description:
+                response['description'] = destination.description
+            if destination.category:
+                response['category'] = destination.category_id
+            if destination.best_time:
+                response['best_time'] = destination.best_time
+            if destination.open_hours:
+                response['open_hours'] = destination.open_hours
+            if destination.time_required:
+                response['time_required'] = destination.time_required
+            if destination.photo:
+                response['photo'] = destination.photo.url
+            print response
+            return HttpResponse(json.dumps(response));
+        return HttpResponse(json.dumps({'exists': 0, 'address': address}))
+
+def search_to_add_point_of_interest(request):
+    # To handle AJAX requests from the form
+    if request.method == "POST":
+        searchlocation = request.POST['searchfor']
+        print "View:search_to_add_point_of_interest! searchfor:", request.POST['searchfor']
+        address = str(Geocoder.geocode(searchlocation)[0])
+        interests = PointOfInterest.objects.filter(address=address);
+        print interests
+        if interests.exists():
+            print "##Already added##"
+            interest = interests[0]
+            response = {'exists':1}
+            print interest.description
+            if interest.address:
+                response['address'] = interest.address
+            if interest.description:
+                response['description'] = interest.description
+            if interest.category:
+                response['category'] = interest.category_id
+            if interest.best_time:
+                response['best_time'] = interest.best_time
+            if interest.open_hours:
+                response['open_hours'] = interest.open_hours
+            if interest.time_required:
+                response['time_required'] = interest.time_required
+            if interest.photo:
+                response['photo'] = interest.photo.url
+            print response
+            return HttpResponse(json.dumps(response));
+        return HttpResponse(json.dumps({'exists': 0, 'address': address}))
 
 def filter_results(request):
     # To handle AJAX requests from the form

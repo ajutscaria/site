@@ -8,21 +8,21 @@ class SearchForm(forms.Form):
     searchfor = forms.CharField(max_length=50, help_text="Please enter the destination name", required=False)
 
 class DestinationForm(forms.ModelForm):
-    name = forms.CharField(max_length=50, widget=forms.HiddenInput(), required=False)
     address = forms.CharField(max_length=50,
-                              widget=forms.TextInput(attrs={'size':80,'readonly':'readonly'}),
+                              widget=forms.TextInput(attrs={'size':80,'readonly':'readonly','class':'readonly'}),
                               help_text="Address",
                               required=False)
-    category = forms.ModelChoiceField(queryset=DestinationCategory.objects.all(),
+    category = forms.ModelChoiceField(queryset=DestinationCategory.objects.all(), widget=forms.Select(attrs={'class':'editable'}),
                                       help_text="Choose category", required=False, initial=1, empty_label=None)
-    description = forms.CharField(max_length=200, widget=forms.Textarea(attrs={'cols': 57, 'rows': 10}),
+    description = forms.CharField(max_length=200, widget=forms.Textarea(attrs={'cols': 57, 'rows': 10, 'class': 'editable'}),
                                   help_text="Add description", required=False)
-    best_time = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'size':80}), help_text="Best time to visit", required=False)
-    open_hours = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'size':80}), help_text="Open hours", required=False)
-    time_required = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'size':80}), help_text="Time required", required=False)
+    best_time = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'size':80, 'class': 'editable'}), 
+                                help_text="Best time to visit", required=False)
+    open_hours = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'size':80, 'class': 'editable'}), 
+                                 help_text="Open hours", required=False)
+    time_required = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'size':80, 'class': 'editable'}), 
+                                    help_text="Time required", required=False)
     photo = forms.ImageField(help_text="Upload picture", required=False)
-    added_on = forms.DateTimeField(widget=forms.HiddenInput(), required=False)
-    added_by = forms.CharField(max_length=20, widget=forms.HiddenInput(), required=False);
 
     def clean(self):
         print "Form:DestinationForm_clean"
@@ -53,28 +53,23 @@ class DestinationForm(forms.ModelForm):
 
     class Meta:
         model = Destination
-        exclude = ('state', 'country', 'latitude', 'longitude', 'rating', 'number_of_ratings')
+        exclude = ('name', 'state', 'country', 'latitude', 'longitude', 'rating', 'number_of_ratings', 'added_on', 'added_by')
 
 class PointOfInterestForm(forms.ModelForm):
-    name = forms.CharField(max_length=50, widget=forms.HiddenInput(), required=False)
     address = forms.CharField(max_length=50,
-                              widget=forms.TextInput(attrs={'size':80,'readonly':'readonly'}),
+                              widget=forms.TextInput(attrs={'size':80,'readonly':'readonly','class':'readonly'}),
                               help_text="Address",
                               required=False)
-    latitude = forms.DecimalField(widget=forms.HiddenInput(), required=False)
-    longitude = forms.DecimalField(widget=forms.HiddenInput(), required=False)
-    category = forms.ModelChoiceField(queryset=PointOfInterestCategory.objects.all(),
+    category = forms.ModelChoiceField(queryset=PointOfInterestCategory.objects.all(), widget=forms.Select(attrs={'class':'editable'}),
                                       help_text="Choose category", required=False, initial=1, empty_label=None)
-    description = forms.CharField(max_length=200, widget=forms.Textarea(attrs={'cols': 57, 'rows': 10}), 
+    description = forms.CharField(max_length=200, widget=forms.Textarea(attrs={'cols': 57, 'rows': 10,'class':'editable'}), 
                                   help_text="Add description", required=False)
-    best_time = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'size':80}), help_text="Best time to visit", required=False)
-    open_hours = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'size':80}), help_text="Open hours", required=False)
-    ticket_price = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'size':80}), help_text="Ticket price", required=False)
-    time_required = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'size':80}), help_text="Time required", required=False)
+    best_time = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'size':80,'class':'editable'}), help_text="Best time to visit", required=False)
+    open_hours = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'size':80,'class':'editable'}), help_text="Open hours", required=False)
+    ticket_price = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'size':80,'class':'editable'}), help_text="Ticket price", required=False)
+    time_required = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'size':80,'class':'editable'}), help_text="Time required", required=False)
     url = forms.CharField(max_length=50, widget=forms.HiddenInput(), required=False)
     photo = forms.ImageField(help_text="Upload picture", required=False)
-    added_on = forms.DateTimeField(widget=forms.HiddenInput(), required=False)
-    added_by = forms.CharField(max_length=20, widget=forms.HiddenInput(), required=False);
 
     def clean(self):
         print "Form:PointOfInterestForm_clean"
@@ -109,4 +104,4 @@ class PointOfInterestForm(forms.ModelForm):
 
     class Meta:
         model = PointOfInterest
-        exclude = ('state', 'country', 'last_updated_on', 'latest_update', 'rating', 'number_of_ratings')
+        exclude = ('name', 'state', 'country', 'latitude', 'longitude', 'last_updated_on', 'latest_update', 'rating', 'number_of_ratings', 'added_on', 'added_by')

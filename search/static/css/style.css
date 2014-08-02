@@ -59,5 +59,29 @@ body { height: 100%; margin: 0; padding: 0; text-align: center;}
 
 #autocomplete {
 	height:25px;
-	font-size:11pt;
+	font-size:10pt;
+}
+
+.readonly {
+	-webkit-appearance: none;
+    -moz-appearance: none;
+    text-indent: 1px;
+    text-overflow: '';
+    background: none repeat scroll 0 0 transparent;
+    border: medium none !important;
+    color: #000000;
+}
+
+.editable {
+    -moz-appearance: textfield;
+    -webkit-appearance: textfield;
+    background-color: white;
+    background-color: -moz-field;
+    border: 1px solid darkgray;
+    box-shadow: 1px 1px 1px 0 lightgray inset;  
+    font: -moz-field;
+    font: -webkit-small-control;
+    margin-top: 5px;
+    padding: 2px 3px;
+    width: 398px;    
 }

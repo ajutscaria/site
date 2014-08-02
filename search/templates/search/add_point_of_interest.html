@@ -11,13 +11,11 @@
         <h2>Add a point of interest</h2>
         <form action="" method="post" id="searchform">{% csrf_token %}
             <input id="autocomplete" placeholder="Enter the address"
-                          onFocus="geolocate()" type="text" size="50"></input>
+                onFocus="geolocate()" type="text" size="50"></input>
             <input type="submit" value="Search" />
-            <div id="result"></div>
         </form>
         <form action="" method="post" id="looksgoodform" enctype="multipart/form-data">{% csrf_token %}
-            <input type="submit" value="Looks Good?" style="display: none;" id="looksgood"/>
-            <input type="submit" value="Search Again?" style="display: none;" id="searchagain"/>
+            <div id="messagebox" style="display: none;"><div>Point of interest already exists. <a href="" id="edit">Edit it?</a></div></div>
             <div id="infobox" style="display: none;">
                 <table>
                     {% for field in form.visible_fields %}
@@ -28,7 +26,7 @@
                         </tr>
                     {% endfor %}
                 </table>
-                <input type="submit" value="Save!" id="savepointofinterest"/>
+                <input type="submit" value="Save" id="savepointofinterest"/>
             </div>
         </form>
         <div id="success" style="display: none;">
