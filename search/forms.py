@@ -3,6 +3,7 @@ from search.models import PointOfInterestCategory, DestinationCategory, Destinat
 from datetime import datetime 
 from pygeocoder import Geocoder
 from geoposition.fields import GeopositionField, Geoposition
+import autocomplete_light
 
 class SearchForm(forms.Form):
     searchfor = forms.CharField(max_length=50, help_text="Please enter the destination name", required=False)
@@ -59,6 +60,8 @@ class PointOfInterestForm(forms.ModelForm):
                               widget=forms.TextInput(attrs={'size':80,'readonly':'readonly','class':'readonly'}),
                               help_text="Address",
                               required=False)
+    destination = forms.ModelChoiceField(required=True, queryset=Destination.objects.all(), help_text="Choose destination",
+                                         widget=autocomplete_light.ChoiceWidget('DestinationAutocomplete'))
     category = forms.ModelChoiceField(queryset=PointOfInterestCategory.objects.all(), widget=forms.Select(attrs={'class':'editable'}),
                                       help_text="Choose category", required=False, initial=1, empty_label=None)
     description = forms.CharField(max_length=200, widget=forms.Textarea(attrs={'cols': 57, 'rows': 10,'class':'editable'}), 

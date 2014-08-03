@@ -73,6 +73,7 @@ class PointOfInterest(models.Model):
     address = models.CharField(max_length=100, default="")
     latitude = models.DecimalField(max_digits=11, decimal_places=7)
     longitude = models.DecimalField(max_digits=11, decimal_places=7)
+    destination = models.ForeignKey(Destination, default=1)
     category = models.ForeignKey(PointOfInterestCategory, default=1)
     rating = models.DecimalField(max_digits=11, decimal_places=7, default=0.00)
     number_of_ratings = models.IntegerField(default=0)
