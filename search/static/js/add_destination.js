@@ -50,6 +50,9 @@ function makeFormFieldsReadOnly() {
 	$('#id_time_required').prop("readonly",true);
 	$('#id_time_required').removeClass("editable");
 	$('#id_time_required').addClass("readonly");
+	$('#id_photo').prop("disabled",true);
+	$('#id_photo').removeClass("editable");
+    $('#id_photo').addClass("readonly");
 }
 
 function makeFormFieldsEditable() {
@@ -68,6 +71,9 @@ function makeFormFieldsEditable() {
 	$('#id_time_required').prop("readonly",false);
 	$('#id_time_required').removeClass("readonly");
 	$('#id_time_required').addClass("editable");
+	$('#id_photo').prop("disabled",false);
+	$('#id_photo').removeClass("readonly");
+	$('#id_photo').addClass("editable");
 }
 
 $(document).ready(function() {

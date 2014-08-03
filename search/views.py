@@ -51,6 +51,7 @@ def add_destination(request):
                 destination.time_required = form.cleaned_data['time_required']
                 destination.best_time = form.cleaned_data['best_time']
                 if 'photo' in request.FILES:
+                    destination.photo.delete(False);
                     destination.photo = request.FILES['photo'];
                 destination.save()
             else:
@@ -85,6 +86,7 @@ def add_point_of_interest(request):
                 interest.ticket_price = form.cleaned_data['ticket_price']
                 interest.best_time = form.cleaned_data['best_time']
                 if 'photo' in request.FILES:
+                    interest.photo.delete(False);
                     interest.photo = request.FILES['photo'];
                 interest.save()
             else:

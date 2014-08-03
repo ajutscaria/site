@@ -8,10 +8,9 @@ class SearchForm(forms.Form):
     searchfor = forms.CharField(max_length=50, help_text="Please enter the destination name", required=False)
 
 class DestinationForm(forms.ModelForm):
-    address = forms.CharField(max_length=50,
+    address = forms.CharField(max_length=100,
                               widget=forms.TextInput(attrs={'size':80,'readonly':'readonly','class':'readonly'}),
-                              help_text="Address",
-                              required=False)
+                              help_text="Address", required=False)
     category = forms.ModelChoiceField(queryset=DestinationCategory.objects.all(), widget=forms.Select(attrs={'class':'editable'}),
                                       help_text="Choose category", required=False, initial=1, empty_label=None)
     description = forms.CharField(max_length=200, widget=forms.Textarea(attrs={'cols': 57, 'rows': 10, 'class': 'editable'}),
@@ -27,9 +26,6 @@ class DestinationForm(forms.ModelForm):
     def clean(self):
         print "Form:DestinationForm_clean"
         cleaned_data = self.cleaned_data
-        cleaned_data['added_by'] = "aju"
-        #I'm wondering why this is not handled by the the default value tha tis being set. Enough time wasted on this.
-        cleaned_data['added_on'] = datetime.utcnow()
         print "Cleanded data", cleaned_data
         return cleaned_data
 
@@ -46,6 +42,9 @@ class DestinationForm(forms.ModelForm):
         instance.state_id = state.id
         instance.latitude = geoloc.coordinates[0]
         instance.longitude = geoloc.coordinates[1]
+        instance.added_by = "aju"
+        #I'm wondering why this is not handled by the the default value tha tis being set. Enough time wasted on this.
+        instance.added_on = datetime.utcnow()
         print 'Going to commit data'
         if commit:
             instance.save()
@@ -56,7 +55,7 @@ class DestinationForm(forms.ModelForm):
         exclude = ('name', 'state', 'country', 'latitude', 'longitude', 'rating', 'number_of_ratings', 'added_on', 'added_by')
 
 class PointOfInterestForm(forms.ModelForm):
-    address = forms.CharField(max_length=50,
+    address = forms.CharField(max_length=100,
                               widget=forms.TextInput(attrs={'size':80,'readonly':'readonly','class':'readonly'}),
                               help_text="Address",
                               required=False)

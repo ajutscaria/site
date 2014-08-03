@@ -51,7 +51,7 @@ class Destination(models.Model):
     open_hours = models.CharField(max_length=50, default="")
     time_required = models.CharField(max_length=50, default="")
     photo = models.ImageField("Picture", upload_to=get_destination_image_path, blank=True, null=True)
-    added_on = models.DateField(default="1/1/1")
+    added_on = models.DateTimeField(default="2001-01-01 00:00")
     added_by = models.CharField(max_length=20, default="aju")
 
     def __unicode__(self):

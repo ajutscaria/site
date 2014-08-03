@@ -15,7 +15,7 @@
             <input type="submit" value="Search" />
         </form>
         <form action="" method="post" id="looksgoodform" enctype="multipart/form-data">{% csrf_token %}
-            <div id="messagebox" style="display: none;"><div>Point of interest already exists. <a href="" id="edit">Edit it?</a></div></div>
+            <div id="messagebox" style="display: none;"><div>Point of interest already exists.&nbsp;<a href="" id="edit">Edit it?</a></div></div>
             <div id="infobox" style="display: none;">
                 <table>
                     {% for field in form.visible_fields %}
