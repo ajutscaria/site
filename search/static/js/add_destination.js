@@ -92,9 +92,10 @@ $(document).ready(function() {
 	$('#reset').click(function(e) {
 		// Show the rest of the form here
 		clearFormFields();
+		$('#looksgoodform').reset();
 		$('#reset').hide();
-		$('#searchfor').val('');
-		$('#searchfor').focus();
+		$('#autocomplete').val('');
+		$('#autocomplete').focus();
         $('#infobox').hide();
         $('#success').hide();
 		e.preventDefault();

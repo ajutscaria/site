@@ -107,24 +107,13 @@ $(document).ready(function() {
 	    e.preventDefault();
 	});
 
-	$('#looksgood').click(function(e) {
-		// Show the rest of the form here
-		e.preventDefault();
-		$('#id_address').val($('#result').html());
-		$('#looksgood').hide();
-        $('#searchagain').hide();
-        $('#savepointofinterest').show();
-        $('#infobox').show();
-	});
-
 	$('#reset').click(function(e) {
 		// Show the rest of the form here
 		clearFormFields();
+		$('#looksgoodform').reset();
 		$('#reset').hide();
-		$('#searchfor').val('');
-		$('#searchfor').focus();
-	    $('#result').hide();
-        $('#looksgood').hide();
+		$('#autocomplete').val('');
+		$('#autocomplete').focus();
         $('#infobox').hide();
         $('#success').hide();
 		e.preventDefault();
