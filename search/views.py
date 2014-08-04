@@ -16,20 +16,27 @@ def index(request):
     
     converted=""
     if request.method == 'POST':
-        #form = SearchForm(request.POST)
-        #if form.is_valid():
         searchlocation = request.POST['searchfor']
         geoloc = Geocoder.geocode(searchlocation)[0]
         converted = str(geoloc)
         print "View:index! searchfor:", searchlocation
         loc = Geoposition(geoloc.coordinates[0], geoloc.coordinates[1])
-        closest_attractions = find_points_of_interest_in_range(loc, 200)
-        return HttpResponse(json.dumps({'address': converted, 
-                                            'location': {"latitude":geoloc.coordinates[0], "longitude":geoloc.coordinates[1]},
-                                            'attractions': convert_to_json(closest_attractions)}));
-                                            #'attractions':[{"latitude":"22.0718055","longitude":"-159.6616083"},{"latitude":"37.716753","longitude":"-119.646505"},{"latitude":"37.7461111","longitude":"-119.53305549999999"}]}));
-        #else:
-        #    print form.errors
+        destinations = Destination.objects.filter(address=converted);
+        if destinations.exists():
+            destination = destinations[0]
+            print "Destination exists in database"
+            closest_attractions = find_points_of_interest_for_destination(destination.id)
+            print "Closest attractions", closest_attractions
+            resp = convert_point_of_interest_to_json(closest_attractions)
+            resp.extend(convert_destinations_to_json([destination]))
+            return HttpResponse(json.dumps({'attractions': resp, 'address':converted}));
+            
+        else:
+            print "Destination DOES NOT EXIST in database"
+            closest_attractions = find_points_of_interest_in_range(loc, 200)
+            resp = convert_point_of_interest_to_json(closest_attractions)
+            resp.extend(convert_location_to_json(geoloc.coordinates[0], geoloc.coordinates[1], "name", "desc"))
+            return HttpResponse(json.dumps({'attractions': resp, 'address':converted}));
 
     dict = {'form': SearchForm()}
     return render_to_response('search/index.html', dict, context);
@@ -232,13 +239,37 @@ def find_points_of_interest_in_range(from_location, range):
             closest_attractions.append(obj)
     return closest_attractions
 
-def convert_to_json(places):
+def find_points_of_interest_for_destination(id):
+    return PointOfInterest.objects.filter(destination_id=id);
+
+def convert_point_of_interest_to_json(places):
     json_data = []
     for place in places:
         json_data.append({'id':str(place.id),
                           'latitude': str(place.latitude), 
                           'longitude': str(place.longitude),
+                          'type':'PointOfInterest',
                           'info':"<b>" + place.name + "</b><br/><p>" + place.description + "</p>"})
+    return json_data
+
+def convert_destinations_to_json(destinations):
+    json_data = []
+    for destination in destinations:
+        json_data.append({'id':str(destination.id),
+                          'latitude': str(destination.latitude), 
+                          'longitude': str(destination.longitude),
+                          'type': 'Destination',
+                          'info':"<b>" + destination.name + "</b><br/><p>" + destination.description + "</p>"})
+    print 'From convert_destinations_to_json', json_data
+    return json_data
+
+def convert_location_to_json(latitude, longitude, name, description):
+    print "Inside location method"
+    json_data = [{'id':str(-1),
+                  'latitude': str(latitude), 
+                  'longitude': str(longitude),
+                  'type': 'Location',
+                  'info':"<b>" + name + "</b><br/><p>" + description + "</p>"}];
     return json_data
 
 def distance(origin, destination):

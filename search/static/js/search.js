@@ -80,7 +80,7 @@ function searchForPointsOfInterest(search_location) {
         data      : {'searchfor': search_location},//$(this).serialize(),
         success: function(response) {
             var jsonData = $.parseJSON(response);
-            renderMap(jsonData.address, jsonData.location, jsonData.attractions);
+            renderMap(jsonData.attractions);
             $('#address').html(jsonData.address);
             $('#mapdiv').show();
             $('#slider').val(52.5)
@@ -92,7 +92,7 @@ function searchForPointsOfInterest(search_location) {
     });
 }
 
-function renderMap(address, location, attractions) {
+function renderMap(attractions) {
     clearAllMarkers();
     if(!init){
         initializeMap();
@@ -100,13 +100,10 @@ function renderMap(address, location, attractions) {
         $('.map').slideToggle();
     }
     var latlngbounds = new google.maps.LatLngBounds();
-    var search_latlng = new google.maps.LatLng(location.latitude, location.longitude);
-    addMarker(-1, search_latlng, address);
-    latlngbounds.extend(search_latlng); 
     for (var key in attractions) {
        if (attractions.hasOwnProperty(key)) {
           var latlng = new google.maps.LatLng(attractions[key].latitude, attractions[key].longitude);
-          addMarker(attractions[key].id, latlng, attractions[key].info);
+          addMarker(attractions[key].id, attractions[key].type, latlng, attractions[key].info);
           latlngbounds.extend(latlng); 
        }
     }
@@ -114,12 +111,13 @@ function renderMap(address, location, attractions) {
     map.fitBounds(latlngbounds); 
 }
 
-function addMarker(id, latlng, info) {
+function addMarker(id, type, latlng, info) {
     var marker = new google.maps.Marker({
       position: latlng,
-      map: map
+      map: map,
+      icon: image
     });
-    if (id == -1) {
+    if (type == "Location") {
         var pinColor = "333333";
         var pinImage = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor,
             new google.maps.Size(21, 34),
@@ -127,13 +125,16 @@ function addMarker(id, latlng, info) {
             new google.maps.Point(10, 34));
         marker.setIcon(pinImage);
         //https://developers.google.com/maps/documentation/javascript/examples/marker-symbol-predefined
+    } else if (type == "Destination") {
+        var image = '/static/images/flag.png';
+        marker.setIcon(image);
     }
     marker.set("id", id);
     markers.push(marker);
 
     var infowindow = new google.maps.InfoWindow({
         content: info,
-        //disableAutoPan : true,
+        disableAutoPan : true,
         maxWidth: 200
     });
 
