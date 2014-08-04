@@ -128,8 +128,25 @@ function addMarker(id, type, latlng, info) {
     } else if (type == "Destination") {
         var image = '/static/images/flag.png';
         marker.setIcon(image);
+
+        google.maps.event.addListener(marker, 'dblclick', function() {
+            var urlSubmit = '/search/get_points_of_interest_for_destination/'
+            $.ajax({  
+                type: "POST",
+                url: urlSubmit,     
+                dataType: 'json',        
+                data      : {"id":this.get("id")},
+                success: function(response) {
+                    renderMap(response.attractions);
+                },
+                failure: function(data) { 
+                    alert('Got an error!');
+                }
+            });
+        });
     }
     marker.set("id", id);
+    marker.set("type", type);
     markers.push(marker);
 
     var infowindow = new google.maps.InfoWindow({
@@ -148,20 +165,11 @@ function addMarker(id, type, latlng, info) {
 
     google.maps.event.addListener(marker, 'click', function() {
         var urlSubmit = '/search/get_details/'
-        var pyrmont = marker.position;
-        //alert(pyrmont);
-        var request = {
-            location: pyrmont,
-            radius: 5
-        }
-        /*var service = new google.maps.places.PlacesService(map);
-        service.nearbySearch(request, callback);
-        */
         $.ajax({  
             type: "POST",
             url: urlSubmit,     
             dataType: 'json',        
-            data      : {"attraction_id":this.get("id")},
+            data      : {"id":this.get("id"), "type": this.get("type")},
             success: function(response) {
                 $("#detail_address").html(response.address);
                 $("#detail_description").html(response.description);
@@ -172,9 +180,7 @@ function addMarker(id, type, latlng, info) {
                 $("#detail_time_required").html(response.time_required);
                 d = new Date();
                 $("#detail_picture").attr("src", response.picture + "?" + d.getTime());
-
                 $('#detailstable').show();
-                //alert('set url')
             },
             failure: function(data) { 
                 alert('Got an error!');

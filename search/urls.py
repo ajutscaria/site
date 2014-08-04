@@ -15,6 +15,7 @@ urlpatterns = [
     url(r'^search_to_add_point_of_interest/$', views.search_to_add_point_of_interest, name='search_to_add_point_of_interest'),
     url(r'^filter_results/$', views.filter_results, name='filter_results'),
     url(r'^get_details/$', views.get_details, name='get_details'),
+    url(r'^get_points_of_interest_for_destination/$', views.get_points_of_interest_for_destination, name='get_points_of_interest_for_destination'),
     url(r'^contact/$', views.contact, name='contact'),
 ]
 

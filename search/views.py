@@ -18,25 +18,25 @@ def index(request):
     if request.method == 'POST':
         searchlocation = request.POST['searchfor']
         geoloc = Geocoder.geocode(searchlocation)[0]
-        converted = str(geoloc)
+        address = str(geoloc)
         print "View:index! searchfor:", searchlocation
         loc = Geoposition(geoloc.coordinates[0], geoloc.coordinates[1])
-        destinations = Destination.objects.filter(address=converted);
+        destinations = Destination.objects.filter(address=address);
         if destinations.exists():
-            destination = destinations[0]
             print "Destination exists in database"
+            destination = destinations[0]
             closest_attractions = find_points_of_interest_for_destination(destination.id)
             print "Closest attractions", closest_attractions
-            resp = convert_point_of_interest_to_json(closest_attractions)
-            resp.extend(convert_destinations_to_json([destination]))
-            return HttpResponse(json.dumps({'attractions': resp, 'address':converted}));
-            
+            result = convert_point_of_interest_to_json(closest_attractions)
+            result.extend(convert_destinations_to_json([destination]))
+            return HttpResponse(json.dumps({'attractions': result, 'address':address}));
         else:
             print "Destination DOES NOT EXIST in database"
-            closest_attractions = find_points_of_interest_in_range(loc, 200)
-            resp = convert_point_of_interest_to_json(closest_attractions)
-            resp.extend(convert_location_to_json(geoloc.coordinates[0], geoloc.coordinates[1], "name", "desc"))
-            return HttpResponse(json.dumps({'attractions': resp, 'address':converted}));
+            closest_destinations = find_destinations_in_range(loc, 200)
+            #closest_attractions = find_points_of_interest_in_range(loc, 200)
+            result = convert_destinations_to_json(closest_destinations)
+            result.extend(convert_location_to_json(geoloc.coordinates[0], geoloc.coordinates[1], address, ""))
+            return HttpResponse(json.dumps({'attractions': result, 'address':address}));
 
     dict = {'form': SearchForm()}
     return render_to_response('search/index.html', dict, context);
@@ -206,10 +206,16 @@ def filter_results(request):
 
 def get_details(request):
     if request.method == "POST":
-        attraction_id = request.POST['attraction_id']
-        print "View:get_details! attraction_id:", attraction_id
-        obj = PointOfInterest.objects.get(id=attraction_id);
+        id = request.POST['id']
+        type = request.POST['type']
+        print "View:get_details! id:", id, ", type:", type
         details = {}
+        if type == "PointOfInterest":
+            obj = PointOfInterest.objects.get(id=id);
+            if obj.ticket_price:
+                details['ticket_price'] = obj.ticket_price
+        elif type == "Destination":
+            obj = Destination.objects.get(id=id);
         if obj.address:
             details['address'] = obj.address
         if obj.description:
@@ -220,8 +226,6 @@ def get_details(request):
             details['best_time'] = obj.best_time
         if obj.open_hours:
             details['open_hours'] = obj.open_hours
-        if obj.ticket_price:
-            details['ticket_price'] = obj.ticket_price
         if obj.time_required:
             details['time_required'] = obj.time_required
         if obj.photo:
@@ -229,6 +233,18 @@ def get_details(request):
         else:
             print "no photo"
         return HttpResponse(json.dumps(details));
+
+def get_points_of_interest_for_destination(request):
+    if request.method == "POST":
+        id = request.POST['id']
+        print "View:get_points_of_interest_for_destination! id:", id
+        closest_attractions = find_points_of_interest_for_destination(id)
+        print "Closest attractions", closest_attractions
+        result = convert_point_of_interest_to_json(closest_attractions)
+        destination = Destination.objects.get(id=id);
+        result.extend(convert_destinations_to_json([destination]))
+        print 'done with conversions', result
+        return HttpResponse(json.dumps({'attractions': result}));
 
 def find_points_of_interest_in_range(from_location, range):
     closest_attractions=[]
@@ -238,6 +254,15 @@ def find_points_of_interest_in_range(from_location, range):
             print "Closest: ", obj, loc
             closest_attractions.append(obj)
     return closest_attractions
+
+def find_destinations_in_range(from_location, range):
+    closest_destinations=[]
+    for obj in Destination.objects.all():
+        loc = Geoposition(obj.latitude, obj.longitude)
+        if distance(loc, from_location) < range:
+            print "Closest destination: ", obj, loc
+            closest_destinations.append(obj)
+    return closest_destinations
 
 def find_points_of_interest_for_destination(id):
     return PointOfInterest.objects.filter(destination_id=id);
