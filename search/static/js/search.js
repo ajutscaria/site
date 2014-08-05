@@ -74,6 +74,7 @@ $(document).ready(function() {
 });
 
 function searchForPointsOfInterest(search_location) {
+    $('#detailstable').hide();
     var urlSubmit = '/search/'
     $.ajax({  
         type: "POST",
@@ -81,6 +82,7 @@ function searchForPointsOfInterest(search_location) {
         data      : {'searchfor': search_location},//$(this).serialize(),
         success: function(response) {
             var jsonData = $.parseJSON(response);
+            clearAllMarkers();
             renderMap(jsonData.attractions);
             $('#address').html(jsonData.address);
             $('#mapdiv').show();
@@ -137,10 +139,9 @@ function addMarker(id, type, latlng, info) {
             var urlSubmit = '/search/get_points_of_interest_for_destination/'
             if (this.get("expanded")) {
                 clearAllMarkers();
-                searchForPointsOfInterest($('#autocomplete').val());
+                searchForPointsOfInterest($('#address').html());
                 selected_destination = null;
             } else {
-                clearAllMarkersExceptOne(this);
                 selected_destination = this;
                 $.ajax({  
                     type: "POST",
@@ -148,6 +149,7 @@ function addMarker(id, type, latlng, info) {
                     dataType: 'json',        
                     data      : {"id":this.get("id")},
                     success: function(response) {
+                        clearAllMarkersExceptOne(selected_destination);
                         renderMap(response.attractions);
                     },
                     failure: function(data) { 

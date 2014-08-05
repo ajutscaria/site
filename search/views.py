@@ -132,6 +132,7 @@ def search_to_add_destination(request):
         print "View:search_to_add_destination! searchfor:", request.POST['searchfor']
         geoloc = Geocoder.geocode(searchlocation)[0]
         address = generate_address(geoloc)
+        print "Got address:", address
         destinations = Destination.objects.filter(address=address);
         if destinations.exists():
             print "##Already added##"
@@ -293,7 +294,12 @@ def convert_location_to_json(latitude, longitude, name, description):
     return json_data
 
 def generate_address(geoloc):
-    return str(geoloc).split(',')[0].strip() + ", " + geoloc.state + ", " + geoloc.country
+    print "generate_address", str(geoloc)
+    print "Name", str(geoloc).split(',')[0].strip()
+    print "State", geoloc.state
+    print "Country", geoloc.country
+    print "address found", str(geoloc).split(',')[0].strip() + ", " + str(geoloc.state) + ", " + str(geoloc.country)
+    return str(geoloc).split(',')[0].strip() + ", " + str(geoloc.state) + ", " + str(geoloc.country)
 
 def distance(origin, destination):
     lat1 = origin.latitude
