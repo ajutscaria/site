@@ -18,8 +18,9 @@ def index(request):
     if request.method == 'POST':
         searchlocation = request.POST['searchfor']
         geoloc = Geocoder.geocode(searchlocation)[0]
-        address = str(geoloc)
+        address = generate_address(geoloc)
         print "View:index! searchfor:", searchlocation
+        print "converted address", address
         loc = Geoposition(geoloc.coordinates[0], geoloc.coordinates[1])
         destinations = Destination.objects.filter(address=address);
         if destinations.exists():
@@ -114,21 +115,13 @@ def contact(request):
     context = RequestContext(request)
     return render_to_response('search/contact.html', context);
 
-def save_file(file, path=''):
-    ''' Little helper to save a file
-    '''
-    filename = file._get_name()
-    fd = open('%s/%s' % (settings.MEDIA_ROOT, str(path) + str(filename)), 'wb')
-    for chunk in file.chunks():
-        fd.write(chunk)
-    fd.close()
-
 def search_for_location(request):
     # To handle AJAX requests from the form
     if request.method == "POST":
         searchlocation = request.POST['searchfor']
         print "View:search_for_location! searchfor:", request.POST['searchfor']
         geoloc = Geocoder.geocode(searchlocation)[0]
+        address = generate_address(geoloc)
         # TODO: Do something if we can't find the place
         return HttpResponse(json.dumps({'message': str(geoloc)}))
 
@@ -137,7 +130,8 @@ def search_to_add_destination(request):
     if request.method == "POST":
         searchlocation = request.POST['searchfor']
         print "View:search_to_add_destination! searchfor:", request.POST['searchfor']
-        address = str(Geocoder.geocode(searchlocation)[0])
+        geoloc = Geocoder.geocode(searchlocation)[0]
+        address = generate_address(geoloc)
         destinations = Destination.objects.filter(address=address);
         if destinations.exists():
             print "##Already added##"
@@ -167,7 +161,8 @@ def search_to_add_point_of_interest(request):
     if request.method == "POST":
         searchlocation = request.POST['searchfor']
         print "View:search_to_add_point_of_interest! searchfor:", request.POST['searchfor']
-        address = str(Geocoder.geocode(searchlocation)[0])
+        geoloc = Geocoder.geocode(searchlocation)[0]
+        address = generate_address(geoloc)
         interests = PointOfInterest.objects.filter(address=address);
         print interests
         if interests.exists():
@@ -209,7 +204,7 @@ def get_details(request):
         id = request.POST['id']
         type = request.POST['type']
         print "View:get_details! id:", id, ", type:", type
-        details = {}
+        details = {"type":type}
         if type == "PointOfInterest":
             obj = PointOfInterest.objects.get(id=id);
             if obj.ticket_price:
@@ -241,8 +236,8 @@ def get_points_of_interest_for_destination(request):
         closest_attractions = find_points_of_interest_for_destination(id)
         print "Closest attractions", closest_attractions
         result = convert_point_of_interest_to_json(closest_attractions)
-        destination = Destination.objects.get(id=id);
-        result.extend(convert_destinations_to_json([destination]))
+        #destination = Destination.objects.get(id=id);
+        #result.extend(convert_destinations_to_json([destination]))
         print 'done with conversions', result
         return HttpResponse(json.dumps({'attractions': result}));
 
@@ -296,6 +291,9 @@ def convert_location_to_json(latitude, longitude, name, description):
                   'type': 'Location',
                   'info':"<b>" + name + "</b><br/><p>" + description + "</p>"}];
     return json_data
+
+def generate_address(geoloc):
+    return str(geoloc).split(',')[0].strip() + ", " + geoloc.state + ", " + geoloc.country
 
 def distance(origin, destination):
     lat1 = origin.latitude

@@ -28,6 +28,7 @@ $.ajaxSetup({
 var autocomplete;
 var map;
 var markers = [];
+var selected_destination;
 var init = false;
 
 $(document).ready(function() {
@@ -93,13 +94,16 @@ function searchForPointsOfInterest(search_location) {
 }
 
 function renderMap(attractions) {
-    clearAllMarkers();
+    //clearAllMarkers();
     if(!init){
         initializeMap();
         init = true;
         $('.map').slideToggle();
     }
     var latlngbounds = new google.maps.LatLngBounds();
+    if (selected_destination != null) {
+        latlngbounds.extend(selected_destination.position);
+    }
     for (var key in attractions) {
        if (attractions.hasOwnProperty(key)) {
           var latlng = new google.maps.LatLng(attractions[key].latitude, attractions[key].longitude);
@@ -131,22 +135,32 @@ function addMarker(id, type, latlng, info) {
 
         google.maps.event.addListener(marker, 'dblclick', function() {
             var urlSubmit = '/search/get_points_of_interest_for_destination/'
-            $.ajax({  
-                type: "POST",
-                url: urlSubmit,     
-                dataType: 'json',        
-                data      : {"id":this.get("id")},
-                success: function(response) {
-                    renderMap(response.attractions);
-                },
-                failure: function(data) { 
-                    alert('Got an error!');
-                }
-            });
+            if (this.get("expanded")) {
+                clearAllMarkers();
+                searchForPointsOfInterest($('#autocomplete').val());
+                selected_destination = null;
+            } else {
+                clearAllMarkersExceptOne(this);
+                selected_destination = this;
+                $.ajax({  
+                    type: "POST",
+                    url: urlSubmit,     
+                    dataType: 'json',        
+                    data      : {"id":this.get("id")},
+                    success: function(response) {
+                        renderMap(response.attractions);
+                    },
+                    failure: function(data) { 
+                        alert('Got an error!');
+                    }
+                });
+            }
+            this.set("expanded", !this.get("expanded"))
         });
     }
     marker.set("id", id);
     marker.set("type", type);
+    marker.set("expanded", false)
     markers.push(marker);
 
     var infowindow = new google.maps.InfoWindow({
@@ -171,16 +185,7 @@ function addMarker(id, type, latlng, info) {
             dataType: 'json',        
             data      : {"id":this.get("id"), "type": this.get("type")},
             success: function(response) {
-                $("#detail_address").html(response.address);
-                $("#detail_description").html(response.description);
-                $("#detail_category").html(response.category);
-                $("#detail_best_time").html(response.best_time);
-                $("#detail_open_hours").html(response.open_hours);
-                $("#detail_ticket_price").html(response.ticket_price);
-                $("#detail_time_required").html(response.time_required);
-                d = new Date();
-                $("#detail_picture").attr("src", response.picture + "?" + d.getTime());
-                $('#detailstable').show();
+                setDetails(response)
             },
             failure: function(data) { 
                 alert('Got an error!');
@@ -189,44 +194,62 @@ function addMarker(id, type, latlng, info) {
     });
 }
 
-function callback(results, status) {
-    if (status == google.maps.places.PlacesServiceStatus.OK) {
-        //alert(results[0].id);
-        /*var request = {
-            //placeId: 'ChIJN1t_tDeuEmsRUsoyG83frY4'
-            placeId:results[1].id
-        }*/
-        //service = new google.maps.places.PlacesService(map);
-        //service.getDetails(request, callback1);
-        for (var i = 0; i < results.length; i++) {
-            //createMarker(results[i]);
-            if (results[i].rating) {
-                alert(results[i].name);
-                alert(results[i].rating);
-                alert(results[i].types);
-                var request = {
-                    //placeId: 'ChIJN1t_tDeuEmsRUsoyG83frY4'
-                    placeId:results[1].place_id
-                }
-                service = new google.maps.places.PlacesService(map);
-                service.getDetails(request, callback1);
-            }
-        }
-    }
-}
-
-function callback1(place, status) {
-  alert(status)
-  if (status == google.maps.places.PlacesServiceStatus.OK) {
-    if (place.photos) {
-        alert(place.photos.length)
+function setDetails(response) {
+    $("#detail_address").html(response.address);
+    if (response.description) {
+        //$("#row_description").show();
+        $("#detail_description").html(response.description);
     } else {
-        alert('no photos')
+        //$("#row_description").hide();
+        $("#detail_description").html("");
     }
-
-  } else {
-    alert('problem')
-  }
+    if (response.category) {
+        //$("#row_category").show();
+        $("#detail_category").html(response.category);
+    } else {
+        //$("#row_category").hide();
+        $("#detail_category").html("");
+    }
+    if (response.best_time) {
+        //$("#row_best_time").show();
+        $("#detail_best_time").html(response.best_time);
+    } else {
+       // $("#row_best_time").hide();
+       $("#detail_best_time").html("");
+    }
+    if (response.open_hours) {
+        //$("#row_open_hours").show();
+        $("#detail_open_hours").html(response.open_hours);
+    } else {
+        //$("#row_open_hours").hide();
+        $("#detail_open_hours").html("");
+    }
+    if (response.time_required) {
+        //$("#row_time_required").show();
+        $("#detail_time_required").html(response.time_required);
+    } else {
+        //$("#row_time_required").hide();
+        $("#detail_time_required").html("");
+    }
+    if (response.picture) {
+        //$("#row_picture").show();
+        d = new Date();
+        $("#detail_picture").attr("src", response.picture + "?" + d.getTime());
+    } else {
+        //$("#row_picture").hide();
+        d = new Date();
+        $("#detail_picture").attr("src", "" + "?" + d.getTime());
+    }
+    if (response.ticket_price) {
+        //$("#row_ticket_price").show();
+        if (type == "PointOfInterest") {
+            $("#detail_ticket_price").html(response.ticket_price);
+        }
+    } else {
+        //$("#row_ticket_price").hide();
+        $("#detail_ticket_price").html("");
+    }
+    $('#detailstable').show();
 }
 
 function geolocate() {
@@ -253,6 +276,14 @@ function logslider(position) {
   var scale = (maxv-minv) / (maxp-minp);
 
   return Math.round(Math.exp(minv + scale*(position-minp)));
+}
+
+function clearAllMarkersExceptOne(marker) {
+  for (var i = 0; i < markers.length; i++ ) {
+    if(markers[i] != marker)
+      markers[i].setMap(null);
+  }
+  markers.length = 1;
 }
 
 function clearAllMarkers() {

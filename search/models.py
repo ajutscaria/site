@@ -58,8 +58,7 @@ class Destination(models.Model):
         return self.full_name()
 
     def full_name(self):
-        return self.name + ", " + str(self.state) + ", " + str(self.country)
-
+        return self.address
 
 def get_point_of_interest_image_path(instance, filename):
     if (instance.id):
@@ -93,5 +92,5 @@ class PointOfInterest(models.Model):
         return self.full_name()
 
     def full_name(self):
-        return self.name + ", " + str(self.state) + ", " + str(self.country)
+        return self.address
 
