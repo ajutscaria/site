@@ -26,18 +26,20 @@ def index(request):
         if destinations.exists():
             print "Destination exists in database"
             destination = destinations[0]
-            closest_attractions = find_points_of_interest_for_destination(destination.id)
-            print "Closest attractions", closest_attractions
-            result = convert_point_of_interest_to_json(closest_attractions)
-            result.extend(convert_destinations_to_json([destination]))
-            return HttpResponse(json.dumps({'attractions': result, 'address':address}));
+            (closest_attractions, max_distance) = find_points_of_interest_for_destination(destination.id)
+            print "Closest attractions:", closest_attractions, "max_distance:", max_distance
+            result = convert_destinations_to_json([destination])
+            result.extend(convert_points_of_interest_to_json(closest_attractions))
+            print 'all done', result
+            return HttpResponse(json.dumps({'attractions': result, 'address':address, 'max_distance':max_distance}));
         else:
             print "Destination DOES NOT EXIST in database"
-            closest_destinations = find_destinations_in_range(loc, 200)
+            (closest_destinations, max_distance) = find_destinations_in_range(loc, 200)
             #closest_attractions = find_points_of_interest_in_range(loc, 200)
-            result = convert_destinations_to_json(closest_destinations)
-            result.extend(convert_location_to_json(geoloc.coordinates[0], geoloc.coordinates[1], address, ""))
-            return HttpResponse(json.dumps({'attractions': result, 'address':address}));
+            print "Closest destinations:", closest_destinations, "max_distance:", max_distance
+            result = convert_location_to_json(geoloc.coordinates[0], geoloc.coordinates[1], address, "")
+            result.extend(convert_destinations_to_json(closest_destinations))
+            return HttpResponse(json.dumps({'attractions': result, 'address':address, 'max_distance':max_distance}));
 
     dict = {'form': SearchForm()}
     return render_to_response('search/index.html', dict, context);
@@ -194,11 +196,22 @@ def filter_results(request):
     if request.method == "POST":
         print "View:filter_results! distance:", request.POST['distance'], \
               "latitude:", request.POST['latitude'], \
-              "longitude:", request.POST['longitude']
+              "longitude:", request.POST['longitude'], \
+              "type:", request.POST['type'], \
+              "id:", request.POST['id'], \
+              "address:", request.POST['address']
+        distance = float(request.POST['distance'])
         loc = Geoposition(request.POST['latitude'], request.POST['longitude'])
-        closest_attractions = find_points_of_interest_in_range(loc, float(request.POST['distance']))
-        return HttpResponse(json.dumps({'location': {"latitude":request.POST['latitude'], "longitude":request.POST['longitude']},
-                                        'attractions': convert_to_json(closest_attractions)}));
+        if request.POST['type'] == "Destination":
+            (closest_attractions, max_distance) = find_points_of_interest_in_range(loc, distance)
+            print "Closest attractions", closest_attractions, "max_distance", max_distance
+            result = convert_points_of_interest_to_json(closest_attractions)
+            return HttpResponse(json.dumps({'attractions': result, 'max_distance': max_distance}));
+        else:
+            (closest_destinations, max_distance) = find_destinations_in_range(loc, distance)
+            print "Closest destinations", closest_destinations, "max_distance", max_distance
+            result = convert_destinations_to_json(closest_destinations)
+            return HttpResponse(json.dumps({'attractions': result, 'max_distance': max_distance}));
 
 def get_details(request):
     if request.method == "POST":
@@ -234,36 +247,54 @@ def get_points_of_interest_for_destination(request):
     if request.method == "POST":
         id = request.POST['id']
         print "View:get_points_of_interest_for_destination! id:", id
-        closest_attractions = find_points_of_interest_for_destination(id)
+        (closest_attractions, max_distance) = find_points_of_interest_for_destination(id)
         print "Closest attractions", closest_attractions
-        result = convert_point_of_interest_to_json(closest_attractions)
+        result = convert_points_of_interest_to_json(closest_attractions)
         #destination = Destination.objects.get(id=id);
         #result.extend(convert_destinations_to_json([destination]))
         print 'done with conversions', result
-        return HttpResponse(json.dumps({'attractions': result}));
+        return HttpResponse(json.dumps({'attractions': result, 'max_distance': max_distance}));
 
 def find_points_of_interest_in_range(from_location, range):
     closest_attractions=[]
+    max_distance = 0;
     for obj in PointOfInterest.objects.all():
         loc = Geoposition(obj.latitude, obj.longitude)
-        if distance(loc, from_location) < range:
+        d = distance(loc, from_location)
+        if d < range:
             print "Closest: ", obj, loc
             closest_attractions.append(obj)
-    return closest_attractions
+            if d > max_distance:
+                max_distance = d
+    return (closest_attractions, max_distance)
 
 def find_destinations_in_range(from_location, range):
     closest_destinations=[]
+    max_distance = 0;
     for obj in Destination.objects.all():
         loc = Geoposition(obj.latitude, obj.longitude)
-        if distance(loc, from_location) < range:
+        d = distance(loc, from_location)
+        if d < range:
             print "Closest destination: ", obj, loc
             closest_destinations.append(obj)
-    return closest_destinations
+            if d > max_distance:
+                max_distance = d;
+    return (closest_destinations, max_distance)
 
 def find_points_of_interest_for_destination(id):
-    return PointOfInterest.objects.filter(destination_id=id);
+    print "View:find_points_of_interest_for_destination! id:", id
+    destination = Destination.objects.get(id=id);
+    from_location = Geoposition(destination.latitude, destination.longitude)
+    attractions = PointOfInterest.objects.filter(destination_id=id);
+    max_distance = 0;
+    for obj in attractions:
+        loc = Geoposition(obj.latitude, obj.longitude)
+        d = distance(loc, from_location)
+        if d > max_distance:
+                max_distance = d;
+    return (attractions, max_distance)
 
-def convert_point_of_interest_to_json(places):
+def convert_points_of_interest_to_json(places):
     json_data = []
     for place in places:
         json_data.append({'id':str(place.id),
@@ -281,11 +312,9 @@ def convert_destinations_to_json(destinations):
                           'longitude': str(destination.longitude),
                           'type': 'Destination',
                           'info':"<b>" + destination.name + "</b><br/><p>" + destination.description + "</p>"})
-    print 'From convert_destinations_to_json', json_data
     return json_data
 
 def convert_location_to_json(latitude, longitude, name, description):
-    print "Inside location method"
     json_data = [{'id':str(-1),
                   'latitude': str(latitude), 
                   'longitude': str(longitude),

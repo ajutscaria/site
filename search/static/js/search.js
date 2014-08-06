@@ -28,7 +28,8 @@ $.ajaxSetup({
 var autocomplete;
 var map;
 var markers = [];
-var selected_destination;
+var destination_marker; // stores the destination that we are focused on (double click event)
+var search_marker;    // stores the location we searched for in the text box
 var init = false;
 
 $(document).ready(function() {
@@ -46,15 +47,27 @@ $(document).ready(function() {
         //$('#range').html(Math.round(logslider($('#slider').val())));
         var distance = $('#range').html()
         var urlSubmit = '/search/filter_results/'
+        var type = search_marker.get("type")
+        var position = search_marker.position;
+        var id = search_marker.get("id");
+        if (destination_marker != null) {
+            type = destination_marker.get("type");
+            position = destination_marker.position;
+            id = destination_marker.get("id");
+        }
+        
         $.ajax({  
             type: "POST",
             url: urlSubmit, 
             dataType:'json',
             //data      : {"location": {"latitude":"37.3711", "longitude":"-122.0375"}, "distance":distance},
-            data        : {"latitude":markers[0].getPosition().lat(), "longitude":markers[0].getPosition().lng(), "distance":distance},
+            data        : {"distance":distance, "type": type, "id":id,
+                           "latitude":position.lat(), "longitude":position.lng(),
+                           "address":$('#address').html()},
             success: function(response){
                 // We have data type as JSON. so we can directly decode.
-                renderMap($('#address').html(), response.location, response.attractions);
+                clearAllMarkersExceptOne(search_marker);
+                renderMap(response.attractions);
             },
             failure: function(data) { 
                 alert('Got an error!');
@@ -68,6 +81,7 @@ $(document).ready(function() {
     });
 
 	$('#searchform').submit(function(e){
+        search_marker = null;
 	    searchForPointsOfInterest($('#autocomplete').val());
 	    e.preventDefault();
 	});
@@ -78,16 +92,17 @@ function searchForPointsOfInterest(search_location) {
     var urlSubmit = '/search/'
     $.ajax({  
         type: "POST",
-        url: urlSubmit,             
+        url: urlSubmit,     
+        dataType: 'json',  
         data      : {'searchfor': search_location},//$(this).serialize(),
         success: function(response) {
-            var jsonData = $.parseJSON(response);
             clearAllMarkers();
-            renderMap(jsonData.attractions);
-            $('#address').html(jsonData.address);
+            renderMap(response.attractions);
+            max_distance = Math.round(response.max_distance)
+            $('#address').html(response.address);
             $('#mapdiv').show();
-            $('#slider').val(52.5)
-            $('#range').html(200);
+            $('#range').html(max_distance);
+            $('#slider').val(antilogslider(max_distance))
         },
         failure: function(data) { 
             alert('Got an error!');
@@ -103,14 +118,22 @@ function renderMap(attractions) {
         $('.map').slideToggle();
     }
     var latlngbounds = new google.maps.LatLngBounds();
-    if (selected_destination != null) {
-        latlngbounds.extend(selected_destination.position);
+    if (destination_marker != null) {
+        latlngbounds.extend(destination_marker.position);
+    } else if (search_marker != null) {
+        latlngbounds.extend(search_marker.position);
     }
+    var count = 0;
     for (var key in attractions) {
        if (attractions.hasOwnProperty(key)) {
           var latlng = new google.maps.LatLng(attractions[key].latitude, attractions[key].longitude);
-          addMarker(attractions[key].id, attractions[key].type, latlng, attractions[key].info);
+          var marker = addMarker(attractions[key].id, attractions[key].type, latlng, attractions[key].info);
+          // First record in the response is always the location we searched for. Save it to go back to the results.
+          if (search_marker == null && count == 0) {
+            search_marker = marker;
+          }
           latlngbounds.extend(latlng); 
+          count++;
        }
     }
     map.setCenter(latlngbounds.getCenter());
@@ -140,17 +163,20 @@ function addMarker(id, type, latlng, info) {
             if (this.get("expanded")) {
                 clearAllMarkers();
                 searchForPointsOfInterest($('#address').html());
-                selected_destination = null;
+                destination_marker = null;
             } else {
-                selected_destination = this;
+                destination_marker = this;
                 $.ajax({  
                     type: "POST",
                     url: urlSubmit,     
                     dataType: 'json',        
                     data      : {"id":this.get("id")},
                     success: function(response) {
-                        clearAllMarkersExceptOne(selected_destination);
+                        clearAllMarkersExceptOne(destination_marker);
                         renderMap(response.attractions);
+                        max_distance = Math.round(response.max_distance)
+                        $('#slider').val(antilogslider(max_distance))
+                        $('#range').html(max_distance);
                     },
                     failure: function(data) { 
                         alert('Got an error!');
@@ -194,6 +220,7 @@ function addMarker(id, type, latlng, info) {
             }
         });
     });
+    return marker;
 }
 
 function setDetails(response) {
@@ -271,13 +298,26 @@ function logslider(position) {
   var maxp = $('#slider').attr('max');
 
   // The result should be between 5 an 2000
-  var minv = Math.log(10);
-  var maxv = Math.log(3000);
+  var minv = Math.log(1);
+  var maxv = Math.log(1000);
 
   // calculate adjustment factor
   var scale = (maxv-minv) / (maxp-minp);
 
   return Math.round(Math.exp(minv + scale*(position-minp)));
+}
+
+function antilogslider(value) {
+  var minp = $('#slider').attr('min');
+  var maxp = $('#slider').attr('max');
+
+  // The result should be between 5 an 2000
+  var minv = Math.log(1);
+  var maxv = Math.log(1000);
+
+  // calculate adjustment factor
+  var scale = (maxv-minv) / (maxp-minp);
+  return Math.round(minp + (Math.log(value) - minv) / scale + minp);
 }
 
 function clearAllMarkersExceptOne(marker) {
@@ -293,6 +333,8 @@ function clearAllMarkers() {
     markers[i].setMap(null);
   }
   markers.length = 0;
+  search_marker = null;
+  destination_marker = null;
 }
 
 function initializeMap() {
