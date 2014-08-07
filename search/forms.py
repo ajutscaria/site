@@ -39,7 +39,10 @@ class DestinationForm(forms.ModelForm):
         instance.name = str(geoloc).split(',')[0].strip()
         country, created = Country.objects.get_or_create(name=geoloc.country)
         instance.country_id = country.id
-        state, created = State.objects.get_or_create(name=geoloc.state, country_id=instance.country_id)
+        geoloc_state = geoloc.state
+        if not geoloc_state:
+            geoloc_state = "None"
+        state, created = State.objects.get_or_create(name=geoloc_state, country_id=instance.country_id)
         instance.state_id = state.id
         instance.latitude = geoloc.coordinates[0]
         instance.longitude = geoloc.coordinates[1]

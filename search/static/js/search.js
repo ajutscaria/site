@@ -27,9 +27,10 @@ $.ajaxSetup({
 
 var autocomplete;
 var map;
-var markers = [];
-var destination_marker; // stores the destination that we are focused on (double click event)
-var search_marker;    // stores the location we searched for in the text box
+var destination_markers = [];
+var point_of_interest_markers = [];
+var selected_destination_marker; // stores the destination that we are focused on (double click event)
+var search_marker;               // stores the location we searched for in the text box
 var init = false;
 
 $(document).ready(function() {
@@ -50,12 +51,11 @@ $(document).ready(function() {
         var type = search_marker.get("type")
         var position = search_marker.position;
         var id = search_marker.get("id");
-        if (destination_marker != null) {
-            type = destination_marker.get("type");
-            position = destination_marker.position;
-            id = destination_marker.get("id");
+        if (selected_destination_marker != null) {
+            type = selected_destination_marker.get("type");
+            position = selected_destination_marker.position;
+            id = selected_destination_marker.get("id");
         }
-        
         $.ajax({  
             type: "POST",
             url: urlSubmit, 
@@ -66,7 +66,6 @@ $(document).ready(function() {
                            "address":$('#address').html()},
             success: function(response){
                 // We have data type as JSON. so we can directly decode.
-                clearAllMarkersExceptOne(search_marker);
                 renderMap(response.attractions);
             },
             failure: function(data) { 
@@ -118,8 +117,8 @@ function renderMap(attractions) {
         $('.map').slideToggle();
     }
     var latlngbounds = new google.maps.LatLngBounds();
-    if (destination_marker != null) {
-        latlngbounds.extend(destination_marker.position);
+    if (selected_destination_marker != null) {
+        latlngbounds.extend(selected_destination_marker.position);
     } else if (search_marker != null) {
         latlngbounds.extend(search_marker.position);
     }
@@ -146,6 +145,9 @@ function addMarker(id, type, latlng, info) {
       map: map,
       icon: image
     });
+    marker.set("id", id);
+    marker.set("type", type);
+    marker.set("expanded", false)
     if (type == "Location") {
         var pinColor = "333333";
         var pinImage = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor,
@@ -157,22 +159,21 @@ function addMarker(id, type, latlng, info) {
     } else if (type == "Destination") {
         var image = '/static/images/flag.png';
         marker.setIcon(image);
-
+        destination_markers.push(marker);
         google.maps.event.addListener(marker, 'dblclick', function() {
             var urlSubmit = '/search/get_points_of_interest_for_destination/'
             if (this.get("expanded")) {
                 clearAllMarkers();
                 searchForPointsOfInterest($('#address').html());
-                destination_marker = null;
+                selected_destination_marker = null;
             } else {
-                destination_marker = this;
+                selected_destination_marker = this;
                 $.ajax({  
                     type: "POST",
                     url: urlSubmit,     
                     dataType: 'json',        
                     data      : {"id":this.get("id")},
                     success: function(response) {
-                        clearAllMarkersExceptOne(destination_marker);
                         renderMap(response.attractions);
                         max_distance = Math.round(response.max_distance)
                         $('#slider').val(antilogslider(max_distance))
@@ -185,11 +186,9 @@ function addMarker(id, type, latlng, info) {
             }
             this.set("expanded", !this.get("expanded"))
         });
+    } else if (type == "PointOfInterest") {
+        point_of_interest_markers.push(marker);
     }
-    marker.set("id", id);
-    marker.set("type", type);
-    marker.set("expanded", false)
-    markers.push(marker);
 
     var infowindow = new google.maps.InfoWindow({
         content: info,
@@ -320,21 +319,26 @@ function antilogslider(value) {
   return Math.round(minp + (Math.log(value) - minv) / scale + minp);
 }
 
-function clearAllMarkersExceptOne(marker) {
-  for (var i = 0; i < markers.length; i++ ) {
-    if(markers[i] != marker)
-      markers[i].setMap(null);
+function clearAllPointOfInterestMarkers(marker) {
+  for (var i = 0; i < point_of_interest_markers.length; i++ ) {
+    if(point_of_interest_markers[i] != marker)
+      point_of_interest_markers[i].setMap(null);
   }
-  markers.length = 1;
+  point_of_interest_markers.length = 0;
+}
+
+function clearAllDestinationMarkers() {
+  for (var i = 0; i < destination_markers.length; i++ ) {
+    destination_markers[i].setMap(null);
+  }
+  destination_markers.length = 0;
 }
 
 function clearAllMarkers() {
-  for (var i = 0; i < markers.length; i++ ) {
-    markers[i].setMap(null);
-  }
-  markers.length = 0;
+  clearAllDestinationMarkers();
+  clearAllPointOfInterestMarkers();
   search_marker = null;
-  destination_marker = null;
+  selected_destination_marker = null;
 }
 
 function initializeMap() {

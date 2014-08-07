@@ -327,8 +327,12 @@ def generate_address(geoloc):
     print "Name", str(geoloc).split(',')[0].strip()
     print "State", geoloc.state
     print "Country", geoloc.country
-    print "address found", str(geoloc).split(',')[0].strip() + ", " + str(geoloc.state) + ", " + str(geoloc.country)
-    return str(geoloc).split(',')[0].strip() + ", " + str(geoloc.state) + ", " + str(geoloc.country)
+    address = str(geoloc).split(',')[0].strip()
+    if geoloc.state:
+        address += ", " + str(geoloc.state)
+    address += ", " + str(geoloc.country)
+    print "address found",  address
+    return address
 
 def distance(origin, destination):
     lat1 = origin.latitude
