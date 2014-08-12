@@ -26,6 +26,7 @@ $.ajaxSetup({
 });
 
 function clearFormFields() {
+    $('#messagebox').hide();
 	$('#id_address').val('');
 	$('#id_category').val(1);
     $('#id_description').val('');
@@ -35,6 +36,7 @@ function clearFormFields() {
 }
 
 function makeFormFieldsReadOnly() {
+    marker.setDraggable(false);
 	$('#id_category').prop("disabled",true);
 	$('#id_category').removeClass("editable");
     $('#id_category').addClass("readonly");
@@ -56,6 +58,7 @@ function makeFormFieldsReadOnly() {
 }
 
 function makeFormFieldsEditable() {
+    marker.setDraggable(true);
 	$('#id_category').prop("disabled",false);
 	$('#id_category').removeClass("readonly");
     $('#id_category').addClass("editable");
@@ -92,7 +95,6 @@ $(document).ready(function() {
 	$('#reset').click(function(e) {
 		// Show the rest of the form here
 		clearFormFields();
-		$('#looksgoodform').reset();
 		$('#reset').hide();
 		$('#autocomplete').val('');
 		$('#autocomplete').focus();
@@ -120,6 +122,7 @@ function searchForLocation(location) {
         success: function(response){
         	var jsonData = $.parseJSON(response);
         	$('#id_address').val(jsonData.address);
+            initializeMap(jsonData.latitude, jsonData.longitude, jsonData.address);
         	if (jsonData.exists) {
         		$('#messagebox').show();
         		makeFormFieldsReadOnly();
@@ -132,6 +135,7 @@ function searchForLocation(location) {
             	$('#savedestination').hide();
         	} else { 
 	        	$('#savedestination').show();
+                makeFormFieldsEditable();
 	        }
 	        $('#infobox').show();
             $('#reset').show();
@@ -140,4 +144,29 @@ function searchForLocation(location) {
         	alert('Got an error!');
     	}
     });
+}
+
+var map;
+var marker;
+var init = false;
+
+function initializeMap(lat, lng, address) {
+  var latlng = new google.maps.LatLng(lat, lng);
+  if (!init) {
+      map = new google.maps.Map(document.getElementById('destination-map-canvas'), {
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        zoom: 9,
+        center: latlng
+      });
+      marker = new google.maps.Marker({
+          position: latlng,
+          map: map,
+          title: address,
+          draggable: false
+      });
+      init = true;
+  } else {
+    marker.setPosition(latlng);
+    map.setCenter(latlng);
+  }
 }

@@ -60,9 +60,11 @@ class DestinationForm(forms.ModelForm):
 
 class PointOfInterestForm(forms.ModelForm):
     address = forms.CharField(max_length=100,
-                              widget=forms.TextInput(attrs={'size':80,'readonly':'readonly','class':'readonly'}),
+                              widget=forms.TextInput(attrs={'size':80,'class':'editable'}),
                               help_text="Address",
                               required=False)
+    latitude = forms.DecimalField(widget=forms.TextInput(attrs={'size':50,'class':'editable'}), help_text="Latitude", required=False)
+    longitude = forms.DecimalField(widget=forms.TextInput(attrs={'size':50,'class':'editable'}), help_text="Longitude", required=False)
     destination = forms.ModelChoiceField(required=True, queryset=Destination.objects.all(), help_text="Choose destination",
                                          widget=autocomplete_light.ChoiceWidget('DestinationAutocomplete'))
     category = forms.ModelChoiceField(queryset=PointOfInterestCategory.objects.all(), widget=forms.Select(attrs={'class':'editable'}),
@@ -82,7 +84,7 @@ class PointOfInterestForm(forms.ModelForm):
         cleaned_data['added_by'] = "aju"
         #I'm wondering why this is not handled by the the default value tha tis being set. Enough time wasted on this.
         cleaned_data['added_on'] = datetime.utcnow()
-        print(cleaned_data)
+        print "Cleaned POI data", cleaned_data
         return cleaned_data
 
     def save(self, *args, **kwargs):
@@ -90,14 +92,18 @@ class PointOfInterestForm(forms.ModelForm):
         commit = kwargs.pop('commit', True)
         instance = super(PointOfInterestForm, self).save(*args, commit = False, **kwargs)
         searchlocation = self.cleaned_data['address']
-        geoloc = Geocoder.geocode(searchlocation)[0]
-        instance.name = str(geoloc).split(',')[0].strip()
-        country, created = Country.objects.get_or_create(name=geoloc.country)
+        #geoloc = Geocoder.geocode(searchlocation)[0]
+        splits = searchlocation.split(',')
+        name = splits[0].strip()
+        state_name = splits[1].strip()
+        country_name = splits[2].strip()
+        instance.name = name#str(geoloc).split(',')[0].strip()
+        country, created = Country.objects.get_or_create(name=country_name)
         instance.country_id = country.id
-        state, created = State.objects.get_or_create(name=geoloc.state, country_id=instance.country_id)
+        state, created = State.objects.get_or_create(name=state_name, country_id=instance.country_id)
         instance.state_id = state.id
-        instance.latitude = geoloc.coordinates[0]
-        instance.longitude = geoloc.coordinates[1]
+        #instance.latitude = geoloc.coordinates[0]
+        #instance.longitude = geoloc.coordinates[1]
         instance.rating = 0
         instance.number_of_ratings = 0
         instance.url = "ddd"
@@ -109,4 +115,4 @@ class PointOfInterestForm(forms.ModelForm):
 
     class Meta:
         model = PointOfInterest
-        exclude = ('name', 'state', 'country', 'latitude', 'longitude', 'last_updated_on', 'latest_update', 'rating', 'number_of_ratings', 'added_on', 'added_by')
+        exclude = ('name', 'state', 'country', 'last_updated_on', 'latest_update', 'rating', 'number_of_ratings', 'added_on', 'added_by')

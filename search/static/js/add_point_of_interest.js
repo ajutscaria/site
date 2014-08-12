@@ -37,6 +37,7 @@ function geolocate() {
 }
 
 function clearFormFields() {
+    $('#messagebox').hide();
 	$('#id_address').val('');
 	$('#id_category').val(1);
     $('#id_description').val('');
@@ -47,6 +48,19 @@ function clearFormFields() {
 }
 
 function makeFormFieldsReadOnly() {
+    marker.setDraggable(false);
+    $('#id_address').prop("disabled",true);
+    $('#id_address').removeClass("editable");
+    $('#id_address').addClass("readonly");
+    $('#id_latitude').prop("disabled",true);
+    $('#id_latitude').removeClass("editable");
+    $('#id_latitude').addClass("readonly");
+    $('#id_longitude').prop("disabled",true);
+    $('#id_longitude').removeClass("editable");
+    $('#id_longitude').addClass("readonly");
+    /*$('#id_destination_text').prop("readonly",true);
+    $('#id_destination_text').removeClass("editable");
+    $('#id_destination_text').addClass("readonly");*/
 	$('#id_category').prop("disabled",true);
 	$('#id_category').removeClass("editable");
     $('#id_category').addClass("readonly");
@@ -71,6 +85,19 @@ function makeFormFieldsReadOnly() {
 }
 
 function makeFormFieldsEditable() {
+    marker.setDraggable(true);
+    $('#id_address').prop("disabled",false);
+    $('#id_address').removeClass("readonly");
+    $('#id_address').addClass("editable");
+    $('#id_latitude').prop("disabled",false);
+    $('#id_latitude').removeClass("readonly");
+    $('#id_latitude').addClass("editable");
+    $('#id_longitude').prop("disabled",false);
+    $('#id_longitude').removeClass("readonly");
+    $('#id_longitude').addClass("editable");
+    /*$('#id_destination_text').prop("readonly",false);
+    $('#id_destination_text').removeClass("readonly");
+    $('#id_destination_text').addClass("editable");*/
 	$('#id_category').prop("disabled",false);
 	$('#id_category').removeClass("readonly");
     $('#id_category').addClass("editable");
@@ -110,7 +137,6 @@ $(document).ready(function() {
 	$('#reset').click(function(e) {
 		// Show the rest of the form here
 		clearFormFields();
-		$('#looksgoodform').reset();
 		$('#reset').hide();
 		$('#autocomplete').val('');
 		$('#autocomplete').focus();
@@ -122,6 +148,7 @@ $(document).ready(function() {
 	$('#edit').click(function(e) {
 		// Show the rest of the form here
 		makeFormFieldsEditable();
+        marker.setDraggable(true);
 		$('#savepointofinterest').show();
 		e.preventDefault();
 	});
@@ -138,11 +165,30 @@ function searchForLocation(location) {
         success: function(response){
         	var jsonData = $.parseJSON(response);
         	$('#id_address').val(jsonData.address);
+            $('#id_latitude').val(jsonData.latitude);
+            $('#id_longitude').val(jsonData.longitude);
+            initializeMap(jsonData.latitude, jsonData.longitude, jsonData.address);
         	if (jsonData.exists) {
         		$('#messagebox').show();
         		makeFormFieldsReadOnly();
             	$('#id_description').val(jsonData.description);
             	$('#id_category').val(jsonData.category);
+                //alert(jsonData.destination)
+                //$('#id_destination').val(3);
+                $('#id_destination_text').val(jsonData.destination);
+                var autocomplete = $('#id_destination_text').yourlabsAutocomplete();
+                autocomplete.refresh();
+                autocomplete.show = function(html) {
+                    yourlabs.Autocomplete.prototype.show.call(this, html)
+                    var choices = this.box.find(this.choiceSelector);
+
+                    if (choices.length == 1) {
+                        this.input.trigger('selectChoice', [choices, this]);
+                    }
+                }
+                //autocomplete.show = function(html) {
+                //}
+                //$('#id_destination_text').yourlabsAutocomplete().data = 
             	$('#id_open_hours').val(jsonData.time_required);
             	$('#id_time_required').val(jsonData.time_required);
             	$('#id_ticket_price').val(jsonData.ticket_price);
@@ -151,6 +197,7 @@ function searchForLocation(location) {
             	$('#savepointofinterest').hide();
         	} else { 
 	        	$('#savepointofinterest').show();
+                makeFormFieldsEditable();
 	        }
 	        $('#infobox').show();
             $('#reset').show();
@@ -159,4 +206,34 @@ function searchForLocation(location) {
         	alert('Got an error!');
     	}
     });
+}
+
+var map;
+var marker;
+var init = false;
+
+function initializeMap(lat, lng, address) {
+  var latlng = new google.maps.LatLng(lat, lng);
+  if (!init) {
+      map = new google.maps.Map(document.getElementById('poi-map-canvas'), {
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        zoom: 9,
+        center: latlng
+      });
+      marker = new google.maps.Marker({
+          position: latlng,
+          map: map,
+          title: address,
+          draggable: false
+      });
+      init = true;
+  } else {
+    marker.setPosition(latlng);
+    map.setCenter(latlng);
+  }
+  google.maps.event.addListener(marker, "dragend", function() {
+      var position = marker.getPosition();
+      $('#id_latitude').val(position.lat());
+      $('#id_longitude').val(position.lng());
+  });
 }

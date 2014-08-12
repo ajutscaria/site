@@ -1,50 +1,15 @@
+<!DOCTYPE html>
 <html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <title>XPLOR</title>
-        <style type="text/css">
-            #map-canvas { height: 500px; width:500px }
-        </style>
-        <link rel="stylesheet" type="text/css" href='/static/css/style.css'>
-        <script type='text/javascript' src='/static/js/jquery-1.11.1.min.js'></script>
-        <script type="text/javascript" src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBF_ghimLOB28fkKBKv6Nn8c7k1cbaSD-A&libraries=places'></script>
-        <script type='text/javascript' src='/static/js/search.js'></script>
-    </head>
-    <body id="explore">
-        {% include "search/menu.html" %}
-        <div id="content">
-            <h2>Search for a destination</h2>
-            <form action="" method="post" id="searchform">{% csrf_token %}
-                <input id="autocomplete" placeholder="Enter the address" onFocus="geolocate()" type="text" size="50"></input>
-                <input type="submit" name="submit" value="Search" />
-                <div>
-                    <table>
-                        <tr>
-                            <td width="70%">
-                                <div id="mapdiv" style="display: none;">
-                                    <label>You searched for:&nbsp;</label><label id="address"></label> <br/><br/>
-                                    <label><b>Choose your range:</b></label><input type="range" min="0" max="100" value="52.5" id="slider" step=".5"/>
-                                    <span id="range">200</span><span>&nbsp;miles</span><br/><br/>
-                                </div>
-                                <div id="map-canvas" width="100%" height="100%"></div>
-                            </td>
-                            <td width="30%" id="detailstable" style="display: none;">
-                                <table>
-                                    <tr><td colspan="2" align="center"><h2>Details</h2></td></tr>
-                                    <tr><td><b>Point of interest:&nbsp;</b><span id="detail_address"></span></td></tr>
-                                    <tr><td id="row_description"><b>Description:&nbsp;</b><span id="detail_description"></span></td></tr>
-                                    <tr><td id="row_category"><b>Category:&nbsp;</b><span id="detail_category"></span></td></tr>
-                                    <tr><td id="row_best_time"><b>Best time to visit:&nbsp;</b><span id="detail_best_time"></span></td></tr>
-                                    <tr><td id="row_open_hours"><b>Open hours:&nbsp;</b><span id="detail_open_hours"></span></td></tr>
-                                    <tr><td id="row_ticket_price"><b>Ticket price:&nbsp;</b><span id="detail_ticket_price"></span></td></tr>
-                                    <tr><td id="row_time_required"><b>Time required:&nbsp;</b><span id="detail_time_required"></span></td></tr>
-                                    <tr><td id="row_picture"><b>Picture:</b><br/><img id="detail_picture" width="400" height="300"></img></td></tr>
-                                </table>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </form>
-        </div>
-   </body>
+  <head>
+    <link rel="stylesheet" type="text/css" href='/static/css/style.css'>
+    <title>XPLOR</title>
+    <script type="text/javascript" src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBF_ghimLOB28fkKBKv6Nn8c7k1cbaSD-A&libraries=places'></script>
+    <script type='text/javascript' src='/static/js/jquery-1.11.1.min.js'></script>
+    <script type='text/javascript' src='/static/js/search.js'></script>
+  </head>
+  <body id="explore">
+    {% include "search/menu.html" %}
+    <input id="input-box" class="controls" type="text" placeholder="Search Box"></input>
+    <div id="map-canvas"></div>
+  </body>
 </html>

@@ -1,5 +1,8 @@
 <html>
 <head>
+    <style type="text/css">
+        #poi-map-canvas { height: 350px; width:300px }
+    </style>
     <link rel="stylesheet" type="text/css" href='/static/css/style.css'>
     <script type='text/javascript' src='/static/js/jquery-1.11.1.min.js'></script>
     <script type='text/javascript' src='/static/js/add_point_of_interest.js'></script>
@@ -18,14 +21,17 @@
         <form action="" method="post" id="looksgoodform" enctype="multipart/form-data">{% csrf_token %}
             <div id="messagebox" style="display: none;"><div>Point of interest already exists.&nbsp;<a href="" id="edit">Edit it?</a></div></div>
             <div id="infobox" style="display: none;">
-                <table>
-                    {% for field in form.visible_fields %}
-                        <tr>
-                            <td>{{ field.help_text }}</td>
-                            <td>{{ field }}</td>
-                            <td>{{ field.errors }}</td>
-                        </tr>
-                    {% endfor %}
+               <table><tr><td>
+                    <table>
+                        {% for field in form.visible_fields %}
+                            <tr>
+                                <td>{{ field.help_text }}</td>
+                                <td>{{ field }}</td>
+                                <td>{{ field.errors }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table></td>
+                    <td><div id="poi-map-canvas"></div></td></tr>
                 </table>
                 <input type="submit" value="Save" id="savepointofinterest"/>
             </div>

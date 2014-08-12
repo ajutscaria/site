@@ -95,6 +95,8 @@ def add_point_of_interest(request):
                 interest.time_required = form.cleaned_data['time_required']
                 interest.ticket_price = form.cleaned_data['ticket_price']
                 interest.best_time = form.cleaned_data['best_time']
+                interest.latitude = form.cleaned_data['latitude']
+                interest.longitude = form.cleaned_data['longitude']
                 if 'photo' in request.FILES:
                     interest.photo.delete(False);
                     interest.photo = request.FILES['photo'];
@@ -139,7 +141,7 @@ def search_to_add_destination(request):
         if destinations.exists():
             print "##Already added##"
             destination = destinations[0]
-            response = {'exists':1}
+            response = {'exists':1, 'latitude': geoloc.coordinates[0], 'longitude': geoloc.coordinates[1]}
             print destination.description
             if destination.address:
                 response['address'] = destination.address
@@ -157,7 +159,8 @@ def search_to_add_destination(request):
                 response['photo'] = destination.photo.url
             print response
             return HttpResponse(json.dumps(response));
-        return HttpResponse(json.dumps({'exists': 0, 'address': address}))
+        return HttpResponse(json.dumps({'exists': 0, 'address': address, 
+                                        'latitude': geoloc.coordinates[0], 'longitude': geoloc.coordinates[1]}))
 
 def search_to_add_point_of_interest(request):
     # To handle AJAX requests from the form
@@ -171,7 +174,8 @@ def search_to_add_point_of_interest(request):
         if interests.exists():
             print "##Already added##"
             interest = interests[0]
-            response = {'exists':1}
+            response = {'exists':1, 'latitude': str(interest.latitude), 
+                        'longitude': str(interest.longitude), 'destination': interest.destination.address}
             print interest.description
             if interest.address:
                 response['address'] = interest.address
@@ -189,7 +193,9 @@ def search_to_add_point_of_interest(request):
                 response['photo'] = interest.photo.url
             print response
             return HttpResponse(json.dumps(response));
-        return HttpResponse(json.dumps({'exists': 0, 'address': address}))
+        print "##Not already added##"
+        return HttpResponse(json.dumps({'exists': 0, 'address': address,
+                                        'latitude': geoloc.coordinates[0], 'longitude': geoloc.coordinates[1]}))
 
 def filter_results(request):
     # To handle AJAX requests from the form
@@ -301,7 +307,7 @@ def convert_points_of_interest_to_json(places):
                           'latitude': str(place.latitude), 
                           'longitude': str(place.longitude),
                           'type':'PointOfInterest',
-                          'info':"<b>" + place.name + "</b><br/><p>" + place.description + "</p>"})
+                          'info':build_point_of_interest_info(place)})
     return json_data
 
 def convert_destinations_to_json(destinations):
@@ -310,9 +316,38 @@ def convert_destinations_to_json(destinations):
         json_data.append({'id':str(destination.id),
                           'latitude': str(destination.latitude), 
                           'longitude': str(destination.longitude),
-                          'type': 'Destination',
-                          'info':"<b>" + destination.name + "</b><br/><p>" + destination.description + "</p>"})
+                          'type':'Destination',
+                          'info': build_destination_info(destination)})
     return json_data
+
+def build_point_of_interest_info(poi):
+    photo_url = ""
+    if poi.photo:
+        photo_url = poi.photo.url;
+    info = "<b>" + poi.name + "</b>&nbsp;<a href=\"\">Read more..</a>&nbsp;<a href=\"\">Edit..</a><br/><table>" + \
+           "<tr><td><b>Address:</b></td><td>" + poi.address + "</td></tr>" + \
+           "<tr><td><b>Description:</td><td>" + poi.description + "</td></tr>" + \
+           "<tr><td><b>Category:</td><td>" + str(poi.category) + "</td></tr>" + \
+           "<tr><td><b>Best time:</td><td>" + poi.best_time + "</td></tr>" + \
+           "<tr><td><b>Time required:</td><td>" + poi.time_required + "</td></tr>" + \
+           "<tr><td><b>Ticket price:</td><td>" + poi.ticket_price + "</td></tr>" + \
+           "<tr><td colspan=\"2\"><img src=\"" + photo_url + "\" width = \"300\" height=\"200\"/></td></tr>" + \
+           "</table>"
+    return info
+
+def build_destination_info(destination):
+    photo_url = ""
+    if destination.photo:
+        photo_url = destination.photo.url;
+    info = "<b>" + destination.name + "</b><br/><table>" + \
+           "<tr><td><b>Address:</b></td><td>" + destination.address + "</td></tr>" + \
+           "<tr><td><b>Description:</td><td>" + destination.description + "</td></tr>" + \
+           "<tr><td><b>Category:</td><td>" + str(destination.category) + "</td></tr>" + \
+           "<tr><td><b>Best time:</td><td>" + destination.best_time + "</td></tr>" + \
+           "<tr><td><b>Time required:</td><td>" + destination.time_required + "</td></tr>" + \
+           "<tr><td colspan=\"2\"><img src=\"" + photo_url + "\" width = \"300\" height=\"200\"/></td></tr>" + \
+           "</table>"
+    return info
 
 def convert_location_to_json(latitude, longitude, name, description):
     json_data = [{'id':str(-1),

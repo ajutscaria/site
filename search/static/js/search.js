@@ -15,6 +15,7 @@ function getCookie(name)
     }
     return cookieValue;
 }
+
 // Setup CSRF token (AJAX won't work without this)
 $.ajaxSetup({ 
      beforeSend: function(xhr, settings) {
@@ -25,24 +26,14 @@ $.ajaxSetup({
      }
 });
 
-var autocomplete;
 var map;
 var destination_markers = [];
 var point_of_interest_markers = [];
 var selected_destination_marker; // stores the destination that we are focused on (double click event)
 var search_marker;               // stores the location we searched for in the text box
-var init = false;
 
 $(document).ready(function() {
-    /*$('.slider').slidechange(function() {
-        $('#range').val($(this).val);
-    });*/
-    autocomplete = new google.maps.places.Autocomplete(
-      /** @type {HTMLInputElement} */(document.getElementById('autocomplete')),
-      { types: ['geocode'] });
-    google.maps.event.addListener(autocomplete, 'place_changed', function() {
-        searchForPointsOfInterest($('#autocomplete').val());
-    });
+    initialize();
 
     $('#slider').on('change', function(){
         //$('#range').html(Math.round(logslider($('#slider').val())));
@@ -79,15 +70,44 @@ $(document).ready(function() {
         $('#range').html(logslider(value));
     });
 
-	$('#searchform').submit(function(e){
-        search_marker = null;
-	    searchForPointsOfInterest($('#autocomplete').val());
-	    e.preventDefault();
-	});
+    $('#input-box').focus();
 });
 
+function initialize() {
+  map = new google.maps.Map(document.getElementById('map-canvas'), {
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  });
+
+  var defaultBounds = new google.maps.LatLngBounds(
+      new google.maps.LatLng(-33.8902, 151.1759),
+      new google.maps.LatLng(-33.8474, 151.2631));
+  map.fitBounds(defaultBounds);
+
+  // Create the search box and link it to the UI element.
+  var input = /** @type {HTMLInputElement} */(
+      document.getElementById('input-box'));
+  map.controls[google.maps.ControlPosition.TOP_CENTER].push(input);
+
+  var searchBox = new google.maps.places.SearchBox(
+    /** @type {HTMLInputElement} */(input));
+
+  // [START region_getplaces]
+  // Listen for the event fired when the user selects an item from the
+  // pick list. Retrieve the matching places for that item.
+  google.maps.event.addListener(searchBox, 'places_changed', function() {
+    searchForPointsOfInterest($('#input-box').val());
+  });
+  // [END region_getplaces]
+
+  // Bias the SearchBox results towards places that are within the bounds of the
+  // current map's viewport.
+  google.maps.event.addListener(map, 'bounds_changed', function() {
+    var bounds = map.getBounds();
+    searchBox.setBounds(bounds);
+  });
+}
+
 function searchForPointsOfInterest(search_location) {
-    $('#detailstable').hide();
     var urlSubmit = '/search/'
     $.ajax({  
         type: "POST",
@@ -110,12 +130,6 @@ function searchForPointsOfInterest(search_location) {
 }
 
 function renderMap(attractions) {
-    //clearAllMarkers();
-    if(!init){
-        initializeMap();
-        init = true;
-        $('.map').slideToggle();
-    }
     var latlngbounds = new google.maps.LatLngBounds();
     if (selected_destination_marker != null) {
         latlngbounds.extend(selected_destination_marker.position);
@@ -164,7 +178,7 @@ function addMarker(id, type, latlng, info) {
             var urlSubmit = '/search/get_points_of_interest_for_destination/'
             if (this.get("expanded")) {
                 clearAllMarkers();
-                searchForPointsOfInterest($('#address').html());
+                searchForPointsOfInterest($('#input-box').val());
                 selected_destination_marker = null;
             } else {
                 selected_destination_marker = this;
@@ -193,10 +207,21 @@ function addMarker(id, type, latlng, info) {
     var infowindow = new google.maps.InfoWindow({
         content: info,
         disableAutoPan : true,
-        maxWidth: 200
+        maxWidth: 300
     });
 
     google.maps.event.addListener(marker, 'mouseover', function() {
+        quadrant = getPositionEncoding(map.getCenter(), this.position)
+        if (quadrant == "tr") {
+            offset = new google.maps.Size(-200, 430);
+        } else if (quadrant == "tl") {
+            offset = new google.maps.Size(200, 430);
+        } else if (quadrant == "br") {
+            offset = new google.maps.Size(-200, 80);
+        } else if (quadrant == "bl") {
+            offset = new google.maps.Size(200, 80);
+        }
+        infowindow.setOptions({pixelOffset : offset}); 
         infowindow.open(map,marker);
     });
 
@@ -222,73 +247,19 @@ function addMarker(id, type, latlng, info) {
     return marker;
 }
 
-function setDetails(response) {
-    $("#detail_address").html(response.address);
-    if (response.description) {
-        //$("#row_description").show();
-        $("#detail_description").html(response.description);
-    } else {
-        //$("#row_description").hide();
-        $("#detail_description").html("");
-    }
-    if (response.category) {
-        //$("#row_category").show();
-        $("#detail_category").html(response.category);
-    } else {
-        //$("#row_category").hide();
-        $("#detail_category").html("");
-    }
-    if (response.best_time) {
-        //$("#row_best_time").show();
-        $("#detail_best_time").html(response.best_time);
-    } else {
-       // $("#row_best_time").hide();
-       $("#detail_best_time").html("");
-    }
-    if (response.open_hours) {
-        //$("#row_open_hours").show();
-        $("#detail_open_hours").html(response.open_hours);
-    } else {
-        //$("#row_open_hours").hide();
-        $("#detail_open_hours").html("");
-    }
-    if (response.time_required) {
-        //$("#row_time_required").show();
-        $("#detail_time_required").html(response.time_required);
-    } else {
-        //$("#row_time_required").hide();
-        $("#detail_time_required").html("");
-    }
-    if (response.picture) {
-        //$("#row_picture").show();
-        d = new Date();
-        $("#detail_picture").attr("src", response.picture + "?" + d.getTime());
-    } else {
-        //$("#row_picture").hide();
-        d = new Date();
-        $("#detail_picture").attr("src", "" + "?" + d.getTime());
-    }
-    if (response.ticket_price) {
-        //$("#row_ticket_price").show();
-        if (type == "PointOfInterest") {
-            $("#detail_ticket_price").html(response.ticket_price);
-        }
-    } else {
-        //$("#row_ticket_price").hide();
-        $("#detail_ticket_price").html("");
-    }
-    $('#detailstable').show();
+function getPixelFromLatLng(latLng) {
+    var projection = this.map.getProjection();
+    //refer to the google.maps.Projection object in the Maps API reference
+    var point = projection.fromLatLngToPoint(latLng);
+    return point;
 }
 
-function geolocate() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function(position) {
-      var geolocation = new google.maps.LatLng(
-          position.coords.latitude, position.coords.longitude);
-      autocomplete.setBounds(new google.maps.LatLngBounds(geolocation,
-          geolocation));
-    });
-  }
+function getPositionEncoding(mapcenter, marker) {
+    point = getPixelFromLatLng(marker)
+    center = getPixelFromLatLng(mapcenter)
+    quadrant = (point.y > center.y) ? "b" : "t";
+    quadrant += (point.x < center.x) ? "l" : "r";
+    return quadrant;
 }
 
 function logslider(position) {
@@ -340,11 +311,3 @@ function clearAllMarkers() {
   search_marker = null;
   selected_destination_marker = null;
 }
-
-function initializeMap() {
-  var mapOptions = {
-    zoom: 4,
-  }
-  map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-}
-
