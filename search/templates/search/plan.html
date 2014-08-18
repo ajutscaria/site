@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href='/static/css/style.css'>
+    <title>XPLOR</title>
+    <script type="text/javascript" src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBF_ghimLOB28fkKBKv6Nn8c7k1cbaSD-A&libraries=places'></script>
+    <script type='text/javascript' src='/static/js/jquery-1.11.1.min.js'></script>
+    <script type='text/javascript' src='/static/js/plan.js'></script>
+  </head>
+  <body id="plan">
+    {% include "search/menu.html" %}
+    <input id="input-box" class="controls" type="text" placeholder="Search Box"></input>
+    <div class="over-map">
+      <label><b>Choose your range:</b></label><input type="range" min="0" max="100" value="52.5" id="range-slider" step=".1"/>
+      <span id="range-value">200</span><span>&nbsp;miles</span>
+    </div>
+    <div id="map-canvas"></div>
+  </body>
+</html>

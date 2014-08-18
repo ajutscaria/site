@@ -68,8 +68,10 @@ ul li a {
 
 ul li a:hover,
 #explore #nav-explore,
+#plan #nav-plan,
 #add_destination #nav-add_destination,
 #add_point_of_interest #nav-add_point_of_interest,
+#add_accommodation #nav-add_accommodation,
 #contact #nav-contact {
 	color:#a2becf; 
 	border-top:1px solid #72a0ba;
@@ -83,6 +85,8 @@ ul li a.last {border-right:0}
 
 html { height: 100% }
 body { height: 100%; margin: 0; padding: 0; text-align: center;}
+
+#over-map { position: absolute; top: 10px; left: 10px; z-index: 99; opacity: 50%; width: 400px; height:50px;}
 
 #nav-bar {
 	background: #abd7f5;

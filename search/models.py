@@ -26,6 +26,7 @@ class Country(models.Model):
 
 class State(models.Model):
     name = models.CharField(max_length=50)
+    code = models.CharField(max_length=5)
     country = models.ForeignKey(Country, default=1)
 
     def __unicode__(self):
@@ -92,5 +93,23 @@ class PointOfInterest(models.Model):
         return self.full_name()
 
     def full_name(self):
+        return self.address
+
+class Accommodation(models.Model):
+    name = models.CharField(max_length=50)
+    state = models.ForeignKey(State, default=2)
+    country = models.ForeignKey(Country, default=1)
+    address = models.CharField(max_length=100, default="")
+    latitude = models.DecimalField(max_digits=11, decimal_places=7)
+    longitude = models.DecimalField(max_digits=11, decimal_places=7)
+    destination = models.ForeignKey(Destination, default=1)
+    description = models.CharField(max_length=200, default="")
+    added_on = models.DateTimeField(default="2001-01-01 00:00")
+    added_by = models.CharField(max_length=20, default="aju")
+    last_updated_on = models.DateTimeField(default="2001-01-01 00:00")
+    latest_update = models.CharField(max_length=100, default="")
+
+
+    def __unicode__(self):
         return self.address
 

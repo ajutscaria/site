@@ -80,15 +80,14 @@ function makeFormFieldsEditable() {
 }
 
 $(document).ready(function() {
-    autocomplete = new google.maps.places.Autocomplete(
-      (document.getElementById('autocomplete')),
-      { types: ['geocode'] });
-    google.maps.event.addListener(autocomplete, 'place_changed', function() {
-        searchForLocation($('#autocomplete').val());
+    var input = document.getElementById('input-box');
+    var searchBox = new google.maps.places.SearchBox(input);
+    google.maps.event.addListener(searchBox, 'places_changed', function() {
+        searchForLocation($('#input-box').val());
     });
 
 	$('#searchform').submit(function(e){
-	    searchForLocation($('#autocomplete').val());
+	    searchForLocation($('#input-box').val());
 	    e.preventDefault();
 	});
 
@@ -96,8 +95,8 @@ $(document).ready(function() {
 		// Show the rest of the form here
 		clearFormFields();
 		$('#reset').hide();
-		$('#autocomplete').val('');
-		$('#autocomplete').focus();
+		$('#input-box').val('');
+		$('#input-box').focus();
         $('#infobox').hide();
         $('#success').hide();
 		e.preventDefault();

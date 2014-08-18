@@ -11,10 +11,8 @@
 <body id="add_destination">
     {% include "search/menu.html" %}
     <div id="content">
-        <h2>Add a destination</h2>
         <form action="" method="post" id="searchform">{% csrf_token %}
-            <input id="autocomplete" placeholder="Enter the address"
-                onFocus="geolocate()" type="text" size="50"></input>
+            <input id="input-box" class="controls" type="text" placeholder="Search Box"></input>
             <input type="submit" value="Search" />
         </form>
         <form action="" method="post" id="looksgoodform" enctype="multipart/form-data">{% csrf_token %}

@@ -1,5 +1,5 @@
 from django import forms
-from search.models import PointOfInterestCategory, DestinationCategory, Destination, PointOfInterest, State, Country
+from search.models import PointOfInterestCategory, DestinationCategory, Destination, PointOfInterest, State, Country, Accommodation
 from datetime import datetime 
 from pygeocoder import Geocoder
 from geoposition.fields import GeopositionField, Geoposition
@@ -116,3 +116,52 @@ class PointOfInterestForm(forms.ModelForm):
     class Meta:
         model = PointOfInterest
         exclude = ('name', 'state', 'country', 'last_updated_on', 'latest_update', 'rating', 'number_of_ratings', 'added_on', 'added_by')
+
+
+class AccommodationForm(forms.ModelForm):
+    address = forms.CharField(max_length=100,
+                              widget=forms.TextInput(attrs={'size':80,'class':'editable'}),
+                              help_text="Address",
+                              required=False)
+    latitude = forms.DecimalField(widget=forms.TextInput(attrs={'size':50,'class':'editable'}), help_text="Latitude", required=False)
+    longitude = forms.DecimalField(widget=forms.TextInput(attrs={'size':50,'class':'editable'}), help_text="Longitude", required=False)
+    destination = forms.ModelChoiceField(required=True, queryset=Destination.objects.all(), help_text="Choose destination",
+                                         widget=autocomplete_light.ChoiceWidget('DestinationAutocomplete'))
+    description = forms.CharField(max_length=200, widget=forms.Textarea(attrs={'cols': 57, 'rows': 10,'class':'editable'}), 
+                                  help_text="Add description", required=False)
+
+    def clean(self):
+        print "Form:AccommodationForm_clean"
+        cleaned_data = self.cleaned_data
+        cleaned_data['added_by'] = "aju"
+        #I'm wondering why this is not handled by the the default value tha tis being set. Enough time wasted on this.
+        cleaned_data['added_on'] = datetime.utcnow()
+        print "Cleaned Accommodation data", cleaned_data
+        return cleaned_data
+
+    def save(self, *args, **kwargs):
+        print "Form:PointOfInterestForm_save"
+        commit = kwargs.pop('commit', True)
+        instance = super(AccommodationForm, self).save(*args, commit = False, **kwargs)
+        searchlocation = self.cleaned_data['address']
+        #geoloc = Geocoder.geocode(searchlocation)[0]
+        splits = searchlocation.split(',')
+        name = splits[0].strip()
+        state_name = splits[1].strip()
+        country_name = splits[2].strip()
+        instance.name = name#str(geoloc).split(',')[0].strip()
+        country, created = Country.objects.get_or_create(name=country_name)
+        instance.country_id = country.id
+        state, created = State.objects.get_or_create(name=state_name, country_id=instance.country_id)
+        instance.state_id = state.id
+        #instance.latitude = geoloc.coordinates[0]
+        #instance.longitude = geoloc.coordinates[1]
+        print 'Going to commit data'
+        if commit:
+            instance.save()
+        print 'saved'
+        return instance
+
+    class Meta:
+        model = Accommodation
+        exclude = ('name', 'state', 'country', 'last_updated_on', 'latest_update', 'added_on', 'added_by')
