@@ -366,10 +366,14 @@ def find_accommodation_for_destination(id):
 def convert_points_of_interest_to_json(places):
     json_data = []
     for place in places:
-        json_data.append({'id':str(place.id),
+        json_data.append({'name':place.name,
+                          'id':str(place.id),
                           'latitude': str(place.latitude), 
                           'longitude': str(place.longitude),
+                          'category': str(place.category),
+                          'salience': place.salience,
                           'type':'PointOfInterest',
+                          'name': place.name,
                           'info':build_point_of_interest_info(place)})
     return json_data
 
@@ -379,6 +383,8 @@ def convert_accommodation_to_json(accommodation):
         json_data.append({'id':str(acco.id),
                           'latitude': str(acco.latitude), 
                           'longitude': str(acco.longitude),
+                          'category': "Accommodation",
+                          'name': acco.name,
                           'type':'Accommodation',
                           'info':build_accommodation_info(acco)})
     return json_data
@@ -389,6 +395,8 @@ def convert_destinations_to_json(destinations):
         json_data.append({'id':str(destination.id),
                           'latitude': str(destination.latitude), 
                           'longitude': str(destination.longitude),
+                          'category': str(destination.category),
+                          'name': destination.name,
                           'type':'Destination',
                           'info': build_destination_info(destination)})
     return json_data
@@ -433,6 +441,7 @@ def convert_location_to_json(latitude, longitude, name, description):
     json_data = [{'id':str(-1),
                   'latitude': str(latitude), 
                   'longitude': str(longitude),
+                  'category': "Location",
                   'type': 'Location',
                   'info':"<b>" + name + "</b><br/><p>" + description + "</p>"}];
     return json_data

@@ -78,6 +78,7 @@ class PointOfInterest(models.Model):
     rating = models.DecimalField(max_digits=11, decimal_places=7, default=0.00)
     number_of_ratings = models.IntegerField(default=0)
     description = models.CharField(max_length=200, default="")
+    salience = models.IntegerField(default=0)
     best_time = models.CharField(max_length=50, default="")
     open_hours = models.CharField(max_length=50, default="")
     time_required = models.CharField(max_length=50, default="")

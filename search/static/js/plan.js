@@ -31,6 +31,7 @@ var destination_markers = [];
 var point_of_interest_markers = [];
 var selected_destination_marker; // stores the destination that we are focused on (double click event)
 var search_marker;               // stores the location we searched for in the text box
+var selected_info_window;
 
 $(document).ready(function() {
     initialize();
@@ -70,12 +71,36 @@ $(document).ready(function() {
         $('#range-value').html(logslider(value));
     });
 
+    $('#salience-slider').on('input', function(){
+        var value = $('#salience-slider').val();
+        $('#salience-value').html(value);
+    });
+
+    $('#salience-slider').on('change', function() {
+      var value = $('#salience-slider').val();
+      for (var i = 0; i < point_of_interest_markers.length; i++ ) {
+        if (point_of_interest_markers[i].get("salience") > value) {
+          if (point_of_interest_markers[i].getMap() != null) {
+            point_of_interest_markers[i].setMap(null);
+          }
+        } else {
+          if (point_of_interest_markers[i].getMap() != map) {
+            point_of_interest_markers[i].setMap(map);
+          }
+        }
+      }
+    });
+
     $('#input-box').focus();
 });
 
 function initialize() {
   map = new google.maps.Map(document.getElementById('map-canvas'), {
     mapTypeId: google.maps.MapTypeId.ROADMAP
+  });
+
+  google.maps.event.addListener(map, 'click', function(event) {
+    selected_info_window.close();
   });
 
   var defaultBounds = new google.maps.LatLngBounds(
@@ -127,7 +152,62 @@ function searchForPointsOfInterest(search_location) {
     });
 }
 
+function loadCategories(attractions) {
+  $("#poiCategories").empty();
+  var categories = [];
+  for (var key in attractions) {
+    if (attractions[key].type == "PointOfInterest") {
+      if (categories.indexOf(attractions[key].category) == -1) {
+        categories.push(attractions[key].category);
+      }
+    }
+  }
+  for (var category in categories) {
+    categoryString = categories[category].replace(/ /g,"_");
+    $("#poiCategories").append('<input type="checkbox" onclick="clickedPOICategory(this.id)" checked id="category-' + categoryString + '"><label for="' + categoryString + '">' + categories[category] + '</label>');
+  }
+}
+
+function clickedPOICategory(id) {
+  controlName = '#' + id;
+  checked = $(controlName).prop('checked')
+  category = controlName.replace(/_/g," ").split('-')[1];
+  for (var i = 0; i < point_of_interest_markers.length; i++ ) {
+    if (point_of_interest_markers[i].get("category") == category) {
+      if (!checked) {
+        point_of_interest_markers[i].setMap(null);
+      } else {
+        point_of_interest_markers[i].setMap(map);
+      }
+    }
+  }
+}
+
+function loadAccommodation(attractions) {
+  $("#accommodation").empty();
+  for (var key in attractions) {
+    if (attractions[key].type == "Accommodation") {
+      $("#accommodation").append('<input type="radio" name="accommodation id="' + key + '""><label for="' + key + '">' + attractions[key].name + '</label>');
+    }
+  }
+}
+
+function loadAttraction(attractions) {
+  $("#poi").empty();
+  for (var key in attractions) {
+    if (attractions[key].type == "PointOfInterest") {
+      $("#poi").append('<input type="checkbox" id="' + key + '""><label for="' + key + '">' + attractions[key].name + '</label>');
+    }
+  }
+}
+
 function renderMap(attractions) {
+    $('#filterBox').show();
+    $('#tripDetailBox').show();
+    
+    loadCategories(attractions);
+    loadAccommodation(attractions);
+    loadAttraction(attractions);
     var latlngbounds = new google.maps.LatLngBounds();
     if (selected_destination_marker != null) {
         latlngbounds.extend(selected_destination_marker.position);
@@ -138,7 +218,7 @@ function renderMap(attractions) {
     for (var key in attractions) {
        if (attractions.hasOwnProperty(key)) {
           var latlng = new google.maps.LatLng(attractions[key].latitude, attractions[key].longitude);
-          var marker = addMarker(attractions[key].id, attractions[key].type, latlng, attractions[key].info);
+          var marker = addMarker(attractions[key], latlng);
           // First record in the response is always the location we searched for. Save it to go back to the results.
           if (search_marker == null && count == 0) {
             search_marker = marker;
@@ -151,16 +231,19 @@ function renderMap(attractions) {
     map.fitBounds(latlngbounds); 
 }
 
-function addMarker(id, type, latlng, info) {
+function addMarker(place, latlng) {
     var marker = new google.maps.Marker({
       position: latlng,
       map: map,
       icon: image
     });
-    marker.set("id", id);
-    marker.set("type", type);
-    marker.set("expanded", false)
-    if (type == "Location") {
+    marker.set("id", place.id);
+    marker.set("type", place.type);
+    marker.set("category", place.category);
+    marker.set("name", place.name);
+    marker.set("expanded", false);
+
+    if (place.type == "Location") {
         var pinColor = "333333";
         var pinImage = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor,
             new google.maps.Size(21, 34),
@@ -168,7 +251,7 @@ function addMarker(id, type, latlng, info) {
             new google.maps.Point(10, 34));
         marker.setIcon(pinImage);
         //https://developers.google.com/maps/documentation/javascript/examples/marker-symbol-predefined
-    } else if (type == "Destination") {
+    } else if (place.type == "Destination") {
         var image = '/static/images/flag.png';
         marker.setIcon(image);
         destination_markers.push(marker);
@@ -198,20 +281,25 @@ function addMarker(id, type, latlng, info) {
             }
             this.set("expanded", !this.get("expanded"))
         });
-    } else if (type == "PointOfInterest") {
+      
+    } else if (place.type == "PointOfInterest") {
+        marker.set("salience", place.salience);
         point_of_interest_markers.push(marker);
-    } else if (type == "Accommodation") {
+    } else if (place.type == "Accommodation") {
         var image = '/static/images/home.png';
         marker.setIcon(image); 
     }
 
     var infowindow = new google.maps.InfoWindow({
-        content: info,
+        content: place.info,
         disableAutoPan : true,
         maxWidth: 300
     });
 
-    google.maps.event.addListener(marker, 'mouseover', function() {
+    google.maps.event.addListener(marker, 'click', function() {
+        if (selected_info_window) {
+          selected_info_window.close();
+        }
         quadrant = getPositionEncoding(map.getCenter(), this.position)
         if (quadrant == "tr") {
             offset = new google.maps.Size(-200, 430);
@@ -223,27 +311,8 @@ function addMarker(id, type, latlng, info) {
             offset = new google.maps.Size(200, 80);
         }
         infowindow.setOptions({pixelOffset : offset}); 
-        infowindow.open(map,marker);
-    });
-
-    google.maps.event.addListener(marker, 'mouseout', function() {
-        infowindow.close();
-    });
-
-    google.maps.event.addListener(marker, 'click', function() {
-        var urlSubmit = '/search/get_details/'
-        $.ajax({  
-            type: "POST",
-            url: urlSubmit,     
-            dataType: 'json',        
-            data      : {"id":this.get("id"), "type": this.get("type")},
-            success: function(response) {
-                setDetails(response)
-            },
-            failure: function(data) { 
-                alert('Got an error!');
-            }
-        });
+        infowindow.open(map, marker);
+        selected_info_window = infowindow;
     });
     return marker;
 }
@@ -310,4 +379,22 @@ function clearAllMarkers() {
   clearAllPointOfInterestMarkers();
   search_marker = null;
   selected_destination_marker = null;
+}
+
+function toggleFilters() {
+  $("#filters").slideToggle();
+  if ($("#toggleFiltersImg").attr('src') == '/static/images/minimize.png') {
+    $("#toggleFiltersImg").attr('src', '/static/images/maximize.png');
+  } else {
+    $("#toggleFiltersImg").attr('src', '/static/images/minimize.png');
+  }
+}
+
+function toggleDetails() {
+  $("#tripDetails").slideToggle();
+  if ($("#toggleDetailsImg").attr('src') == '/static/images/minimize.png') {
+    $("#toggleDetailsImg").attr('src', '/static/images/maximize.png');
+  } else {
+    $("#toggleDetailsImg").attr('src', '/static/images/minimize.png');
+  }
 }

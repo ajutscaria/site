@@ -123,3 +123,16 @@ body { height: 100%; margin: 0; padding: 0; text-align: center;}
     padding: 2px 3px;
     width: 398px;    
 }
+
+.transparent
+{
+   filter:alpha(opacity=75); 
+   -moz-opacity: 0.75; 
+   opacity: 0.75; 
+}
+
+.shadowy{
+	-moz-box-shadow: 3px 3px 12px 1px #888;
+	-webkit-box-shadow: 3px 3px 12px 1px #888;
+	box-shadow: 3px 3px 12px 1px #888;
+}
