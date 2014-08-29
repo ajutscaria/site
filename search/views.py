@@ -13,14 +13,14 @@ from django.conf import settings
 from django.db.models import Q
 
 def index(request):
+    print "View:index!"
     context = RequestContext(request)
-    
     converted=""
     if request.method == 'POST':
         searchlocation = request.POST['searchfor']
         geoloc = Geocoder.geocode(searchlocation)[0]
         address = generate_address(geoloc)
-        print "View:index! searchfor:", searchlocation
+        print "searchfor:", searchlocation
         print "converted address", address
         loc = Geoposition(geoloc.coordinates[0], geoloc.coordinates[1])
         destinations = Destination.objects.filter(address=address);
@@ -122,6 +122,14 @@ def add_point_of_interest(request):
     else:
         form = PointOfInterestForm()
     return render_to_response('search/add_point_of_interest.html', {'form': form}, context);
+
+def edit_point_of_interest(request, id):
+    print "In edit_point_of_interest. ID", id
+    context = RequestContext(request)
+    interests = PointOfInterest.objects.filter(id=id);
+    if interests.exists():
+        form = PointOfInterestForm(instance=interests[0])
+        return render_to_response('search/add_point_of_interest.html', {'form': form, 'edit': True}, context);
 
 def add_accommodation(request):
     print 'In add_accommodation method'
@@ -405,7 +413,8 @@ def build_point_of_interest_info(poi):
     photo_url = ""
     if poi.photo:
         photo_url = poi.photo.url;
-    info = "<b>" + poi.name + "</b>&nbsp;<a href=\"\">Read more..</a>&nbsp;<a href=\"\">Edit..</a><br/><table>" + \
+    info = "<b>" + poi.name + "</b>&nbsp;<a href=\"\">Read more..</a>&nbsp;" \
+           "<a href=\"/search/add_point_of_interest/" + str(poi.id) + "/edit\" target=\"_blank\">Edit..</a><br/><table>" + \
            "<tr><td><b>Address:</b></td><td>" + poi.address + "</td></tr>" + \
            "<tr><td><b>Description:</td><td>" + poi.description + "</td></tr>" + \
            "<tr><td><b>Category:</td><td>" + str(poi.category) + "</td></tr>" + \

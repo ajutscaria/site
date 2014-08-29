@@ -11,6 +11,7 @@ urlpatterns = [
     url(r'^plan/$', views.plan, name='plan'),
     url(r'^add_destination/$', views.add_destination, name='add_destination'),
     url(r'^add_point_of_interest/$', views.add_point_of_interest, name='add_point_of_interest'),
+    url(r'^add_point_of_interest/(?P<id>[0-9]+)/edit$', views.edit_point_of_interest, name='edit_point_of_interest'),
     url(r'^add_accommodation/$', views.add_accommodation, name='add_accommodation'),
     url(r'^search_for_location/$', views.search_for_location, name='search_for_location'),
     url(r'^search_to_add_destination/$', views.search_to_add_destination, name='search_to_add_destination'),

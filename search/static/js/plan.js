@@ -29,6 +29,7 @@ $.ajaxSetup({
 var map;
 var destination_markers = [];
 var point_of_interest_markers = [];
+var accommodation_markers = [];
 var selected_destination_marker; // stores the destination that we are focused on (double click event)
 var search_marker;               // stores the location we searched for in the text box
 var selected_info_window;
@@ -133,6 +134,7 @@ function initialize() {
 }
 
 function searchForPointsOfInterest(search_location) {
+    alert(search_location)
     var urlSubmit = '/search/'
     $.ajax({  
         type: "POST",
@@ -288,6 +290,7 @@ function addMarker(place, latlng) {
     } else if (place.type == "Accommodation") {
         var image = '/static/images/home.png';
         marker.setIcon(image); 
+        accommodation_markers.push(marker);
     }
 
     var infowindow = new google.maps.InfoWindow({

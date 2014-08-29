@@ -2,7 +2,6 @@
 <html>
   <head>
     <link rel="stylesheet" type="text/css" href='/static/css/style.css'>
-    <link rel="stylesheet" type="text/css" href='/static/css/overlay.css'>
     <title>XPLOR</title>
     <script type="text/javascript" src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBF_ghimLOB28fkKBKv6Nn8c7k1cbaSD-A&libraries=places'></script>
     <script type='text/javascript' src='/static/js/jquery-1.11.1.min.js'></script>
@@ -29,6 +28,9 @@
               <span id="salience-value">10</span>
             </div>
             <div><label><b>Category:</b></label><span id="poiCategories"></span></div>
+            <div><b><input type="checkbox" id="show_accommodation" checked onclick="clickedShowAccommodation();">
+                      <label for="show_accommodation">Show accommodation</label>
+            </input></b></div>
         </div>
       </div>
     </div>
