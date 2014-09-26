@@ -10,8 +10,10 @@ class SearchForm(forms.Form):
 
 class DestinationForm(forms.ModelForm):
     address = forms.CharField(max_length=100,
-                              widget=forms.TextInput(attrs={'size':80,'readonly':'readonly','class':'readonly'}),
+                              widget=forms.TextInput(attrs={'size':80, 'class':'editable'}),
                               help_text="Address", required=False)
+    latitude = forms.DecimalField(widget=forms.TextInput(attrs={'size':50,'class':'editable'}), help_text="Latitude", required=False)
+    longitude = forms.DecimalField(widget=forms.TextInput(attrs={'size':50,'class':'editable'}), help_text="Longitude", required=False)
     category = forms.ModelChoiceField(queryset=DestinationCategory.objects.all(), widget=forms.Select(attrs={'class':'editable'}),
                                       help_text="Choose category", required=False, initial=1, empty_label=None)
     description = forms.CharField(max_length=200, widget=forms.Textarea(attrs={'cols': 57, 'rows': 10, 'class': 'editable'}),
@@ -56,7 +58,7 @@ class DestinationForm(forms.ModelForm):
 
     class Meta:
         model = Destination
-        exclude = ('name', 'state', 'country', 'latitude', 'longitude', 'rating', 'number_of_ratings', 'added_on', 'added_by')
+        exclude = ('name', 'state', 'country', 'rating', 'number_of_ratings', 'added_on', 'added_by')
 
 class PointOfInterestForm(forms.ModelForm):
     address = forms.CharField(max_length=100,
@@ -71,6 +73,7 @@ class PointOfInterestForm(forms.ModelForm):
                                       help_text="Choose category", required=False, initial=1, empty_label=None)
     description = forms.CharField(max_length=200, widget=forms.Textarea(attrs={'cols': 57, 'rows': 10,'class':'editable'}), 
                                   help_text="Add description", required=False)
+    salience = forms.IntegerField(widget=forms.TextInput(attrs={'size':50,'class':'editable'}), help_text="Salience", required=False)
     best_time = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'size':80,'class':'editable'}), help_text="Best time to visit", required=False)
     open_hours = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'size':80,'class':'editable'}), help_text="Open hours", required=False)
     ticket_price = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'size':80,'class':'editable'}), help_text="Ticket price", required=False)
@@ -104,6 +107,7 @@ class PointOfInterestForm(forms.ModelForm):
         instance.state_id = state.id
         #instance.latitude = geoloc.coordinates[0]
         #instance.longitude = geoloc.coordinates[1]
+        instance.salience = 0
         instance.rating = 0
         instance.number_of_ratings = 0
         instance.url = "ddd"
@@ -154,6 +158,8 @@ class AccommodationForm(forms.ModelForm):
         instance.country_id = country.id
         state, created = State.objects.get_or_create(name=state_name, country_id=instance.country_id)
         instance.state_id = state.id
+        instance.added_on = datetime.utcnow()
+        instance.last_updated_on = datetime.utcnow()
         #instance.latitude = geoloc.coordinates[0]
         #instance.longitude = geoloc.coordinates[1]
         print 'Going to commit data'

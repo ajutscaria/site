@@ -89,7 +89,7 @@ body { height: 100%; margin: 0; padding: 0; text-align: center;}
 #over-map { position: absolute; top: 10px; left: 10px; z-index: 99; opacity: 50%; width: 400px; height:50px;}
 
 #nav-bar {
-	background: #abd7f5;
+	background: #ABB3B8;
 }
 
 #content {

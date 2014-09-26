@@ -26,6 +26,11 @@ $.ajaxSetup({
      }
 });
 
+var attractions = [];
+var directionsDisplay;
+var directionsService = new google.maps.DirectionsService();
+var haight = new google.maps.LatLng(37.7699298, -122.4469157);
+var oceanBeach = new google.maps.LatLng(37.7683909618184, -122.51089453697205);
 var map;
 var destination_markers = [];
 var point_of_interest_markers = [];
@@ -95,6 +100,76 @@ $(document).ready(function() {
     $('#input-box').focus();
 });
 
+// start: marker object of start point.
+// waypoints: marker array of way points.
+// end: marker array of destination.
+function calcRoute(start, waypoints, end) {
+  directionsDisplay.setMap(map);
+  var waypts = [];
+  for (var i = 0; i < waypoints.length; i++) {
+      waypts.push({
+          location:waypoints[i].position,
+          stopover:true});
+  }
+  var request = {
+      origin: start.position,
+      destination: end.position,
+      waypoints: waypts,
+      optimizeWaypoints: true,
+      travelMode: google.maps.TravelMode.DRIVING
+  };
+  directionsService.route(request, function(response, status) {
+    if (status == google.maps.DirectionsStatus.OK) {
+      directionsDisplay.setDirections(response);
+      var route = response.routes[0];
+      var summaryPanel = document.getElementById('plan-container');
+      summaryPanel.innerHTML = '';
+      var hours = 0;
+      var mins = 0;
+      // For each route, display summary information.
+      var summary = ""
+      for (var i = 0; i < route.legs.length; i++) {
+        var routeSegment = i + 1;
+        summary += '<b>Leg ' + routeSegment + ': ';
+        summary += (i == 0 ? start.name : waypoints[route.waypoint_order[i-1]].name) + ' <i>to</i> ';
+        summary += (i == route.legs.length - 1 ? end.name : waypoints[route.waypoint_order[i]].name) + '</b><br>';
+        summary += 'Travel time: ' + route.legs[i].duration.text + ' ('+ route.legs[i].distance.text + ') <br>';
+        time_required = getHoursAndMins(route.legs[i].duration.text)
+        hours += time_required[0]
+        mins += time_required[1]
+        //alert('hi')
+        //alert(route.waypoint_order)
+        if (i != route.legs.length - 1) {
+          summary += 'Visiting time: ' + (waypoints[route.waypoint_order[i]].time_required) + '<br><br>';
+          time_required = getHoursAndMins(waypoints[route.waypoint_order[i]].time_required)
+          hours += time_required[0]
+          mins += time_required[1]
+        }
+        //alert(summary)
+      }
+      hours += Math.floor(mins / 60)
+      mins = mins % 60
+      summary += "<br><b>Total trip time: " + hours + " hours " +  mins + " mins</b>"
+      summaryPanel.innerHTML = summary;
+    }
+  });
+}
+
+function getHoursAndMins(time_required) {
+  var travelTime = time_required.split(' ')
+  var hours = 0;
+  var mins = 0;
+  for (var i = 1; i < travelTime.length; i += 2) {
+    if (travelTime[i] == 'hours' || travelTime[i] == 'hour') {
+      hours += parseInt(travelTime[i-1]);
+    } else if (travelTime[i] == 'min' || travelTime[i] == 'mins') {
+      mins += parseInt(travelTime[i-1]);
+    }
+  }
+  return [hours, mins];
+}
+
+
 function initialize() {
   map = new google.maps.Map(document.getElementById('map-canvas'), {
     mapTypeId: google.maps.MapTypeId.ROADMAP
@@ -131,10 +206,18 @@ function initialize() {
     var bounds = map.getBounds();
     searchBox.setBounds(bounds);
   });
+
+  var options = {
+      preserveViewport: false,
+      suppressInfoWindows: true,
+      suppressMarkers: true
+  };
+
+  directionsDisplay = new google.maps.DirectionsRenderer(options);
+  directionsDisplay.setMap(map);
 }
 
 function searchForPointsOfInterest(search_location) {
-    alert(search_location)
     var urlSubmit = '/search/'
     $.ajax({  
         type: "POST",
@@ -142,8 +225,10 @@ function searchForPointsOfInterest(search_location) {
         dataType: 'json',  
         data      : {'searchfor': search_location},//$(this).serialize(),
         success: function(response) {
-            clearAllMarkers();
+            clearForNewSearch();
+            //calcRoute(response.attractions)
             renderMap(response.attractions);
+            renderMapControls(response.attractions, response.destination_exists)
             max_distance = Math.round(response.max_distance)
             $('#range-value').html(max_distance);
             $('#range-slider').val(antilogslider(max_distance))
@@ -187,29 +272,88 @@ function clickedPOICategory(id) {
 
 function loadAccommodation(attractions) {
   $("#accommodation").empty();
+  var count = 0;
   for (var key in attractions) {
     if (attractions[key].type == "Accommodation") {
-      $("#accommodation").append('<input type="radio" name="accommodation id="' + key + '""><label for="' + key + '">' + attractions[key].name + '</label>');
+      $("#accommodation").append('<input type="radio" name="accommodation" id="accommodationcheckbox_' + count + '"><label for="' + count + '">' + attractions[key].name + '</label>');
+      ++count;
     }
   }
 }
 
 function loadAttraction(attractions) {
   $("#poi").empty();
+  var count = 0;
   for (var key in attractions) {
     if (attractions[key].type == "PointOfInterest") {
-      $("#poi").append('<input type="checkbox" id="' + key + '""><label for="' + key + '">' + attractions[key].name + '</label>');
+      $("#poi").append('<input type="checkbox" onclick="clickedAttractionCheckbox(this.id)" id="attractioncheckbox_' + count + '"><label for="' + count + '">' + attractions[key].name + '</label>');
+      ++count;
     }
   }
 }
 
+// To be called after markers are created.
+function loadStartAndEndDropdowns(attractions) {
+  document.getElementById('select_startfrom').options.length = 0;
+  document.getElementById('select_endat').options.length = 0;
+  var startfrom_dropdown = document.getElementById("select_startfrom")
+  var endat_dropdown = document.getElementById("select_endat")
+  for (var i = 0; i < accommodation_markers.length; i++ ) {
+    var start_opt = document.createElement("option"); 
+    start_opt.text = accommodation_markers[i].name;
+    start_opt.value = "Accommodation_" + i;
+    startfrom_dropdown.options.add(start_opt); 
+    var end_opt = document.createElement("option"); 
+    end_opt.text = accommodation_markers[i].name;
+    end_opt.value = "Accommodation_" + i;;
+    endat_dropdown.options.add(end_opt); 
+  }
+  for (var i = 0; i < point_of_interest_markers.length; i++ ) {
+    var start_opt = document.createElement("option"); 
+    start_opt.text = point_of_interest_markers[i].name;
+    start_opt.value = "PointOfInterest_" + i;
+    startfrom_dropdown.options.add(start_opt); 
+    var end_opt = document.createElement("option"); 
+    end_opt.text = point_of_interest_markers[i].name;
+    end_opt.value = "PointOfInterest_" + i;
+    endat_dropdown.options.add(end_opt); 
+  }
+}
+
+function clickedShowAccommodation() {
+  var latlngbounds = new google.maps.LatLngBounds();
+  if($("#show_accommodation").is(':checked')) {
+    for (var i = 0; i < accommodation_markers.length; i++ ) {
+      accommodation_markers[i].setMap(map);
+      latlngbounds.extend(accommodation_markers[i].position); 
+    }
+  } else {
+    for (var i = 0; i < accommodation_markers.length; i++ ) {
+      accommodation_markers[i].setMap(null);
+    }
+  }
+  for (var i = 0; i < point_of_interest_markers.length; i++ ) {
+    latlngbounds.extend(point_of_interest_markers[i].position);
+  }
+  if (selected_destination_marker != null) {
+      latlngbounds.extend(selected_destination_marker.position);
+  }
+  map.setCenter(latlngbounds.getCenter());
+  map.fitBounds(latlngbounds); 
+}
+
+function clickedAttractionCheckbox(id) {
+  controlName = '#' + id;
+  checked = $(controlName).prop('checked')
+  index = controlName.split('_')[1]
+  if (checked) {
+    point_of_interest_markers[index].setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png')
+  } else {
+    point_of_interest_markers[index].setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png')
+  }
+}
+
 function renderMap(attractions) {
-    $('#filterBox').show();
-    $('#tripDetailBox').show();
-    
-    loadCategories(attractions);
-    loadAccommodation(attractions);
-    loadAttraction(attractions);
     var latlngbounds = new google.maps.LatLngBounds();
     if (selected_destination_marker != null) {
         latlngbounds.extend(selected_destination_marker.position);
@@ -221,11 +365,16 @@ function renderMap(attractions) {
        if (attractions.hasOwnProperty(key)) {
           var latlng = new google.maps.LatLng(attractions[key].latitude, attractions[key].longitude);
           var marker = addMarker(attractions[key], latlng);
+          // Do not show accommodation to start with
+          if (attractions[key].type != "Accommodation") {
+            marker.setMap(map);
+            latlngbounds.extend(latlng); 
+          }
           // First record in the response is always the location we searched for. Save it to go back to the results.
           if (search_marker == null && count == 0) {
             search_marker = marker;
           }
-          latlngbounds.extend(latlng); 
+          
           count++;
        }
     }
@@ -233,10 +382,25 @@ function renderMap(attractions) {
     map.fitBounds(latlngbounds); 
 }
 
+function renderMapControls(attractions, destination_exists) {
+  $('#filterBox').show();
+  if (!destination_exists) {
+    $('#filters_additional').hide();
+    $('#tripDetailBox').hide();
+  } else {
+    $('#filters_additional').show();
+    $('#tripDetailBox').show();
+  }
+    
+  loadCategories(attractions);
+  loadAccommodation(attractions);
+  loadAttraction(attractions);
+  loadStartAndEndDropdowns();
+}
+
 function addMarker(place, latlng) {
     var marker = new google.maps.Marker({
       position: latlng,
-      map: map,
       icon: image
     });
     marker.set("id", place.id);
@@ -264,6 +428,9 @@ function addMarker(place, latlng) {
                 searchForPointsOfInterest($('#input-box').val());
                 selected_destination_marker = null;
             } else {
+                if (selected_info_window) {
+                  selected_info_window.close();
+                }
                 selected_destination_marker = this;
                 $.ajax({  
                     type: "POST",
@@ -272,6 +439,7 @@ function addMarker(place, latlng) {
                     data      : {"id":this.get("id")},
                     success: function(response) {
                         renderMap(response.attractions);
+                        renderMapControls(response.attractions, true)
                         max_distance = Math.round(response.max_distance)
                         $('#range-slider').val(antilogslider(max_distance))
                         $('#range-value').html(max_distance);
@@ -285,7 +453,9 @@ function addMarker(place, latlng) {
         });
       
     } else if (place.type == "PointOfInterest") {
+        marker.set("time_required", place.time_required);
         marker.set("salience", place.salience);
+        marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
         point_of_interest_markers.push(marker);
     } else if (place.type == "Accommodation") {
         var image = '/static/images/home.png';
@@ -377,9 +547,23 @@ function clearAllDestinationMarkers() {
   destination_markers.length = 0;
 }
 
+function clearAllAccommodationMarkers() {
+  for (var i = 0; i < accommodation_markers.length; i++ ) {
+    accommodation_markers[i].setMap(null);
+  }
+  accommodation_markers.length = 0;
+}
+
+function clearForNewSearch() {
+  $('#planBox').hide();
+  directionsDisplay.setMap(null);
+  clearAllMarkers();
+}
+
 function clearAllMarkers() {
   clearAllDestinationMarkers();
   clearAllPointOfInterestMarkers();
+  clearAllAccommodationMarkers();
   search_marker = null;
   selected_destination_marker = null;
 }
@@ -400,4 +584,44 @@ function toggleDetails() {
   } else {
     $("#toggleDetailsImg").attr('src', '/static/images/minimize.png');
   }
+}
+
+function planTrip() {
+  var startfrom_dropdown = document.getElementById("select_startfrom")
+  var startFrom = startfrom_dropdown.options[startfrom_dropdown.selectedIndex].value;
+  var startFromDetails = startFrom.split('_');
+  var start;
+  // To avoid adding a POI to way point if it is added as start or end.
+  var start_POI = -1;
+  var end_POI = -1;
+  if (startFromDetails[0] == "Accommodation") {
+    //alert('Start acco' + startFromDetails[1])
+    start = accommodation_markers[startFromDetails[1]];
+  } else {
+    //alert('Start poi' + startFromDetails[1])
+    start = point_of_interest_markers[startFromDetails[1]];
+    start_POI = startFromDetails[1];
+  }
+  var endat_dropdown = document.getElementById("select_endat")
+  var endAt = endat_dropdown.options[endat_dropdown.selectedIndex].value;
+  var endAtDetails = endAt.split('_');
+  var end;
+  if (endAtDetails[0] == "Accommodation") {
+    //alert('end acco' + startFromDetails[1])
+    end = accommodation_markers[endAtDetails[1]];
+  } else {
+    //alert('Start poi' + startFromDetails[1])
+    end = point_of_interest_markers[endAtDetails[1]];
+    end_POI = endAtDetails[1];
+  }
+  waypoints = []
+  $('#poi input').each(function() {
+    var id = parseInt($(this).prop('id').split('_')[1]);
+    if ($(this).prop('checked') && id != start_POI && id != end_POI) {
+      waypoints.push(point_of_interest_markers[id]);
+    }
+  });
+  //alert(destination_markers[0].position)
+  calcRoute(start, waypoints, end)
+  $('#planBox').show();
 }

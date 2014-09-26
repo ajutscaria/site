@@ -19,18 +19,20 @@
           </div>
         </div>
         <div id="filters">
-            <div>
+            <div id="filter_range">
               <label><b>Range:</b></label><input type="range" min="0" max="100" value="52.5" id="range-slider" step=".1"/>
               <span id="range-value">200</span><span>&nbsp;miles</span>
             </div>
-            <div>
-              <label><b>Salience:</b></label><input type="range" min="1" max="10" value="10" id="salience-slider" step="1"/>
-              <span id="salience-value">10</span>
+            <div id="filters_additional">
+              <div id="filter_salience">
+                <label><b>Salience:</b></label><input type="range" min="1" max="10" value="10" id="salience-slider" step="1"/>
+                <span id="salience-value">10</span>
+              </div>
+              <div id="filter_category"><label><b>Category:</b></label><span id="poiCategories"></span></div>
+              <div id="filter_show_accommodation"><b><input type="checkbox" id="show_accommodation" onclick="clickedShowAccommodation();">
+                        <label for="show_accommodation">Show accommodation</label>
+              </input></b></div>
             </div>
-            <div><label><b>Category:</b></label><span id="poiCategories"></span></div>
-            <div><b><input type="checkbox" id="show_accommodation" checked onclick="clickedShowAccommodation();">
-                      <label for="show_accommodation">Show accommodation</label>
-            </input></b></div>
         </div>
       </div>
     </div>
@@ -44,8 +46,14 @@
         <div id="tripDetails">
           <div><label><b>Stay at:</b></label><span id="accommodation"></span></div>
           <div><label><b>Visit:</b></label><span id="poi"></span></div>
-          <div><button type="button" onclick="alert('Hello world!')">Plan!</button></div>
+          <div><label><b>Start from:</b></label><span id="startfrom"><select id="select_startfrom"></select></span></div>
+          <div><label><b>End at:</b></label><span id="endat"></span><select id="select_endat"></select></div>
+          <div><button type="button" onclick="planTrip();">Plan!</button></div>
         </div>
+      </div>
+    </div>
+    <div id="planBox" class="shadowy transparent" style="position:absolute; bottom:200px; right:50px; width:400px; border: 1px solid #CCC; z-index:1;background:white;display: none;">
+      <div id="plan-container" stype="padding:10px; background-color:#FFFFFF;">
       </div>
     </div>
   </body>

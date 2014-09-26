@@ -47,6 +47,9 @@ function makeFormFieldsReadOnly() {
     $('#id_longitude').prop("disabled",true);
     $('#id_longitude').removeClass("editable");
     $('#id_longitude').addClass("readonly");
+    $('#id_salience').prop("disabled",true);
+    $('#id_salience').removeClass("editable");
+    $('#id_salience').addClass("readonly");
     /*$('#id_destination_text').prop("readonly",true);
     $('#id_destination_text').removeClass("editable");
     $('#id_destination_text').addClass("readonly");*/
@@ -84,6 +87,9 @@ function makeFormFieldsEditable() {
     $('#id_longitude').prop("disabled",false);
     $('#id_longitude').removeClass("readonly");
     $('#id_longitude').addClass("editable");
+        $('#id_salience').prop("disabled",false);
+    $('#id_salience').removeClass("readonly");
+    $('#id_salience').addClass("editable");
     /*$('#id_destination_text').prop("readonly",false);
     $('#id_destination_text').removeClass("readonly");
     $('#id_destination_text').addClass("editable");*/
@@ -157,6 +163,13 @@ $(document).ready(function() {
 		$('#savepointofinterest').show();
 		e.preventDefault();
 	});
+
+    if($('#id_address').val()) {
+        setTimeout(function(){
+            /*map loading logic*/
+            initializeMap(parseFloat($('#id_latitude').val()),parseFloat($('#id_longitude').val()),$('#id_address').val());
+        }, 1);
+    }
 });
 
 function searchForLocation(location, name, latlng, state, country) {
@@ -229,7 +242,7 @@ function initializeMap(lat, lng, address) {
           position: latlng,
           map: map,
           title: address,
-          draggable: false
+          draggable: true
       });
       init = true;
   } else {

@@ -34,7 +34,8 @@ def index(request):
             (accommodation, max_acco_distance) = find_accommodation_for_destination(destination.id)
             result.extend(convert_accommodation_to_json(accommodation))
             print 'all done', result
-            return HttpResponse(json.dumps({'attractions': result, 'address':address, 'max_distance':max_distance}));
+            return HttpResponse(json.dumps({'attractions': result, 'address':address,
+                                            'max_distance':max_distance, 'destination_exists':True}));
         else:
             print "Destination DOES NOT EXIST in database"
             (closest_destinations, max_distance) = find_destinations_in_range(loc, 200)
@@ -42,7 +43,8 @@ def index(request):
             print "Closest destinations:", closest_destinations, "max_distance:", max_distance
             result = convert_location_to_json(geoloc.coordinates[0], geoloc.coordinates[1], address, "")
             result.extend(convert_destinations_to_json(closest_destinations))
-            return HttpResponse(json.dumps({'attractions': result, 'address':address, 'max_distance':max_distance}));
+            return HttpResponse(json.dumps({'attractions': result, 'address':address, 
+                                            'max_distance':max_distance, 'destination_exists':False}));
 
     dict = {'form': SearchForm()}
     return render_to_response('search/index.html', dict, context);
@@ -108,13 +110,15 @@ def add_point_of_interest(request):
                 if 'photo' in request.FILES:
                     interest.photo.delete(False);
                     interest.photo = request.FILES['photo'];
+                    print interest.photo.url
                 interest.save()
+                print interest.photo.url
             else:
                 form.save()
                 if 'photo' in request.FILES:
                     form.instance.photo = request.FILES['photo'];
                     form.save()
-                    print "Uploas file name", request.FILES['photo'].name, form.instance.id
+                    print "Upload file name", request.FILES['photo'].name, form.instance.id
             print "Got ID", form.instance.id
         else:
             print "form is not valid"
@@ -123,12 +127,54 @@ def add_point_of_interest(request):
         form = PointOfInterestForm()
     return render_to_response('search/add_point_of_interest.html', {'form': form}, context);
 
+def edit_destination(request, id):
+    print "In edit_destination. ID", id
+    context = RequestContext(request)
+    destinations = Destination.objects.filter(id=id);
+    if destinations.exists():
+        if request.method == 'POST':
+            form = DestinationForm(request.POST)
+            if form.is_valid():
+                destinations.update(description=form.cleaned_data['description'])
+                destinations.update(category=form.cleaned_data['category'])
+                destinations.update(open_hours=form.cleaned_data['open_hours'])
+                destinations.update(time_required=form.cleaned_data['time_required'])
+                destinations.update(best_time=form.cleaned_data['best_time'])
+                destinations.update(latitude=form.cleaned_data['latitude'])
+                destinations.update(longitude=form.cleaned_data['longitude'])
+                if 'photo' in request.FILES:
+                    destination = destinations[0]
+                    destination.photo.delete(False);
+                    destination.photo = request.FILES['photo']
+                    destination.save()
+        else:
+            form = DestinationForm(instance=destinations[0])
+        return render_to_response('search/add_destination.html', {'form': form, 'edit': True}, context);
+
 def edit_point_of_interest(request, id):
     print "In edit_point_of_interest. ID", id
     context = RequestContext(request)
     interests = PointOfInterest.objects.filter(id=id);
     if interests.exists():
-        form = PointOfInterestForm(instance=interests[0])
+        if request.method == 'POST':
+            form = PointOfInterestForm(request.POST)
+            if form.is_valid():
+                interests.update(description=form.cleaned_data['description'])
+                interests.update(category=form.cleaned_data['category'])
+                interests.update(open_hours=form.cleaned_data['open_hours'])
+                interests.update(time_required=form.cleaned_data['time_required'])
+                interests.update(ticket_price=form.cleaned_data['ticket_price'])
+                interests.update(salience=form.cleaned_data['salience'])
+                interests.update(best_time=form.cleaned_data['best_time'])
+                interests.update(latitude=form.cleaned_data['latitude'])
+                interests.update(longitude=form.cleaned_data['longitude'])
+                if 'photo' in request.FILES:
+                    interest = interests[0]
+                    interest.photo.delete(False);
+                    interest.photo = request.FILES['photo']
+                    interest.save()
+        else:
+            form = PointOfInterestForm(instance=interests[0])
         return render_to_response('search/add_point_of_interest.html', {'form': form, 'edit': True}, context);
 
 def add_accommodation(request):
@@ -171,18 +217,33 @@ def search_for_location(request):
         return HttpResponse(json.dumps({'message': str(geoloc)}))
 
 def search_to_add_destination(request):
+    print "View:search_to_add_destination!"
     # To handle AJAX requests from the form
     if request.method == "POST":
         searchlocation = request.POST['searchfor']
-        print "View:search_to_add_destination! searchfor:", request.POST['searchfor']
-        geoloc = Geocoder.geocode(searchlocation)[0]
-        address = generate_address(geoloc)
+        print "searchfor:", request.POST['searchfor']
+        if request.POST['state']:
+            state = request.POST['state']
+            print "Pre-populated", request.POST['name'], request.POST['latitude'], request.POST['longitude'], \
+                  state, request.POST['country']
+            #Query to check if a state with the code or name exists. If yes, pick the name of the state.
+            states = State.objects.filter(Q(name=state) | Q(code=state))
+            if len(states) == 1:
+                state = states[0].name
+            address = request.POST['name'] + ", " + state + ", " + request.POST['country']
+            latitude = request.POST['latitude']
+            longitude = request.POST['longitude']
+        else:
+            print 'Not pre-populated'
+            geoloc = Geocoder.geocode(searchlocation)[0]
+            latitude = geoloc.coordinates[0]
+            longitude = geoloc.coordinates[1]
+            address = generate_address(geoloc)
         print "Got address:", address
         destinations = Destination.objects.filter(address=address);
         if destinations.exists():
-            print "##Already added##"
             destination = destinations[0]
-            response = {'exists':1, 'latitude': geoloc.coordinates[0], 'longitude': geoloc.coordinates[1]}
+            response = {'exists':1, 'latitude': latitude, 'longitude': longitude}
             print destination.description
             if destination.address:
                 response['address'] = destination.address
@@ -201,13 +262,14 @@ def search_to_add_destination(request):
             print response
             return HttpResponse(json.dumps(response));
         return HttpResponse(json.dumps({'exists': 0, 'address': address, 
-                                        'latitude': geoloc.coordinates[0], 'longitude': geoloc.coordinates[1]}))
+                                        'latitude': latitude, 'longitude': longitude}))
 
 def search_to_add_point_of_interest(request):
+    print "View:search_to_add_point_of_interest!"
     # To handle AJAX requests from the form
     if request.method == "POST":
         searchlocation = request.POST['searchfor']
-        print "View:search_to_add_point_of_interest! searchfor:", request.POST['searchfor']
+        print "searchfor:", request.POST['searchfor']
         if request.POST['state']:
             state = request.POST['state']
             print "Pre-populated", request.POST['name'], request.POST['latlng'], \
@@ -380,6 +442,7 @@ def convert_points_of_interest_to_json(places):
                           'longitude': str(place.longitude),
                           'category': str(place.category),
                           'salience': place.salience,
+                          'time_required': place.time_required,
                           'type':'PointOfInterest',
                           'name': place.name,
                           'info':build_point_of_interest_info(place)})
@@ -413,15 +476,16 @@ def build_point_of_interest_info(poi):
     photo_url = ""
     if poi.photo:
         photo_url = poi.photo.url;
-    info = "<b>" + poi.name + "</b>&nbsp;<a href=\"\">Read more..</a>&nbsp;" \
+    info = "<b>" + poi.name + "</b>&nbsp;&nbsp;" \
            "<a href=\"/search/add_point_of_interest/" + str(poi.id) + "/edit\" target=\"_blank\">Edit..</a><br/><table>" + \
            "<tr><td><b>Address:</b></td><td>" + poi.address + "</td></tr>" + \
            "<tr><td><b>Description:</td><td>" + poi.description + "</td></tr>" + \
            "<tr><td><b>Category:</td><td>" + str(poi.category) + "</td></tr>" + \
+           "<tr><td><b>Salience:</td><td>" + str(poi.salience) + "</td></tr>" + \
            "<tr><td><b>Best time:</td><td>" + poi.best_time + "</td></tr>" + \
            "<tr><td><b>Time required:</td><td>" + poi.time_required + "</td></tr>" + \
            "<tr><td><b>Ticket price:</td><td>" + poi.ticket_price + "</td></tr>" + \
-           "<tr><td colspan=\"2\"><img src=\"" + photo_url + "\" width = \"300\" height=\"200\"/></td></tr>" + \
+           "<tr><td colspan=\"2\"><img src=\"" + photo_url + "\" width = \"295\" height=\"197\" border=\"1\" /></td></tr>" + \
            "</table>"
     return info
 
@@ -436,13 +500,14 @@ def build_destination_info(destination):
     photo_url = ""
     if destination.photo:
         photo_url = destination.photo.url;
-    info = "<b>" + destination.name + "</b><br/><table>" + \
+    info = "<b>" + destination.name + "</b>&nbsp;<a href=\"\">Read more..</a>&nbsp;" \
+           "<a href=\"/search/add_destination/" + str(destination.id) + "/edit\" target=\"_blank\">Edit..</a><br/><table>" + \
            "<tr><td><b>Address:</b></td><td>" + destination.address + "</td></tr>" + \
            "<tr><td><b>Description:</td><td>" + destination.description + "</td></tr>" + \
            "<tr><td><b>Category:</td><td>" + str(destination.category) + "</td></tr>" + \
            "<tr><td><b>Best time:</td><td>" + destination.best_time + "</td></tr>" + \
            "<tr><td><b>Time required:</td><td>" + destination.time_required + "</td></tr>" + \
-           "<tr><td colspan=\"2\"><img src=\"" + photo_url + "\" width = \"300\" height=\"200\"/></td></tr>" + \
+           "<tr><td colspan=\"2\"><img src=\"" + photo_url + "\" width = \"295\" height=\"197\" border=\"1\"/></td></tr>" + \
            "</table>"
     return info
 

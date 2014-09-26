@@ -37,12 +37,18 @@ function clearFormFields() {
 
 function makeFormFieldsReadOnly() {
     marker.setDraggable(false);
+        $('#id_latitude').prop("disabled",true);
+    $('#id_latitude').removeClass("editable");
+    $('#id_latitude').addClass("readonly");
+    $('#id_longitude').prop("disabled",true);
+    $('#id_longitude').removeClass("editable");
+    $('#id_longitude').addClass("readonly");
 	$('#id_category').prop("disabled",true);
 	$('#id_category').removeClass("editable");
-    $('#id_category').addClass("readonly");
-    $('#id_description').prop("readonly",true);
-    $('#id_description').removeClass("editable");
-    $('#id_description').addClass("readonly");
+  $('#id_category').addClass("readonly");
+  $('#id_description').prop("readonly",true);
+  $('#id_description').removeClass("editable");
+  $('#id_description').addClass("readonly");
 	$('#id_best_time').prop("readonly",true);
 	$('#id_best_time').removeClass("editable");
 	$('#id_best_time').addClass("readonly");
@@ -59,6 +65,12 @@ function makeFormFieldsReadOnly() {
 
 function makeFormFieldsEditable() {
     marker.setDraggable(true);
+        $('#id_latitude').prop("disabled",false);
+    $('#id_latitude').removeClass("readonly");
+    $('#id_latitude').addClass("editable");
+    $('#id_longitude').prop("disabled",false);
+    $('#id_longitude').removeClass("readonly");
+    $('#id_longitude').addClass("editable");
 	$('#id_category').prop("disabled",false);
 	$('#id_category').removeClass("readonly");
     $('#id_category').addClass("editable");
@@ -83,11 +95,28 @@ $(document).ready(function() {
     var input = document.getElementById('input-box');
     var searchBox = new google.maps.places.SearchBox(input);
     google.maps.event.addListener(searchBox, 'places_changed', function() {
-        searchForLocation($('#input-box').val());
+        var places = searchBox.getPlaces();
+        var state = ""
+        var country = ""
+        var latlng
+        var name
+        for (var i = 0, place; place = places[i]; i++) {
+            latlng = place.geometry.location;
+            name = place.name;
+            for (var j = 0; j < place.address_components.length; j++) {
+                if ($.inArray("administrative_area_level_1", place.address_components[j].types) != -1) {
+                    state = place.address_components[j].long_name;
+                }
+                else if($.inArray("country", place.address_components[j].types) != -1) {
+                    country = place.address_components[j].long_name;
+                }
+            }
+        }
+        searchForLocation($('#input-box').val(), name, latlng, state, country);
     });
 
 	$('#searchform').submit(function(e){
-	    searchForLocation($('#input-box').val());
+	    searchForLocation($('#input-box').val(), "", "", "", "");
 	    e.preventDefault();
 	});
 
@@ -108,30 +137,40 @@ $(document).ready(function() {
 		$('#savedestination').show();
 		e.preventDefault();
 	});
+
+  if($('#id_address').val()) {
+    setTimeout(function(){
+        /*map loading logic*/
+        initializeMap(parseFloat($('#id_latitude').val()),parseFloat($('#id_longitude').val()),$('#id_address').val());
+    }, 1);
+  }
 });
 
-function searchForLocation(location) {
+function searchForLocation(location, name, latlng, state, country) {
 	clearFormFields();
-    $('#infobox').hide();
+  $('#infobox').hide();
 	var urlSubmit = '/search/search_to_add_destination/'
     $.ajax({  
         type: "POST",
         url: urlSubmit,             
-        data      : {'searchfor' : location},
+        data      : {'searchfor': location, 'name':name, 'state': state, 'country': country, 'latitude': latlng.lat(), 'longitude': latlng.lng()},
         success: function(response){
         	var jsonData = $.parseJSON(response);
         	$('#id_address').val(jsonData.address);
-            initializeMap(jsonData.latitude, jsonData.longitude, jsonData.address);
+          initializeMap(jsonData.latitude, jsonData.longitude, jsonData.address);
+
+          $('#id_latitude').val(jsonData.latitude);
+          $('#id_longitude').val(jsonData.longitude);
         	if (jsonData.exists) {
         		$('#messagebox').show();
         		makeFormFieldsReadOnly();
-            	$('#id_description').val(jsonData.description);
-            	$('#id_category').val(jsonData.category);
-            	$('#id_open_hours').val(jsonData.time_required);
-            	$('#id_time_required').val(jsonData.time_required);
-            	$('#id_open_hours').val(jsonData.open_hours);
-            	$('#id_best_time').val(jsonData.best_time);
-            	$('#savedestination').hide();
+          	$('#id_description').val(jsonData.description);
+          	$('#id_category').val(jsonData.category);
+          	$('#id_open_hours').val(jsonData.time_required);
+          	$('#id_time_required').val(jsonData.time_required);
+          	$('#id_open_hours').val(jsonData.open_hours);
+          	$('#id_best_time').val(jsonData.best_time);
+          	$('#savedestination').hide();
         	} else { 
 	        	$('#savedestination').show();
                 makeFormFieldsEditable();
@@ -161,11 +200,16 @@ function initializeMap(lat, lng, address) {
           position: latlng,
           map: map,
           title: address,
-          draggable: false
+          draggable: true
       });
       init = true;
   } else {
     marker.setPosition(latlng);
     map.setCenter(latlng);
   }
+  google.maps.event.addListener(marker, "dragend", function() {
+      var position = marker.getPosition();
+      $('#id_latitude').val(position.lat());
+      $('#id_longitude').val(position.lng());
+  });
 }

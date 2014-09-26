@@ -11,13 +11,19 @@
 <body id="add_destination">
     {% include "search/menu.html" %}
     <div id="content">
-        <form action="" method="post" id="searchform">{% csrf_token %}
-            <input id="input-box" class="controls" type="text" placeholder="Search Box"></input>
-            <input type="submit" value="Search" />
-        </form>
+        {% if not edit %}
+            <form action="" method="post" id="searchform">{% csrf_token %}
+                <input id="input-box" class="controls" type="text" placeholder="Search Box"></input>
+                <input type="submit" value="Search" />
+            </form>
+        {% endif %}
         <form action="" method="post" id="looksgoodform" enctype="multipart/form-data">{% csrf_token %}
             <div id="messagebox" style="display: none;"><div>Destination already exists.&nbsp;<a href="" id="edit">Edit it?</a></div></div>
+            {% if edit %}
+            <div id="infobox">
+            {% else %}
             <div id="infobox" style="display: none;">
+            {% endif %}
                 <table><tr><td>
                     <table>
                         {% for field in form.visible_fields %}
