@@ -3,6 +3,8 @@
     <style type="text/css">
         #poi-map-canvas { height: 350px; width:300px }
     </style>
+    <link rel="stylesheet" type="text/css" href='/static/css/bootstrap.min.css'>
+    <link rel="stylesheet" type="text/css" href='/static/css/font-awesome.min.css'>
     <link rel="stylesheet" type="text/css" href='/static/css/style.css'>
     <script type='text/javascript' src='/static/js/jquery-1.11.1.min.js'></script>
     <script type='text/javascript' src='/static/js/add_accommodation.js'></script>
@@ -14,7 +16,7 @@
     <div id="content">
         <form action="" method="post" id="searchform">{% csrf_token %}
             <input id="input-box" class="controls" type="text" placeholder="Search Box"></input>
-            <input type="submit" value="Search"></input>
+            <button type="submit" class="btn btn-primary">Search</button>
         </form>
         <form action="" method="post" id="looksgoodform" enctype="multipart/form-data">{% csrf_token %}
             <div id="messagebox" style="display: none;"><div>Point of interest already exists.&nbsp;<a href="" id="edit">Edit it?</a></div></div>

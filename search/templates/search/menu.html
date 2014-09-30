@@ -1,4 +1,4 @@
-<div id="nav-bar">
+<!--<div id="nav-bar">
 	<ul>
 		<li><a id="nav-explore" class="first" href="/search/">Explore</a></li>
 		<li><a id="nav-plan" class="first" href="/search/plan/">Plan</a></li>
@@ -7,4 +7,43 @@
 		<li><a id="nav-add_accommodation" href="/search/add_accommodation/">Add accommodation</a></li>
 		<li><a id="nav-contact" class="last" href="/search/contact/">Contact</a></li>
 	</ul>
-</div>
+</div> -->
+
+<nav class="navbar navbar-default navbar-fixed-top navbar-inverse" role="navigation">
+  <div class="container">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <a class="navbar-brand" id="nav-project"><span class="fa fa-fw fa-lg"></span>XPLOR</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav navbar-left">
+        <li><a class="navbar-link" id="nav-home" href="/search/home/"><span class="fa fa-book fa-fw fa-lg"></span>Home</a></li>
+        <li><a class="navbar-link" id="nav-plan" href="/search/plan/"><span class="fa fa-book fa-fw fa-lg"></span>Plan</a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle navbar-link" id="updates" data-toggle="dropdown"><span class="fa fa-plus fa-fw fa-lg"></span>Add Content<span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="/search/add_destination" id="nav-add_destination" data-parent="updates"><span class="fa fa-flag-checkered fa-fw fa-lg"></span>Add Destination</a></li>
+            <li class="divider"></li>
+            <li><a href="/search/add_point_of_interest/" id="nav-add_point_of_interest" data-parent="updates"><span class="fa fa-camera fa-fw fa-lg"></span>Add Point Of Interest</a></li>
+            <li class="divider"></li>
+            <li><a href="/search/add_accommodation/" id="nav-add_accommodation" data-parent="updates"><span class="fa fa- fa-building-o fa-lg"></span>Add Accommodation</a></li>
+          </ul>
+        </li>
+      </ul>
+
+      <ul class="nav navbar-nav navbar-right" id="right-nav-section">
+                                          <li id="log-text"><a class="navbar-link" href="/login/"><span class="fa fa-sign-in fa-fw fa-lg"></span>Log In</a></li>
+                        <li class="dropdown">
+          <a href="#" class="dropdown-toggle navbar-link" id="about" data-toggle="dropdown">Contact<span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="/search/about/" id="nav-about" data-parent="about"><span class="fa fa-group fa-fw fa-lg"></span>About Us</a></li>
+            <li class="divider"></li>
+            <li><a href="/search/contact/" id="nav-contact" data-parent="about"><span class="fa fa-pencil fa-fw fa-lg"></span>Contact Us</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>

@@ -26,69 +26,71 @@ $.ajaxSetup({
 });
 
 function clearFormFields() {
-    $('#messagebox').hide();
+  $('#messagebox').hide();
 	$('#id_address').val('');
 	$('#id_category').val(1);
-    $('#id_description').val('');
+  $('#id_description').val('');
 	$('#id_best_time').val('');
 	$('#id_open_hours').val('');
 	$('#id_time_required').val('');
 }
 
 function makeFormFieldsReadOnly() {
-    marker.setDraggable(false);
-        $('#id_latitude').prop("disabled",true);
-    $('#id_latitude').removeClass("editable");
-    $('#id_latitude').addClass("readonly");
-    $('#id_longitude').prop("disabled",true);
-    $('#id_longitude').removeClass("editable");
-    $('#id_longitude').addClass("readonly");
+  marker.setDraggable(false);
+  $('#id_address').prop("disabled",true);
+  $('#id_latitude').prop("disabled",true);
+  //$('#id_latitude').removeClass("editable");
+  //$('#id_latitude').addClass("readonly");
+  $('#id_longitude').prop("disabled",true);
+  //$('#id_longitude').removeClass("editable");
+  //$('#id_longitude').addClass("readonly");
 	$('#id_category').prop("disabled",true);
-	$('#id_category').removeClass("editable");
-  $('#id_category').addClass("readonly");
+	//$('#id_category').removeClass("editable");
+  //$('#id_category').addClass("readonly");
   $('#id_description').prop("readonly",true);
-  $('#id_description').removeClass("editable");
-  $('#id_description').addClass("readonly");
+  //$('#id_description').removeClass("editable");
+  //$('#id_description').addClass("readonly");
 	$('#id_best_time').prop("readonly",true);
-	$('#id_best_time').removeClass("editable");
-	$('#id_best_time').addClass("readonly");
+	//$('#id_best_time').removeClass("editable");
+	//$('#id_best_time').addClass("readonly");
 	$('#id_open_hours').prop("readonly",true);
-	$('#id_open_hours').removeClass("editable");
-	$('#id_open_hours').addClass("readonly");
+	//$('#id_open_hours').removeClass("editable");
+	//$('#id_open_hours').addClass("readonly");
 	$('#id_time_required').prop("readonly",true);
-	$('#id_time_required').removeClass("editable");
-	$('#id_time_required').addClass("readonly");
+	//$('#id_time_required').removeClass("editable");
+	//$('#id_time_required').addClass("readonly");
 	$('#id_photo').prop("disabled",true);
-	$('#id_photo').removeClass("editable");
-    $('#id_photo').addClass("readonly");
+	//$('#id_photo').removeClass("editable");
+  //$('#id_photo').addClass("readonly");
 }
 
 function makeFormFieldsEditable() {
-    marker.setDraggable(true);
-        $('#id_latitude').prop("disabled",false);
-    $('#id_latitude').removeClass("readonly");
-    $('#id_latitude').addClass("editable");
-    $('#id_longitude').prop("disabled",false);
-    $('#id_longitude').removeClass("readonly");
-    $('#id_longitude').addClass("editable");
+  marker.setDraggable(true);
+  $('#id_address').prop("disabled",false);
+  $('#id_latitude').prop("disabled",false);
+  //$('#id_latitude').removeClass("readonly");
+  //$('#id_latitude').addClass("editable");
+  $('#id_longitude').prop("disabled",false);
+  //$('#id_longitude').removeClass("readonly");
+  //$('#id_longitude').addClass("editable");
 	$('#id_category').prop("disabled",false);
-	$('#id_category').removeClass("readonly");
-    $('#id_category').addClass("editable");
-    $('#id_description').prop("readonly",false);
-    $('#id_description').removeClass("readonly");
-    $('#id_description').addClass("editable");
+	//$('#id_category').removeClass("readonly");
+  //$('#id_category').addClass("editable");
+  $('#id_description').prop("readonly",false);
+  //$('#id_description').removeClass("readonly");
+  //$('#id_description').addClass("editable");
 	$('#id_best_time').prop("readonly",false);
-	$('#id_best_time').removeClass("readonly");
-	$('#id_best_time').addClass("editable");
+	//$('#id_best_time').removeClass("readonly");
+	//$('#id_best_time').addClass("editable");
 	$('#id_open_hours').prop("readonly",false);
-	$('#id_open_hours').removeClass("readonly");
-	$('#id_open_hours').addClass("editable");
+	//$('#id_open_hours').removeClass("readonly");
+	//$('#id_open_hours').addClass("editable");
 	$('#id_time_required').prop("readonly",false);
-	$('#id_time_required').removeClass("readonly");
-	$('#id_time_required').addClass("editable");
+	//$('#id_time_required').removeClass("readonly");
+	//$('#id_time_required').addClass("editable");
 	$('#id_photo').prop("disabled",false);
-	$('#id_photo').removeClass("readonly");
-	$('#id_photo').addClass("editable");
+	//$('#id_photo').removeClass("readonly");
+	//$('#id_photo').addClass("editable");
 }
 
 $(document).ready(function() {
@@ -126,8 +128,8 @@ $(document).ready(function() {
 		$('#reset').hide();
 		$('#input-box').val('');
 		$('#input-box').focus();
-        $('#infobox').hide();
-        $('#success').hide();
+    $('#infobox').hide();
+    $('#success').hide();
 		e.preventDefault();
 	});
 
@@ -135,6 +137,7 @@ $(document).ready(function() {
 		// Show the rest of the form here
 		makeFormFieldsEditable();
 		$('#savedestination').show();
+    $('#messagebox').hide();
 		e.preventDefault();
 	});
 

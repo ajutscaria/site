@@ -2,47 +2,49 @@
 <head>
     <style type="text/css">
         #destination-map-canvas { height: 350px; width:300px }
+        #destination-map-canvas img{max-width:none}
     </style>
+    <link rel="stylesheet" type="text/css" href='/static/css/bootstrap.min.css'>
+    <link rel="stylesheet" type="text/css" href='/static/css/font-awesome.min.css'>
+    <!-- Should be added last otherwise links are not displayed with proper colors-->
     <link rel="stylesheet" type="text/css" href='/static/css/style.css'>
+    <script type="text/javascript" src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBF_ghimLOB28fkKBKv6Nn8c7k1cbaSD-A&libraries=places'></script>
     <script type='text/javascript' src='/static/js/jquery-1.11.1.min.js'></script>
     <script type='text/javascript' src='/static/js/add_destination.js'></script>
-    <script type="text/javascript" src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBF_ghimLOB28fkKBKv6Nn8c7k1cbaSD-A&libraries=places'></script>
 </head>
-<body id="add_destination">
+<body id="add_destination" style="padding-top:60px">
     {% include "search/menu.html" %}
-    <div id="content">
+    <div id="content" style="width:1000px">
         {% if not edit %}
             <form action="" method="post" id="searchform">{% csrf_token %}
-                <input id="input-box" class="controls" type="text" placeholder="Search Box"></input>
-                <input type="submit" value="Search" />
+                <input id="input-box" class="controls" type="text" placeholder="Search for destination"></input>
+                <button type="submit" class="btn btn-primary">Search</button>
             </form>
         {% endif %}
-        <form action="" method="post" id="looksgoodform" enctype="multipart/form-data">{% csrf_token %}
-            <div id="messagebox" style="display: none;"><div>Destination already exists.&nbsp;<a href="" id="edit">Edit it?</a></div></div>
+        <form action="" method="post" id="looksgoodform" enctype="multipart/form-data" class="form-horizontal">{% csrf_token %}
+            <div id="messagebox" style="display: none;"><div class="alert alert-info" role="alert"><strong>Heads up!</strong>&nbsp;Destination already exists.&nbsp;<a href="" id="edit">Edit it?</a></div></div>
             {% if edit %}
             <div id="infobox">
             {% else %}
             <div id="infobox" style="display: none;">
             {% endif %}
                 <table><tr><td>
-                    <table>
                         {% for field in form.visible_fields %}
-                            <tr>
-                                <td>{{ field.help_text }}</td>
-                                <td>{{ field }}</td>
-                                <td>{{ field.errors }}</td>
-                            </tr>
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">{{ field.help_text }}</label>
+                            <div class="col-sm-9">{{ field }}</div>
+                        </div>
                         {% endfor %}
-                    </table></td>
-                    <td><div id="destination-map-canvas"></div></td></tr>
+                    </td>
+                    <td style="padding:20px"><div id="destination-map-canvas"></div></td></tr>
                 </table>
-                <input type="submit" value="Save" id="savedestination"/>
+                <button type="submit" class="btn btn-primary" id="savedestination">Save</button>
+                <button type="submit" class="btn btn-danger" id="reset">Reset</button>
             </div>
         </form>
         <div id="success" style="display: none;">
             <label>Destination added!</label>
         </div>
-        <a href="" id="reset" style="display: none;">Reset</a>
     </div>
 </body>
 </html>

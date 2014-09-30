@@ -39,81 +39,81 @@ function clearFormFields() {
 function makeFormFieldsReadOnly() {
     marker.setDraggable(false);
     $('#id_address').prop("disabled",true);
-    $('#id_address').removeClass("editable");
-    $('#id_address').addClass("readonly");
+    //$('#id_address').removeClass("editable");
+    //$('#id_address').addClass("readonly");
     $('#id_latitude').prop("disabled",true);
-    $('#id_latitude').removeClass("editable");
-    $('#id_latitude').addClass("readonly");
+    //$('#id_latitude').removeClass("editable");
+    //$('#id_latitude').addClass("readonly");
     $('#id_longitude').prop("disabled",true);
-    $('#id_longitude').removeClass("editable");
-    $('#id_longitude').addClass("readonly");
+    //$('#id_longitude').removeClass("editable");
+    //$('#id_longitude').addClass("readonly");
     $('#id_salience').prop("disabled",true);
-    $('#id_salience').removeClass("editable");
-    $('#id_salience').addClass("readonly");
+    //$('#id_salience').removeClass("editable");
+    //$('#id_salience').addClass("readonly");
     /*$('#id_destination_text').prop("readonly",true);
     $('#id_destination_text').removeClass("editable");
     $('#id_destination_text').addClass("readonly");*/
 	$('#id_category').prop("disabled",true);
-	$('#id_category').removeClass("editable");
-    $('#id_category').addClass("readonly");
+	//$('#id_category').removeClass("editable");
+    //$('#id_category').addClass("readonly");
     $('#id_description').prop("readonly",true);
-    $('#id_description').removeClass("editable");
-    $('#id_description').addClass("readonly");
+    //$('#id_description').removeClass("editable");
+    //$('#id_description').addClass("readonly");
 	$('#id_best_time').prop("readonly",true);
-	$('#id_best_time').removeClass("editable");
-	$('#id_best_time').addClass("readonly");
+	//$('#id_best_time').removeClass("editable");
+	//$('#id_best_time').addClass("readonly");
 	$('#id_open_hours').prop("readonly",true);
-	$('#id_open_hours').removeClass("editable");
-	$('#id_open_hours').addClass("readonly");
+	//$('#id_open_hours').removeClass("editable");
+	//$('#id_open_hours').addClass("readonly");
     $('#id_ticket_price').prop("readonly",true);
-	$('#id_ticket_price').removeClass("editable");
-	$('#id_ticket_price').addClass("readonly");
+	//$('#id_ticket_price').removeClass("editable");
+	//$('#id_ticket_price').addClass("readonly");
 	$('#id_time_required').prop("readonly",true);
-	$('#id_time_required').removeClass("editable");
-	$('#id_time_required').addClass("readonly");
+	//$('#id_time_required').removeClass("editable");
+	//$('#id_time_required').addClass("readonly");
 	$('#id_photo').prop("disabled",true);
-	$('#id_photo').removeClass("editable");
-    $('#id_photo').addClass("readonly");
+	//$('#id_photo').removeClass("editable");
+    //$('#id_photo').addClass("readonly");
 }
 
 function makeFormFieldsEditable() {
     marker.setDraggable(true);
     $('#id_address').prop("disabled",false);
-    $('#id_address').removeClass("readonly");
-    $('#id_address').addClass("editable");
+    //$('#id_address').removeClass("readonly");
+    //$('#id_address').addClass("editable");
     $('#id_latitude').prop("disabled",false);
-    $('#id_latitude').removeClass("readonly");
-    $('#id_latitude').addClass("editable");
+    //$('#id_latitude').removeClass("readonly");
+    //$('#id_latitude').addClass("editable");
     $('#id_longitude').prop("disabled",false);
-    $('#id_longitude').removeClass("readonly");
-    $('#id_longitude').addClass("editable");
-        $('#id_salience').prop("disabled",false);
-    $('#id_salience').removeClass("readonly");
-    $('#id_salience').addClass("editable");
+    //$('#id_longitude').removeClass("readonly");
+    //$('#id_longitude').addClass("editable");
+    $('#id_salience').prop("disabled",false);
+    //$('#id_salience').removeClass("readonly");
+    //$('#id_salience').addClass("editable");
     /*$('#id_destination_text').prop("readonly",false);
     $('#id_destination_text').removeClass("readonly");
     $('#id_destination_text').addClass("editable");*/
 	$('#id_category').prop("disabled",false);
-	$('#id_category').removeClass("readonly");
-    $('#id_category').addClass("editable");
+	//$('#id_category').removeClass("readonly");
+    //$('#id_category').addClass("editable");
     $('#id_description').prop("readonly",false);
-    $('#id_description').removeClass("readonly");
-    $('#id_description').addClass("editable");
+    //$('#id_description').removeClass("readonly");
+    //$('#id_description').addClass("editable");
 	$('#id_best_time').prop("readonly",false);
-	$('#id_best_time').removeClass("readonly");
-	$('#id_best_time').addClass("editable");
+	//$('#id_best_time').removeClass("readonly");
+	//$('#id_best_time').addClass("editable");
 	$('#id_open_hours').prop("readonly",false);
-	$('#id_open_hours').removeClass("readonly");
-	$('#id_open_hours').addClass("editable");
+	//$('#id_open_hours').removeClass("readonly");
+	//$('#id_open_hours').addClass("editable");
 	$('#id_ticket_price').prop("readonly",false);
-	$('#id_ticket_price').removeClass("readonly");
-	$('#id_ticket_price').addClass("editable");
+	//$('#id_ticket_price').removeClass("readonly");
+	//$('#id_ticket_price').addClass("editable");
 	$('#id_time_required').prop("readonly",false);
-	$('#id_time_required').removeClass("readonly");
-	$('#id_time_required').addClass("editable");
+	//$('#id_time_required').removeClass("readonly");
+	//$('#id_time_required').addClass("editable");
 	$('#id_photo').prop("disabled",false);
-	$('#id_photo').removeClass("readonly");
-	$('#id_photo').addClass("editable");
+	//$('#id_photo').removeClass("readonly");
+	//$('#id_photo').addClass("editable");
 }
 
 $(document).ready(function() {
@@ -159,8 +159,8 @@ $(document).ready(function() {
 	$('#edit').click(function(e) {
 		// Show the rest of the form here
 		makeFormFieldsEditable();
-        marker.setDraggable(true);
 		$('#savepointofinterest').show();
+        $('#messagebox').hide();
 		e.preventDefault();
 	});
 

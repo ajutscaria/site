@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>XPLOR</title>
+    <link rel="stylesheet" type="text/css" href='/static/css/bootstrap.min.css'>
+    <link rel="stylesheet" type="text/css" href='/static/css/font-awesome.min.css'>
+    <link rel="stylesheet" type="text/css" href='/static/css/style.css'>
+    <script type='text/javascript' src='/static/js/jquery-1.11.1.min.js'></script>
+  </head>
+  <body id="home">
+    {% include "search/menu.html" %}
+    <div class="container">
+      <!-- Jumbotron -->
+      <div class="jumbotron">
+        <h1>Explore the world!</h1>
+        <p class="lead">Have you planned your next vacation? Not sure where to go? Not sure what to do at a destination? You can discover places, find interesting things to do and finally also plan your itinerary to minute by minute detail here! Bon Voyage!</p>
+        <p><a class="btn btn-lg btn-success" href="/search/plan/" role="button">Plan your trip now!</a></p>
+      </div>
+
+      <!-- Example row of columns -->
+      <div class="row">
+        <div class="col-lg-4">
+          <h2>Search for destinations</h2>
+          <p>Discover destinations by finding what's near you or close to any address!</p>
+          <p><a class="btn btn-primary" href="#" role="button">View details &raquo;</a></p>
+        </div>
+        <div class="col-lg-4">
+          <h2>Explore attractions</h2>
+          <p>Find out everything you can do at a destination by reading about attractions, filtering them by type, range etc. You can also add attractions you want to go to with a few easy steps.</p>
+          <p><a class="btn btn-primary" href="#" role="button">View details &raquo;</a></p>
+       </div>
+        <div class="col-lg-4">
+          <h2>Plan your trip</h2>
+          <p>Once you have figured out all the attractions you want to visit, plan your itinerary in great detail. See how much traveling/ visiting time you need.</p>
+          <p><a class="btn btn-primary" href="#" role="button">View details &raquo;</a></p>
+        </div>
+      </div>
+      <!-- Site footer -->
+      <div class="footer">
+        <p>&copy; XPLOR 2014</p>
+      </div>
+
+    </div> <!-- /container -->
+
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+  </body>
+</html>

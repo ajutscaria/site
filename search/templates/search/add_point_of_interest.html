@@ -2,24 +2,27 @@
 <head>
     <style type="text/css">
         #poi-map-canvas { height: 350px; width:300px }
+        #poi-map-canvas img{max-width:none}
     </style>
+    <link rel="stylesheet" type="text/css" href='/static/css/bootstrap.min.css'>
+    <link rel="stylesheet" type="text/css" href='/static/css/font-awesome.min.css'>
     <link rel="stylesheet" type="text/css" href='/static/css/style.css'>
     <script type='text/javascript' src='/static/js/jquery-1.11.1.min.js'></script>
     <script type='text/javascript' src='/static/js/add_point_of_interest.js'></script>
     <script type="text/javascript" src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBF_ghimLOB28fkKBKv6Nn8c7k1cbaSD-A&libraries=places'></script>
 </head>
-<body id="add_point_of_interest">
+<body id="add_point_of_interest" style="padding-top:60px">
     {% include "search/menu.html" %}
     {% include 'autocomplete_light/static.html' %}
-    <div id="content">
+    <div id="content" style="width:1000px">
         {% if not edit %}
             <form action="" method="post" id="searchform">{% csrf_token %}
-                <input id="input-box" class="controls" type="text" placeholder="Search Box"></input>
-                <input type="submit" value="Search"></input>
+                <input id="input-box" class="controls" type="text" placeholder="Search for point of interest"></input>
+                <button type="submit" class="btn btn-primary">Search</button>
             </form>
         {% endif %}
-        <form action="" method="post" id="looksgoodform" enctype="multipart/form-data">{% csrf_token %}
-            <div id="messagebox" style="display: none;"><div>Point of interest already exists.&nbsp;<a href="" id="edit">Edit it?</a></div></div>
+        <form action="" method="post" id="looksgoodform" enctype="multipart/form-data" class="form-horizontal">{% csrf_token %}
+            <div id="messagebox" style="display: none;"><div class="alert alert-info" role="alert"><strong>Heads up!</strong>&nbsp;Point of interest already exists.&nbsp;<a href="" id="edit">Edit it?</a></div></div>
             {% if edit %}
             <div id="infobox">
             {% else %}
@@ -28,19 +31,18 @@
                <table><tr><td>
                     <table>
                         {% for field in form.visible_fields %}
-                            <tr>
-                                <td>{{ field.help_text }}</td>
-                                <td>{{ field }}</td>
-                                <td>{{ field.errors }}</td>
-                            </tr>
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">{{ field.help_text }}</label>
+                            <div class="col-sm-9">{{ field }}</div>
+                        </div>
                         {% endfor %}
                     </table></td>
-                    <td><div id="poi-map-canvas"></div></td></tr>
+                    <td style="padding:20px"><div id="poi-map-canvas"></div></td></tr>
                 </table>
-                <input type="submit" value="Save" id="savepointofinterest"/>
+                <button type="submit" class="btn btn-primary" id="savepointofinterest">Save</button>
+                <button type="reset" class="btn btn-danger" id="reset"/>Reset</button>
             </div>
         </form>
-        <a href="" id="reset" style="display: none;">Reset</a>
     </div>
 </body>
 </html>

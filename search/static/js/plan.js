@@ -15,7 +15,6 @@ function getCookie(name)
     }
     return cookieValue;
 }
-
 // Setup CSRF token (AJAX won't work without this)
 $.ajaxSetup({ 
      beforeSend: function(xhr, settings) {
@@ -218,7 +217,7 @@ function initialize() {
 }
 
 function searchForPointsOfInterest(search_location) {
-    var urlSubmit = '/search/'
+    var urlSubmit = '/search/index/'
     $.ajax({  
         type: "POST",
         url: urlSubmit,     

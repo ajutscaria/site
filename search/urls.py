@@ -8,7 +8,9 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
+    url(r'^index/$', views.index, name='index'),
     url(r'^plan/$', views.plan, name='plan'),
+    url(r'^home/$', views.home, name='home'),
     url(r'^add_destination/$', views.add_destination, name='add_destination'),
     url(r'^add_destination/(?P<id>[0-9]+)/edit$', views.edit_destination, name='edit_destination'),
     url(r'^add_point_of_interest/$', views.add_point_of_interest, name='add_point_of_interest'),
@@ -20,6 +22,7 @@ urlpatterns = [
     url(r'^filter_results/$', views.filter_results, name='filter_results'),
     url(r'^get_details/$', views.get_details, name='get_details'),
     url(r'^get_points_of_interest_for_destination/$', views.get_points_of_interest_for_destination, name='get_points_of_interest_for_destination'),
+    url(r'^about/$', views.about, name='about'),
     url(r'^contact/$', views.contact, name='contact'),
 ]
 

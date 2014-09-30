@@ -1,27 +1,36 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" type="text/css" href='/static/css/style.css'>
     <title>XPLOR</title>
+    <link rel="stylesheet" type="text/css" href='/static/css/bootstrap.min.css'>
+    <link rel="stylesheet" type="text/css" href='/static/css/font-awesome.min.css'>
+    <link rel="stylesheet" type="text/css" href='/static/css/style.css'>
     <script type="text/javascript" src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBF_ghimLOB28fkKBKv6Nn8c7k1cbaSD-A&libraries=places'></script>
     <script type='text/javascript' src='/static/js/jquery-1.11.1.min.js'></script>
     <script type='text/javascript' src='/static/js/plan.js'></script>
   </head>
   <body id="plan">
     {% include "search/menu.html" %}
-    <input id="input-box" class="controls" type="text" placeholder="Search Box"></input>
+    <form action="" method="post" id="searchform">{% csrf_token %}
+      <input id="input-box" class="controls" type="text" placeholder="Search for a destination"></input>
+      {% for field in form.visible_fields %}
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">{{ field.help_text }}</label>
+                            <div class="col-sm-9">{{ field }}</div>
+                        </div>
+                        {% endfor %}
+    </form>
     <div id="map-canvas"></div>
     <div id="filterBox" class="shadowy transparent" style="position:absolute; bottom:35px; left:50px; width:410px; border: 1px solid #CCC; z-index:1;background:white;display: none;">
-      <div id="filter-container" stype="padding:10px; background-color:#FFFFFF;">
+      <div id="filter-container">
         <div id="header">
-          <b><label>Filters</label></b>
+          <label><b>Filters</b></label>
           <div style="float:right;"> <a id="toggleFilters" onclick="toggleFilters();" href="#"> <img id="toggleFiltersImg" title="Minimize" src="/static/images/minimize.png"> </a>
           </div>
         </div>
         <div id="filters">
             <div id="filter_range">
-              <label><b>Range:</b></label><input type="range" min="0" max="100" value="52.5" id="range-slider" step=".1"/>
-              <span id="range-value">200</span><span>&nbsp;miles</span>
+              <label><b>Range:</b></label><input type="range" min="0" max="100" value="52.5" id="range-slider" step=".1"/><span id="range-value">200</span><span>&nbsp;miles</span>
             </div>
             <div id="filters_additional">
               <div id="filter_salience">
@@ -29,9 +38,9 @@
                 <span id="salience-value">10</span>
               </div>
               <div id="filter_category"><label><b>Category:</b></label><span id="poiCategories"></span></div>
-              <div id="filter_show_accommodation"><b><input type="checkbox" id="show_accommodation" onclick="clickedShowAccommodation();">
-                        <label for="show_accommodation">Show accommodation</label>
-              </input></b></div>
+              <div id="filter_show_accommodation"><input type="checkbox" id="show_accommodation" onclick="clickedShowAccommodation();">
+                        <label for="show_accommodation"><b>Show accommodation</b></label>
+              </input></div>
             </div>
         </div>
       </div>
@@ -39,7 +48,7 @@
     <div id="tripDetailBox" class="shadowy transparent" style="position:absolute; bottom:35px; right:50px; width:410px; border: 1px solid #CCC; z-index:1;background:white;display: none;">
       <div id="details-container" stype="padding:10px; background-color:#FFFFFF;">
         <div id="details-header">
-          <b><label>Your plan</label></b>
+          <label><b>Your plan</b></label>
           <div style="float:right;"> <a id="toggleDetails" onclick="toggleDetails();" href="#"> <img id="toggleDetailsImg" title="Minimize" src="/static/images/minimize.png"> </a>
           </div>
         </div>
@@ -48,7 +57,7 @@
           <div><label><b>Visit:</b></label><span id="poi"></span></div>
           <div><label><b>Start from:</b></label><span id="startfrom"><select id="select_startfrom"></select></span></div>
           <div><label><b>End at:</b></label><span id="endat"></span><select id="select_endat"></select></div>
-          <div><button type="button" onclick="planTrip();">Plan!</button></div>
+          <div><button type="button" class="btn btn-primary" onclick="planTrip();">Plan!</button></div>
         </div>
       </div>
     </div>

@@ -17,6 +17,7 @@ def index(request):
     context = RequestContext(request)
     converted=""
     if request.method == 'POST':
+        form = SearchForm(request.POST)
         searchlocation = request.POST['searchfor']
         geoloc = Geocoder.geocode(searchlocation)[0]
         address = generate_address(geoloc)
@@ -46,13 +47,22 @@ def index(request):
             return HttpResponse(json.dumps({'attractions': result, 'address':address, 
                                             'max_distance':max_distance, 'destination_exists':False}));
 
-    dict = {'form': SearchForm()}
-    return render_to_response('search/index.html', dict, context);
+    else:
+        print 'creating new form'
+        form = SearchForm()
+    return render_to_response('search/index.html', {'form': form}, context);
 
 def plan(request):
+    print "View:plan!"
     context = RequestContext(request)
 
     return render_to_response('search/plan.html', context)
+
+def home(request):
+    print "View:home!"
+    context = RequestContext(request)
+
+    return render_to_response('search/home.html', context)
 
 def add_destination(request):
     context = RequestContext(request)
@@ -201,6 +211,10 @@ def add_accommodation(request):
     else:
         form = AccommodationForm()
     return render_to_response('search/add_accommodation.html', {'form': form}, context);
+
+def about(request):
+    context = RequestContext(request)
+    return render_to_response('search/about.html', context);
 
 def contact(request):
     context = RequestContext(request)
@@ -373,7 +387,7 @@ def get_points_of_interest_for_destination(request):
         (closest_attractions, max_distance) = find_points_of_interest_for_destination(id)
         print "Closest attractions", closest_attractions
         result = convert_points_of_interest_to_json(closest_attractions)
-        (accommodation, max_distance) = find_accommodation_for_destination(id)
+        (accommodation, max_distance_acco) = find_accommodation_for_destination(id)
         acco_json = convert_accommodation_to_json(accommodation)
         #destination = Destination.objects.get(id=id);
         #result.extend(convert_destinations_to_json([destination]))
@@ -485,7 +499,7 @@ def build_point_of_interest_info(poi):
            "<tr><td><b>Best time:</td><td>" + poi.best_time + "</td></tr>" + \
            "<tr><td><b>Time required:</td><td>" + poi.time_required + "</td></tr>" + \
            "<tr><td><b>Ticket price:</td><td>" + poi.ticket_price + "</td></tr>" + \
-           "<tr><td colspan=\"2\"><img src=\"" + photo_url + "\" width = \"295\" height=\"197\" border=\"1\" /></td></tr>" + \
+           "<tr><td colspan=\"2\"><img src=\"" + photo_url + "\" width = \"295\" height=\"197\"/></td></tr>" + \
            "</table>"
     return info
 
@@ -507,7 +521,7 @@ def build_destination_info(destination):
            "<tr><td><b>Category:</td><td>" + str(destination.category) + "</td></tr>" + \
            "<tr><td><b>Best time:</td><td>" + destination.best_time + "</td></tr>" + \
            "<tr><td><b>Time required:</td><td>" + destination.time_required + "</td></tr>" + \
-           "<tr><td colspan=\"2\"><img src=\"" + photo_url + "\" width = \"295\" height=\"197\" border=\"1\"/></td></tr>" + \
+           "<tr><td colspan=\"2\"><img src=\"" + photo_url + "\" width = \"295\" height=\"197\"/></td></tr>" + \
            "</table>"
     return info
 
