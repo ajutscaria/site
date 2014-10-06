@@ -126,7 +126,7 @@ function calcRoute(start, waypoints, end) {
       var hours = 0;
       var mins = 0;
       // For each route, display summary information.
-      var summary = ""
+      var summary = "<h2>Your itinerary</h2>";
       for (var i = 0; i < route.legs.length; i++) {
         var routeSegment = i + 1;
         summary += '<b>Leg ' + routeSegment + ': ';
@@ -352,6 +352,45 @@ function clickedAttractionCheckbox(id) {
   }
 }
 
+function clickedReadMore(type, id) {
+  urlSubmit = "/search/get_complete_details/"
+  $.ajax({  
+      type: "POST",
+      url: urlSubmit,     
+      dataType: 'json',        
+      data      : {"id":id, "type":type},
+      success: function(response) {
+          selected_info_window.close();
+          selected_info_window = null;
+          resizeMapWithMarkers([point_of_interest_markers, [search_marker]], 75, 100);
+          var summaryPanel = document.getElementById('plan-container');
+          summaryPanel.innerHTML = response.details;
+          $('#planBox').show();
+      },
+      failure: function(data) { 
+          alert('Got an error!');
+      }
+  });
+  return false;
+}
+
+function resizeMapWithMarkers(list_of_marker_arrays, width_percent, height_percent) {
+  $('#map-canvas').css({'width': width_percent.toString() + '%','height': height_percent.toString() + '%'});
+  $('#tripDetailBox').css({'right': (100-width_percent+3).toString() + '%'}); 
+  google.maps.event.trigger(map, 'resize');  
+
+  var latlngbounds = new google.maps.LatLngBounds();
+  for (var i = 0; i < list_of_marker_arrays.length; ++i) {
+    for (var j = 0 ; j < list_of_marker_arrays[i].length; ++j) {
+      if (list_of_marker_arrays[i][j]) {
+        latlngbounds.extend(list_of_marker_arrays[i][j].position); 
+      }
+    }
+  }
+  map.setCenter(latlngbounds.getCenter());
+  map.fitBounds(latlngbounds);
+}
+
 function renderMap(attractions) {
     var latlngbounds = new google.maps.LatLngBounds();
     if (selected_destination_marker != null) {
@@ -472,20 +511,46 @@ function addMarker(place, latlng) {
         if (selected_info_window) {
           selected_info_window.close();
         }
-        quadrant = getPositionEncoding(map.getCenter(), this.position)
-        if (quadrant == "tr") {
-            offset = new google.maps.Size(-200, 430);
-        } else if (quadrant == "tl") {
-            offset = new google.maps.Size(200, 430);
-        } else if (quadrant == "br") {
-            offset = new google.maps.Size(-200, 80);
-        } else if (quadrant == "bl") {
-            offset = new google.maps.Size(200, 80);
+        if (selected_info_window == infowindow) {
+          selected_info_window = null;
+        } else {
+          quadrant = getPositionEncoding(map.getCenter(), this.position)
+          if (quadrant == "tr") {
+              offset = new google.maps.Size(-200, 430);
+          } else if (quadrant == "tl") {
+              offset = new google.maps.Size(200, 430);
+          } else if (quadrant == "br") {
+              offset = new google.maps.Size(-200, 80);
+          } else if (quadrant == "bl") {
+              offset = new google.maps.Size(200, 80);
+          }
+          infowindow.setOptions({pixelOffset : offset}); 
+          infowindow.open(map, marker);
+          selected_info_window = infowindow;
         }
-        infowindow.setOptions({pixelOffset : offset}); 
-        infowindow.open(map, marker);
-        selected_info_window = infowindow;
     });
+    /*google.maps.event.addListener(marker, 'mouseover', function() {
+      quadrant = getPositionEncoding(map.getCenter(), this.position)
+      if (quadrant == "tr") {
+          offset = new google.maps.Size(-200, 430);
+      } else if (quadrant == "tl") {
+          offset = new google.maps.Size(200, 430);
+      } else if (quadrant == "br") {
+          offset = new google.maps.Size(-200, 80);
+      } else if (quadrant == "bl") {
+          offset = new google.maps.Size(200, 80);
+      }
+      infowindow.setOptions({pixelOffset : offset}); 
+      infowindow.open(map, marker);
+      selected_info_window = infowindow;
+    });
+
+    google.maps.event.addListener(marker, 'mouseout', function() {
+      if (selected_info_window) {
+        selected_info_window.close();
+        selected_info_window = null;
+      }
+    });*/
     return marker;
 }
 
@@ -606,10 +671,10 @@ function planTrip() {
   var endAtDetails = endAt.split('_');
   var end;
   if (endAtDetails[0] == "Accommodation") {
-    //alert('end acco' + startFromDetails[1])
+    //alert('End acco' + endAtDetails[1])
     end = accommodation_markers[endAtDetails[1]];
   } else {
-    //alert('Start poi' + startFromDetails[1])
+    //alert('End poi' + endAtDetails[1])
     end = point_of_interest_markers[endAtDetails[1]];
     end_POI = endAtDetails[1];
   }
@@ -621,6 +686,19 @@ function planTrip() {
     }
   });
   //alert(destination_markers[0].position)
+  resizeMapWithMarkers([waypoints, [start, end]], 75, 100)
   calcRoute(start, waypoints, end)
+
+  $('#input-box').hide();
+  $('#filterBox').hide();
+  $('#tripDetailBox').hide();
   $('#planBox').show();
+}
+
+function closePlan() {
+  $('#planBox').hide();
+  $('#input-box').show();
+  $('#filterBox').show();
+  $('#tripDetailBox').show();
+  resizeMapWithMarkers([point_of_interest_markers, [search_marker]], 100, 100)
 }

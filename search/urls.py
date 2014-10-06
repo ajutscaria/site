@@ -22,6 +22,7 @@ urlpatterns = [
     url(r'^filter_results/$', views.filter_results, name='filter_results'),
     url(r'^get_details/$', views.get_details, name='get_details'),
     url(r'^get_points_of_interest_for_destination/$', views.get_points_of_interest_for_destination, name='get_points_of_interest_for_destination'),
+    url(r'^get_complete_details/$', views.get_complete_details, name='get_complete_details'),
     url(r'^about/$', views.about, name='about'),
     url(r'^contact/$', views.contact, name='contact'),
 ]
