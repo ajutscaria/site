@@ -25,6 +25,7 @@ urlpatterns = [
     url(r'^get_complete_details/$', views.get_complete_details, name='get_complete_details'),
     url(r'^about/$', views.about, name='about'),
     url(r'^contact/$', views.contact, name='contact'),
+    url(r'^register/$', views.register, name='register'),
 ]
 
 #urlpatterns += staticfiles_urlpatterns()

@@ -187,6 +187,8 @@ img {
 #add_destination #nav-add_destination,
 #add_point_of_interest #nav-add_point_of_interest,
 #add_accommodation #nav-add_accommodation,
+#login #nav-login,
+#logout #nav-logout,
 #about #nav-about 
 #contact #nav-contact{
   background-color: rgb(80,40,40);

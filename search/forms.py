@@ -3,6 +3,8 @@ from search.models import PointOfInterestCategory, DestinationCategory, Destinat
 from datetime import datetime 
 from pygeocoder import Geocoder
 from geoposition.fields import GeopositionField, Geoposition
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 import autocomplete_light
 
 class SearchForm(forms.Form):
@@ -171,3 +173,18 @@ class AccommodationForm(forms.ModelForm):
     class Meta:
         model = Accommodation
         exclude = ('name', 'state', 'country', 'last_updated_on', 'latest_update', 'added_on', 'added_by')
+
+class RegistrationForm(UserCreationForm):
+    first_name = forms.CharField(max_length=30)
+    last_name = forms.CharField(max_length=30)
+    email = forms.EmailField(max_length=75)
+
+    class Meta:
+        model = User
+        fields = ("username", "first_name", "last_name", "email", "password1", "password2")
+
+    def clean(self):
+        print "Form:RegistrationForm_clean"
+        cleaned_data = self.cleaned_data
+        print cleaned_data
+        return cleaned_data

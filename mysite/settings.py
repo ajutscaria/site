@@ -67,6 +67,17 @@ DATABASES = {
     }
 }
 
+TEMPLATE_DIRS = (
+    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
+    # Always use forward slashes, even on Windows.
+    # Don't forget to use absolute paths, not relative paths.
+    'search/templates',
+)
+
+LOGIN_URL = '/login/'
+
+LOGIN_REDIRECT_URL = '/search/plan/'
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
 
@@ -94,10 +105,3 @@ MEDIA_URL='/media/'
 
 MAX_UPLOAD_SIZE = 10240000  # 20MB
 CONTENT_TYPES = ['image/jpeg', 'image/png']  # .pdf, .jpeg and .png
-
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-AWS_S3_SECURE_URLS = False       # use http instead of https
-AWS_QUERYSTRING_AUTH = False     # don't add complex authentication-related query parameters for requests
-AWS_S3_ACCESS_KEY_ID = ''     # enter your access key id
-AWS_S3_SECRET_ACCESS_KEY = '' # enter your secret access key
-AWS_STORAGE_BUCKET_NAME = 'aju-site'

@@ -1,0 +1,30 @@
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href='/static/css/bootstrap.min.css'>
+    <link rel="stylesheet" type="text/css" href='/static/css/font-awesome.min.css'>
+    <link rel="stylesheet" type="text/css" href='/static/css/style.css'>
+    <script type='text/javascript' src='/static/js/jquery-1.11.1.min.js'></script>
+</head>
+<body id="login" style="padding-top:90px">
+    {% include "search/menu.html" %}
+    <div id="content" style="width:600px">
+		{% if form.errors %}
+		<div class="alert alert-danger">Your username and password didn't match. Please try again.</div>
+		{% endif %}
+		<form method="post" action="{% url 'django.contrib.auth.views.login' %}" class="form-horizontal">
+			{% csrf_token %}
+			<div class="form-group">
+				<label class="control-label col-sm-3">{{ form.username.label_tag }}</label>
+	            <div class="col-sm-9">{{ form.username }}</div>
+			</div>
+			<div class="form-group">
+				<label class="control-label col-sm-3">{{ form.password.label_tag }}</label>
+	            <div class="col-sm-9">{{ form.password }}</div>
+			</div>
+			<button type="submit" class="btn btn-primary">Login</button>
+			<input type="hidden" name="next" value="{{ next }}" />
+		</form>
+		<a href="#" onclick="window.location.href='/search/register/'">Sign Up</a>
+	</div>
+</body>
+</html>
