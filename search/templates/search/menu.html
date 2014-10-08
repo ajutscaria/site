@@ -35,6 +35,7 @@
 
       <ul class="nav navbar-nav navbar-right" id="right-nav-section">
           {% if user.is_authenticated %}
+          <li><a>Hello&nbsp;{{ user.first_name }}!</a></li>
           <li id="log-text"><a class="navbar-link" href="/logout/" id="nav-logout"><span class="fa fa-sign-out fa-fw fa-lg"></span>Log Out</a></li>
           {% else %}
           <li id="log-text"><a class="navbar-link" href="/login/" id="nav-login"><span class="fa fa-sign-in fa-fw fa-lg"></span>Log In</a></li>

@@ -425,6 +425,7 @@ function renderMapControls(attractions, destination_exists) {
   if (!destination_exists) {
     $('#filters_additional').hide();
     $('#tripDetailBox').hide();
+    $('#promptAddDestination').show();
   } else {
     $('#filters_additional').show();
     $('#tripDetailBox').show();

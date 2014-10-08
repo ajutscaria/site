@@ -53,7 +53,7 @@ class Destination(models.Model):
     time_required = models.CharField(max_length=50, default="")
     photo = models.ImageField("Picture", upload_to=get_destination_image_path, blank=True, null=True)
     added_on = models.DateTimeField(default="2001-01-01 00:00")
-    added_by = models.CharField(max_length=20, default="aju")
+    added_by = models.CharField(max_length=20, default="")
 
     def __unicode__(self):
         return self.full_name()
@@ -83,7 +83,7 @@ class PointOfInterest(models.Model):
     open_hours = models.CharField(max_length=50, default="")
     time_required = models.CharField(max_length=50, default="")
     added_on = models.DateTimeField(default="2001-01-01 00:00")
-    added_by = models.CharField(max_length=20, default="aju")
+    added_by = models.CharField(max_length=20, default="")
     url = models.CharField(max_length=50, default="")
     photo = models.ImageField("Picture", upload_to=get_point_of_interest_image_path, blank=True, null=True)
     ticket_price = models.CharField(max_length=50, default="")
@@ -106,7 +106,7 @@ class Accommodation(models.Model):
     destination = models.ForeignKey(Destination, default=1)
     description = models.CharField(max_length=200, default="")
     added_on = models.DateTimeField(default="2001-01-01 00:00")
-    added_by = models.CharField(max_length=20, default="aju")
+    added_by = models.CharField(max_length=20, default="")
     last_updated_on = models.DateTimeField(default="2001-01-01 00:00")
     latest_update = models.CharField(max_length=100, default="")
 

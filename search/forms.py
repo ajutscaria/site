@@ -27,6 +27,7 @@ class DestinationForm(forms.ModelForm):
     time_required = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'size':80, 'class': 'form-control'}), 
                                     help_text="Time required", required=False)
     photo = forms.ImageField(help_text="Upload picture", required=False)
+    added_by = forms.CharField(max_length=20, widget=forms.HiddenInput(), required=False)
 
     def clean(self):
         print "Form:DestinationForm_clean"
@@ -50,10 +51,9 @@ class DestinationForm(forms.ModelForm):
         instance.state_id = state.id
         instance.latitude = geoloc.coordinates[0]
         instance.longitude = geoloc.coordinates[1]
-        instance.added_by = "aju"
         #I'm wondering why this is not handled by the the default value tha tis being set. Enough time wasted on this.
         instance.added_on = datetime.utcnow()
-        print 'Going to commit data'
+        print 'Going to commit data', instance.added_by
         if commit:
             instance.save()
         return instance
@@ -86,7 +86,6 @@ class PointOfInterestForm(forms.ModelForm):
     def clean(self):
         print "Form:PointOfInterestForm_clean"
         cleaned_data = self.cleaned_data
-        cleaned_data['added_by'] = "aju"
         #I'm wondering why this is not handled by the the default value tha tis being set. Enough time wasted on this.
         cleaned_data['added_on'] = datetime.utcnow()
         print "Cleaned POI data", cleaned_data
@@ -139,7 +138,6 @@ class AccommodationForm(forms.ModelForm):
     def clean(self):
         print "Form:AccommodationForm_clean"
         cleaned_data = self.cleaned_data
-        cleaned_data['added_by'] = "aju"
         #I'm wondering why this is not handled by the the default value tha tis being set. Enough time wasted on this.
         cleaned_data['added_on'] = datetime.utcnow()
         print "Cleaned Accommodation data", cleaned_data

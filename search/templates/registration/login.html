@@ -11,6 +11,9 @@
 		{% if form.errors %}
 		<div class="alert alert-danger">Your username and password didn't match. Please try again.</div>
 		{% endif %}
+		{% if request.GET.next %}
+		<div class="alert alert-info">You need to be logged in to add/edit information. Please login.</div>
+		{% endif %}
 		<form method="post" action="{% url 'django.contrib.auth.views.login' %}" class="form-horizontal">
 			{% csrf_token %}
 			<div class="form-group">

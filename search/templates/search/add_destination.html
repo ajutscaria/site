@@ -8,9 +8,9 @@
     <link rel="stylesheet" type="text/css" href='/static/css/font-awesome.min.css'>
     <!-- Should be added last otherwise links are not displayed with proper colors-->
     <link rel="stylesheet" type="text/css" href='/static/css/style.css'>
-    <script type="text/javascript" src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBF_ghimLOB28fkKBKv6Nn8c7k1cbaSD-A&libraries=places'></script>
     <script type='text/javascript' src='/static/js/jquery-1.11.1.min.js'></script>
     <script type='text/javascript' src='/static/js/add_destination.js'></script>
+    <script type="text/javascript" src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBF_ghimLOB28fkKBKv6Nn8c7k1cbaSD-A&libraries=places'></script>
 </head>
 <body id="add_destination" style="padding-top:60px">
     {% include "search/menu.html" %}
@@ -26,7 +26,7 @@
             {% if edit %}
             <div id="infobox">
             {% else %}
-            <div id="infobox" style="display: none;">
+            <div id="infobox" style="display:none;">
             {% endif %}
                 <table><tr><td>
                         {% for field in form.visible_fields %}

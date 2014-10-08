@@ -13,6 +13,7 @@
     {% include "search/menu.html" %}
     <form action="" method="post" id="searchform">{% csrf_token %}
       <input id="input-box" class="controls" type="text" placeholder="Search for a destination"></input>
+      <div id="promptAddDestination" class="alert alert-info" role="alert" style="display:none">Destination does not exist. <a href="/search/add_destination/">Add one?</a></div>
     </form>
     <div style="height:100%; margin: 0px; padding: 0px">
       <div id="map-canvas"></div>

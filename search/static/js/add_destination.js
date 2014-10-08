@@ -153,38 +153,38 @@ function searchForLocation(location, name, latlng, state, country) {
 	clearFormFields();
   $('#infobox').hide();
 	var urlSubmit = '/search/search_to_add_destination/'
-    $.ajax({  
-        type: "POST",
-        url: urlSubmit,             
-        data      : {'searchfor': location, 'name':name, 'state': state, 'country': country, 'latitude': latlng.lat(), 'longitude': latlng.lng()},
-        success: function(response){
-        	var jsonData = $.parseJSON(response);
-        	$('#id_address').val(jsonData.address);
-          initializeMap(jsonData.latitude, jsonData.longitude, jsonData.address);
+  $.ajax({  
+      type: "POST",
+      url: urlSubmit,             
+      data      : {'searchfor': location, 'name':name, 'state': state, 'country': country, 'latlng': latlng.toString()},
+      success: function(response){
+      	var jsonData = $.parseJSON(response);
+      	$('#id_address').val(jsonData.address);
+        initializeMap(jsonData.latitude, jsonData.longitude, jsonData.address);
 
-          $('#id_latitude').val(jsonData.latitude);
-          $('#id_longitude').val(jsonData.longitude);
-        	if (jsonData.exists) {
-        		$('#messagebox').show();
-        		makeFormFieldsReadOnly();
-          	$('#id_description').val(jsonData.description);
-          	$('#id_category').val(jsonData.category);
-          	$('#id_open_hours').val(jsonData.time_required);
-          	$('#id_time_required').val(jsonData.time_required);
-          	$('#id_open_hours').val(jsonData.open_hours);
-          	$('#id_best_time').val(jsonData.best_time);
-          	$('#savedestination').hide();
-        	} else { 
-	        	$('#savedestination').show();
-                makeFormFieldsEditable();
-	        }
-	        $('#infobox').show();
-            $('#reset').show();
-        },
-        failure: function(data) { 
-        	alert('Got an error!');
-    	}
-    });
+        $('#id_latitude').val(jsonData.latitude);
+        $('#id_longitude').val(jsonData.longitude);
+      	if (jsonData.exists) {
+      		$('#messagebox').show();
+      		makeFormFieldsReadOnly();
+        	$('#id_description').val(jsonData.description);
+        	$('#id_category').val(jsonData.category);
+        	$('#id_open_hours').val(jsonData.time_required);
+        	$('#id_time_required').val(jsonData.time_required);
+        	$('#id_open_hours').val(jsonData.open_hours);
+        	$('#id_best_time').val(jsonData.best_time);
+        	$('#savedestination').hide();
+      	} else { 
+        	$('#savedestination').show();
+              makeFormFieldsEditable();
+        }
+        $('#infobox').show();
+          $('#reset').show();
+      },
+      failure: function(data) { 
+      	alert('Got an error!');
+  	}
+  });
 }
 
 var map;
