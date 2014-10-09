@@ -16,46 +16,6 @@ from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponseRedirect
 from django.contrib.auth import authenticate, login
 
-def index(request):
-    print "View:index!"
-    context = RequestContext(request)
-    converted=""
-    if request.method == 'POST':
-        form = SearchForm(request.POST)
-        searchlocation = request.POST['searchfor']
-        geoloc = Geocoder.geocode(searchlocation)[0]
-        address = generate_address(geoloc)
-        print "searchfor:", searchlocation
-        print "converted address", address
-        loc = Geoposition(geoloc.coordinates[0], geoloc.coordinates[1])
-        destinations = Destination.objects.filter(address=address);
-        if destinations.exists():
-            print "Destination exists in database"
-            destination = destinations[0]
-            (closest_attractions, max_distance) = find_points_of_interest_for_destination(destination.id)
-            print "Closest attractions:", closest_attractions, "max_distance:", max_distance
-            result = convert_destinations_to_json([destination])
-            result.extend(convert_points_of_interest_to_json(closest_attractions))
-            (accommodation, max_acco_distance) = find_accommodation_for_destination(destination.id)
-            result.extend(convert_accommodation_to_json(accommodation))
-            print 'all done', result
-            return HttpResponse(json.dumps({'attractions': result, 'address':address,
-                                            'max_distance':max_distance, 'destination_exists':True}));
-        else:
-            print "Destination DOES NOT EXIST in database"
-            (closest_destinations, max_distance) = find_destinations_in_range(loc, 200)
-            #closest_attractions = find_points_of_interest_in_range(loc, 200)
-            print "Closest destinations:", closest_destinations, "max_distance:", max_distance
-            result = convert_location_to_json(geoloc.coordinates[0], geoloc.coordinates[1], address, "")
-            result.extend(convert_destinations_to_json(closest_destinations))
-            return HttpResponse(json.dumps({'attractions': result, 'address':address, 
-                                            'max_distance':max_distance, 'destination_exists':False}));
-
-    else:
-        print 'creating new form'
-        form = SearchForm()
-    return render_to_response('search/index.html', {'form': form}, context);
-
 def home(request):
     print "View:home!"
     context = RequestContext(request)

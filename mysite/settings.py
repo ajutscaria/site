@@ -37,6 +37,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'autocomplete_light',
+    'geoposition',
     'storages',
     'jquery',
     'search',

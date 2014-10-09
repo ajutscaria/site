@@ -6,6 +6,7 @@ from pygeocoder import Geocoder
 from django.http import HttpResponse
 import json
 import math
+from geoposition.fields import Geoposition
 from PIL import Image as PImage
 from os.path import join as pjoin
 from django.conf import settings
