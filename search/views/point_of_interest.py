@@ -21,6 +21,7 @@ from django.contrib.auth import authenticate, login
 def add(request):
     print 'In add_point_of_interest method'
     context = RequestContext(request)
+    saved = False;
     if request.method == 'POST':
         form = PointOfInterestForm(request.POST)
         print request.FILES
@@ -30,34 +31,66 @@ def add(request):
             interests = PointOfInterest.objects.filter(address=form.cleaned_data['address']);
             if interests.exists():
                 print "##Already added##"
-                interest = interests[0]
-                interest.description = form.cleaned_data['description']
-                interest.category = form.cleaned_data['category']
-                interest.open_hours = form.cleaned_data['open_hours']
-                interest.time_required = form.cleaned_data['time_required']
-                interest.ticket_price = form.cleaned_data['ticket_price']
-                interest.best_time = form.cleaned_data['best_time']
-                interest.latitude = form.cleaned_data['latitude']
-                interest.longitude = form.cleaned_data['longitude']
+                interests.update(description=form.cleaned_data['description'])
+                interests.update(category=form.cleaned_data['category'])
+                interests.update(open_hours=form.cleaned_data['open_hours'])
+                interests.update(time_required=form.cleaned_data['time_required'])
+                interests.update(ticket_price=form.cleaned_data['ticket_price'])
+                interests.update(salience=form.cleaned_data['salience'])
+                interests.update(best_time=form.cleaned_data['best_time'])
+                interests.update(latitude=form.cleaned_data['latitude'])
+                interests.update(longitude=form.cleaned_data['longitude'])
                 if 'photo' in request.FILES:
+                    interest = interests[0]
                     interest.photo.delete(False);
                     interest.photo = request.FILES['photo'];
                     print interest.photo.url
                 interest.save()
-                print interest.photo.url
+                print interests[0].photo.url
             else:
+                if request.user.is_authenticated():     
+                    print "User authenticated", request.user.username
+                    form.instance.added_by = request.user.username
                 form.save()
                 if 'photo' in request.FILES:
                     form.instance.photo = request.FILES['photo'];
                     form.save()
                     print "Upload file name", request.FILES['photo'].name, form.instance.id
-            print "Got ID", form.instance.id
+                saved = True;
+                print "Got ID", form.instance.id
+                form = PointOfInterest()
         else:
             print "form is not valid"
             print form.errors
     else:
         form = PointOfInterestForm()
-    return render_to_response('search/add_point_of_interest.html', {'form': form}, context);
+    print "Saved?", saved
+    return render_to_response('search/add_point_of_interest.html', {'form': form, 'saved': saved}, context);
+
+@login_required
+def add_for_destination(request, id):
+    print 'In add_point_of_interest_for_destination method. Id:', id
+    context = RequestContext(request)
+    saved = False
+    if request.method == 'POST':
+        form = PointOfInterestForm(request.POST)
+        if form.is_valid():
+            if request.user.is_authenticated():     
+                print "User authenticated", request.user.username
+                form.instance.added_by = request.user.username
+            form.save()
+            if 'photo' in request.FILES:
+                form.instance.photo = request.FILES['photo'];
+                form.save()
+                print "Upload file name", request.FILES['photo'].name, form.instance.id
+            saved = True;
+            print "Got ID", form.instance.id
+    else:
+        poi = PointOfInterest(destination_id=id);
+        form = PointOfInterestForm(instance=poi)
+    print "set id to", form.instance.destination
+    print "Saved?", saved    
+    return render_to_response('search/add_point_of_interest.html', {'form': form, 'edit': False, 'saved':saved}, context);
 
 def search(request):
     print "View:search_to_add_point_of_interest!"

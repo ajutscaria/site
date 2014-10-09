@@ -24,8 +24,7 @@ class DestinationForm(forms.ModelForm):
                                 help_text="Best time to visit", required=False)
     open_hours = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'size':80, 'class': 'form-control'}), 
                                  help_text="Open hours", required=False)
-    time_required = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'size':80, 'class': 'form-control'}), 
-                                    help_text="Time required", required=False)
+    time_required = forms.DecimalField(help_text="Time required (in days e.g. '2.5')", required=False)
     photo = forms.ImageField(help_text="Upload picture", required=False)
     added_by = forms.CharField(max_length=20, widget=forms.HiddenInput(), required=False)
 
@@ -48,6 +47,7 @@ class DestinationForm(forms.ModelForm):
         if not geoloc_state:
             geoloc_state = "None"
         state, created = State.objects.get_or_create(name=geoloc_state, country_id=instance.country_id)
+
         instance.state_id = state.id
         instance.latitude = geoloc.coordinates[0]
         instance.longitude = geoloc.coordinates[1]
@@ -79,7 +79,7 @@ class PointOfInterestForm(forms.ModelForm):
     best_time = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'size':80,'class':'form-control'}), help_text="Best time to visit", required=False)
     open_hours = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'size':80,'class':'form-control'}), help_text="Open hours", required=False)
     ticket_price = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'size':80,'class':'form-control'}), help_text="Ticket price", required=False)
-    time_required = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'size':80,'class':'form-control'}), help_text="Time required", required=False)
+    time_required = forms.DecimalField(help_text="Time required (in hours e.g. 2.5)", required=False)
     url = forms.CharField(max_length=50, widget=forms.HiddenInput(), required=False)
     photo = forms.ImageField(help_text="Upload picture", required=False)
 
@@ -106,6 +106,10 @@ class PointOfInterestForm(forms.ModelForm):
         instance.country_id = country.id
         state, created = State.objects.get_or_create(name=state_name, country_id=instance.country_id)
         instance.state_id = state.id
+
+        if not instance.time_required:
+            instance.time_required = "0"
+
         #instance.latitude = geoloc.coordinates[0]
         #instance.longitude = geoloc.coordinates[1]
         instance.salience = 0

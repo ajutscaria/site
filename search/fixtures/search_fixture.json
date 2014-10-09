@@ -147,6 +147,20 @@
     }
 },
 {
+    "pk": 5, 
+    "model": "search.country", 
+    "fields": {
+        "name": "India"
+    }
+},
+{
+    "pk": 6, 
+    "model": "search.country", 
+    "fields": {
+        "name": "French Polynesia"
+    }
+},
+{
     "pk": 1, 
     "model": "search.state", 
     "fields": {
@@ -261,6 +275,42 @@
         "country": 1, 
         "code": "", 
         "name": "Arkansas"
+    }
+},
+{
+    "pk": 14, 
+    "model": "search.state", 
+    "fields": {
+        "country": 5, 
+        "code": "", 
+        "name": "Kerala"
+    }
+},
+{
+    "pk": 15, 
+    "model": "search.state", 
+    "fields": {
+        "country": 5, 
+        "code": "", 
+        "name": "Tamil Nadu"
+    }
+},
+{
+    "pk": 16, 
+    "model": "search.state", 
+    "fields": {
+        "country": 5, 
+        "code": "", 
+        "name": "Karnataka"
+    }
+},
+{
+    "pk": 17, 
+    "model": "search.state", 
+    "fields": {
+        "country": 6, 
+        "code": "", 
+        "name": "None"
     }
 },
 {
@@ -509,7 +559,7 @@
     "pk": 15, 
     "model": "search.destination", 
     "fields": {
-        "category": 1, 
+        "category": 5, 
         "rating": "0", 
         "photo": "", 
         "name": "San Diego", 
@@ -2106,7 +2156,7 @@
         "destination": 8, 
         "state": 3, 
         "salience": 4, 
-        "latitude": "42.9306857", 
+        "latitude": "42.9309213", 
         "time_required": "10 mins", 
         "added_by": "aju", 
         "description": "asdf", 
@@ -2116,7 +2166,7 @@
         "name": "Cloudcap", 
         "url": "ddd", 
         "country": 1, 
-        "longitude": "-122.0441926", 
+        "longitude": "-122.0464886", 
         "ticket_price": "asdf", 
         "added_on": "2001-01-01T00:00:00Z"
     }
@@ -2201,6 +2251,34 @@
         "url": "ddd", 
         "country": 1, 
         "longitude": "-121.503755", 
+        "ticket_price": "", 
+        "added_on": "2001-01-01T00:00:00Z"
+    }
+},
+{
+    "pk": 49, 
+    "model": "search.pointofinterest", 
+    "fields": {
+        "rating": "0", 
+        "photo": "", 
+        "number_of_ratings": 0, 
+        "last_updated_on": "2001-01-01T00:00:00Z", 
+        "category": 1, 
+        "best_time": "", 
+        "destination": 6, 
+        "state": 1, 
+        "salience": 0, 
+        "latitude": "22.1958872", 
+        "time_required": "", 
+        "added_by": "", 
+        "description": "", 
+        "open_hours": "", 
+        "latest_update": "", 
+        "address": "Kalalau Trail, Hawaii, United States", 
+        "name": "Kalalau Trail", 
+        "url": "ddd", 
+        "country": 1, 
+        "longitude": "-159.6203563", 
         "ticket_price": "", 
         "added_on": "2001-01-01T00:00:00Z"
     }

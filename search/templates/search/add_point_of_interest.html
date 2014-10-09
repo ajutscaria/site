@@ -22,8 +22,11 @@
             </form>
         {% endif %}
         <form action="" method="post" id="looksgoodform" enctype="multipart/form-data" class="form-horizontal">{% csrf_token %}
+            {% if saved %}
+            <div class="alert alert-info" role="alert">Point of interest added. Add another one? Just search for it above.</div>
+            {% endif %}
             <div id="messagebox" style="display: none;"><div class="alert alert-info" role="alert"><strong>Heads up!</strong>&nbsp;Point of interest already exists.&nbsp;<a href="" id="edit">Edit it?</a></div></div>
-            {% if edit %}
+            {% if edit or form.errors %}
             <div id="infobox">
             {% else %}
             <div id="infobox" style="display: none;">
@@ -34,6 +37,7 @@
                         <div class="form-group">
                             <label class="control-label col-sm-3">{{ field.help_text }}</label>
                             <div class="col-sm-9">{{ field }}</div>
+                            {{ field.errors }}
                         </div>
                         {% endfor %}
                     </table></td>

@@ -23,6 +23,46 @@ def plan(request):
 
     return render_to_response('search/plan.html', context)
 
+def explore(request):
+    print "View:explore!"
+    context = RequestContext(request)
+    converted=""
+    if request.method == 'POST':
+        form = SearchForm(request.POST)
+        searchlocation = request.POST['searchfor']
+        geoloc = Geocoder.geocode(searchlocation)[0]
+        address = generate_address(geoloc)
+        print "searchfor:", searchlocation
+        print "converted address", address
+        loc = Geoposition(geoloc.coordinates[0], geoloc.coordinates[1])
+        destinations = Destination.objects.filter(address=address);
+        if destinations.exists():
+            print "Destination exists in database"
+            destination = destinations[0]
+            (closest_attractions, max_distance) = find_points_of_interest_for_destination(destination.id)
+            print "Closest attractions:", closest_attractions, "max_distance:", max_distance
+            result = convert_destinations_to_json([destination])
+            result.extend(convert_points_of_interest_to_json(closest_attractions))
+            (accommodation, max_acco_distance) = find_accommodation_for_destination(destination.id)
+            result.extend(convert_accommodation_to_json(accommodation))
+            print 'all done', result
+            return HttpResponse(json.dumps({'attractions': result, 'address':address,
+                                            'max_distance':max_distance, 'destination_exists':True}));
+        else:
+            print "Destination DOES NOT EXIST in database"
+            (closest_destinations, max_distance) = find_destinations_in_range(loc, 200)
+            #closest_attractions = find_points_of_interest_in_range(loc, 200)
+            print "Closest destinations:", closest_destinations, "max_distance:", max_distance
+            result = convert_location_to_json(geoloc.coordinates[0], geoloc.coordinates[1], address, "")
+            result.extend(convert_destinations_to_json(closest_destinations))
+            return HttpResponse(json.dumps({'attractions': result, 'address':address, 
+                                            'max_distance':max_distance, 'destination_exists':False}));
+
+    else:
+        print 'creating new form'
+        form = SearchForm()
+    return render_to_response('search/index.html', {'form': form}, context);
+
 def filter_results(request):
     # To handle AJAX requests from the form
     if request.method == "POST":
@@ -152,7 +192,7 @@ def get_complete_details(request):
             if poi.photo:
                 photo_url = poi.photo.url;
             details = "<b>" + poi.name + "</b>&nbsp;&nbsp;" \
-                   "<a href=\"/search/add_point_of_interest/" + str(poi.id) + "/edit\" target=\"_blank\">Edit..</a><br/><table>" + \
+                   "<a href=\"/search/edit_point_of_interest/" + str(poi.id) + "/\" target=\"_blank\">Edit..</a><br/><table>" + \
                    "<tr><td><b>Address:</b></td><td>" + poi.address + "</td></tr>" + \
                    "<tr><td><b>Description:</td><td>" + poi.description + "</td></tr>" + \
                    "<tr><td><b>Category:</td><td>" + str(poi.category) + "</td></tr>" + \
@@ -169,7 +209,7 @@ def get_complete_details(request):
             if destination.photo:
                 photo_url = destination.photo.url;
             details = "<b>" + destination.name + "</b>&nbsp;&nbsp;" \
-                   "<a href=\"/search/add_destination/" + str(destination.id) + "/edit\" target=\"_blank\">Edit..</a><br/><table>" + \
+                   "<a href=\"/search/edit_destination/" + str(destination.id) + "/\" target=\"_blank\">Edit..</a><br/><table>" + \
                    "<tr><td><b>Address:</b></td><td>" + destination.address + "</td></tr>" + \
                    "<tr><td><b>Description:</td><td>" + destination.description + "</td></tr>" + \
                    "<tr><td><b>Category:</td><td>" + str(destination.category) + "</td></tr>" + \
@@ -223,7 +263,7 @@ def build_point_of_interest_info(poi):
     if poi.photo:
         photo_url = poi.photo.url;
     info = "<b>" + poi.name + "</b>&nbsp;<a href=\"\" onclick=\"return clickedReadMore('PointOfInterest'," + str(poi.id) + ");\">Read more..</a>&nbsp;" \
-           "<a href=\"/search/add_point_of_interest/" + str(poi.id) + "/edit\" target=\"_blank\">Edit..</a><br/><table>" + \
+           "<a href=\"/search/edit_point_of_interest/" + str(poi.id) + "/\" target=\"_blank\">Edit..</a><br/><table>" + \
            "<tr><td><b>Description:</td><td>" + poi.description + "</td></tr>" + \
            "<tr><td><b>Category:</td><td>" + str(poi.category) + "</td></tr>" + \
            "<tr><td><b>Salience:</td><td>" + str(poi.salience) + "</td></tr>" + \
@@ -245,8 +285,8 @@ def build_destination_info(destination):
     if destination.photo:
         photo_url = destination.photo.url;
     info = "<b>" + destination.name + "</b>&nbsp;<a href=\"\" onclick=\"return clickedReadMore('Destination'," + str(destination.id) + ");\">Read more..</a>&nbsp;" \
-           "<a href=\"/search/add_destination/" + str(destination.id) + "/edit\" target=\"_blank\">Edit..</a>" \
-           "<a href=\"/search/add_point_of_interest/destination/" + str(destination.id) + "\" target=\"_blank\">Add..</a><br/><table>" + \
+           "<a href=\"/search/edit_destination/" + str(destination.id) + "/\" target=\"_blank\">Edit..</a>" \
+           "<a href=\"/search/add_point_of_interest/destination/" + str(destination.id) + "/\" target=\"_blank\">Add..</a><br/><table>" + \
            "<tr><td><b>Description:</td><td>" + destination.description + "</td></tr>" + \
            "<tr><td><b>Category:</td><td>" + str(destination.category) + "</td></tr>" + \
            "<tr><td><b>Best time:</td><td>" + destination.best_time + "</td></tr>" + \

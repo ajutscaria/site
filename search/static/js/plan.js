@@ -217,7 +217,7 @@ function initialize() {
 }
 
 function searchForPointsOfInterest(search_location) {
-    var urlSubmit = '/search/index/'
+    var urlSubmit = '/search/explore/'
     $.ajax({  
         type: "POST",
         url: urlSubmit,     
@@ -236,6 +236,10 @@ function searchForPointsOfInterest(search_location) {
             alert('Got an error!');
         }
     });
+}
+
+function addDestinationLinkClicked() {
+  window.location.replace("/search/add_destination?searchfor=" + $('#input-box').val());
 }
 
 function loadCategories(attractions) {
@@ -416,8 +420,23 @@ function renderMap(attractions) {
           count++;
        }
     }
+
     map.setCenter(latlngbounds.getCenter());
-    map.fitBounds(latlngbounds); 
+
+    // If only the destination is added, we don't want to zoom into just that.
+    if (attractions.length == 1) {
+      map.setZoom(10)
+      if (search_marker && search_marker.type == "Destination") {
+        showMessage("No point of interests. <a href=\"/search/add_point_of_interest/destination/" + search_marker.id + "\/\">Add one?</a>")
+      }
+    } else {
+      map.fitBounds(latlngbounds); 
+    }
+}
+
+function showMessage(message) {
+  $('#message').html(message);
+  $('#message').show();
 }
 
 function renderMapControls(attractions, destination_exists) {

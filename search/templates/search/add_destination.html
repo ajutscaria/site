@@ -16,24 +16,31 @@
     {% include "search/menu.html" %}
     <div id="content" style="width:1000px">
         {% if not edit %}
-            <form action="" method="post" id="searchform">{% csrf_token %}
-                <input id="input-box" class="controls" type="text" placeholder="Search for destination"></input>
-                <button type="submit" class="btn btn-primary">Search</button>
-            </form>
+        <div style="padding-bottom:20px">
+            <input id="input-box" class="controls" type="text" placeholder="Search for destination"></input>
+            <button type="submit" class="btn btn-primary">Search</button>
+        </div>
         {% endif %}
         <form action="" method="post" id="looksgoodform" enctype="multipart/form-data" class="form-horizontal">{% csrf_token %}
+            {% if form.errors %}
+            <div class="alert alert-danger">The form has errors. Please check the information.</div>
+            {% endif %}
+            {% if saved %}
+            <div class="alert alert-info" role="alert">Destination added. <a href="{% url 'add_point_of_interest_for_destination' destination_id %}">Add points of interest</a> for the destination?</div>
+            {% endif %}
             <div id="messagebox" style="display: none;"><div class="alert alert-info" role="alert"><strong>Heads up!</strong>&nbsp;Destination already exists.&nbsp;<a href="" id="edit">Edit it?</a></div></div>
-            {% if edit %}
+            {% if edit or form.errors %}
             <div id="infobox">
             {% else %}
             <div id="infobox" style="display:none;">
             {% endif %}
                 <table><tr><td>
                         {% for field in form.visible_fields %}
-                        <div class="form-group">
-                            <label class="control-label col-sm-3">{{ field.help_text }}</label>
-                            <div class="col-sm-9">{{ field }}</div>
-                        </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-3">{{ field.help_text }}</label>
+                                <div class="col-sm-9">{{ field }}</div>
+                                {{ form.field.errors }}
+                            </div>
                         {% endfor %}
                     </td>
                     <td style="padding:20px"><div id="destination-map-canvas"></div></td></tr>

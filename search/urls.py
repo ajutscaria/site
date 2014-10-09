@@ -8,13 +8,14 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     url(r'^$', views.views.index, name='index'),
-    url(r'^index/$', views.views.index, name='index'),
+    url(r'^explore/$', views.plan.explore, name='explore'),
     url(r'^plan/$', views.plan.plan, name='plan'),
     url(r'^home/$', views.views.home, name='home'),
     url(r'^add_destination/$', views.destination.add, name='add_destination'),
-    url(r'^add_destination/(?P<id>[0-9]+)/edit$', views.destination.edit, name='edit_destination'),
+    url(r'^edit_destination/(?P<id>[0-9]+)/$', views.destination.edit, name='edit_destination'),
     url(r'^add_point_of_interest/$', views.point_of_interest.add, name='add_point_of_interest'),
-    url(r'^add_point_of_interest/(?P<id>[0-9]+)/edit$', views.point_of_interest.edit, name='edit_point_of_interest'),
+    url(r'^edit_point_of_interest/(?P<id>[0-9]+)/$', views.point_of_interest.edit, name='edit_point_of_interest'),
+    url(r'^add_point_of_interest/destination/(?P<id>[0-9]+)/$', views.point_of_interest.add_for_destination, name='add_point_of_interest_for_destination'),
     url(r'^add_accommodation/$', views.accommodation.add, name='add_accommodation'),
     url(r'^search_for_location/$', views.views.search_for_location, name='search_for_location'),
     url(r'^search_to_add_destination/$', views.destination.search, name='search_to_add_destination'),

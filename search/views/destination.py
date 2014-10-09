@@ -21,6 +21,9 @@ from django.contrib.auth import authenticate, login
 def add(request):
     print "In add_destination method."
     context = RequestContext(request)
+    saved = False
+    edit = False
+    id = -1
     if request.method == 'POST':
         form = DestinationForm(request.POST)
         print "Going to check if form is valid"
@@ -29,16 +32,19 @@ def add(request):
             destinations = Destination.objects.filter(address=form.cleaned_data['address']);
             if destinations.exists():
                 print "##Already added##"
-                destination = destinations[0]
-                destination.description = form.cleaned_data['description']
-                destination.category = form.cleaned_data['category']
-                destination.open_hours = form.cleaned_data['open_hours']
-                destination.time_required = form.cleaned_data['time_required']
-                destination.best_time = form.cleaned_data['best_time']
+                destinations.update(description=form.cleaned_data['description'])
+                destinations.update(category=form.cleaned_data['category'])
+                destinations.update(open_hours=form.cleaned_data['open_hours'])
+                destinations.update(time_required=form.cleaned_data['time_required'])
+                destinations.update(best_time=form.cleaned_data['best_time'])
+                destinations.update(latitude=form.cleaned_data['latitude'])
+                destinations.update(longitude=form.cleaned_data['longitude'])
                 if 'photo' in request.FILES:
+                    destination = destinations[0]
                     destination.photo.delete(False);
                     destination.photo = request.FILES['photo'];
-                destination.save()
+                id = destinations[0].id;
+                saved = True;
             else:
                 if request.user.is_authenticated():     
                     print "User authenticated", request.user.username
@@ -47,12 +53,32 @@ def add(request):
                 if 'photo' in request.FILES:
                     form.instance.photo = request.FILES['photo'];
                     form.save()
+                saved = True
+                id = form.instance.id
         else:
+            print '********FOUND ERRORS IN FORM************'
             print form.errors
-    else:
-        print "form is not valid"
-        form = DestinationForm()
-    return render_to_response('search/add_destination.html', {'form': form}, context);
+
+    elif request.method == "GET":
+        searchlocation = request.GET.get('searchfor','')
+        if searchlocation:
+            print "Found location from search:", searchlocation
+            geoloc = Geocoder.geocode(searchlocation)[0]
+            latitude = geoloc.coordinates[0]
+            longitude = geoloc.coordinates[1]
+            address = generate_address(geoloc)
+
+            dest = Destination(address = address, latitude = latitude, longitude = longitude);
+            form = DestinationForm(instance = dest)
+            context = RequestContext(request)
+
+            edit = True;
+        else:
+            form = DestinationForm()
+    print "DestinationID:", id
+    return render_to_response('search/add_destination.html', 
+                              {'form': form, 'saved': saved, 'destination_id': id, 'edit': edit},
+                              context);
 
 @login_required
 def search(request):
@@ -108,6 +134,7 @@ def edit(request, id):
     print "In edit_destination. ID", id
     context = RequestContext(request)
     destinations = Destination.objects.filter(id=id);
+    saved = False;
     if destinations.exists():
         if request.method == 'POST':
             form = DestinationForm(request.POST)
@@ -124,6 +151,19 @@ def edit(request, id):
                     destination.photo.delete(False);
                     destination.photo = request.FILES['photo']
                     destination.save()
+                saved = True
         else:
             form = DestinationForm(instance=destinations[0])
-        return render_to_response('search/add_destination.html', {'form': form, 'edit': True}, context);
+        return render_to_response('search/add_destination.html', {'form': form, 'edit': True, 'saved': saved, 'destination_id': id}, context);
+
+def generate_address(geoloc):
+    print "generate_address", str(geoloc)
+    print "Name", str(geoloc).split(',')[0].strip()
+    print "State", geoloc.state
+    print "Country", geoloc.country
+    address = str(geoloc).split(',')[0].strip()
+    if geoloc.state:
+        address += ", " + str(geoloc.state)
+    address += ", " + str(geoloc.country)
+    print "address found",  address
+    return address

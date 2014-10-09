@@ -5,6 +5,7 @@ from geoposition.fields import GeopositionField
 from math import sin, cos, radians, acos
 import os
 from django.conf import settings
+from django.core.exceptions import ValidationError
 
 class DestinationCategory(models.Model):
     name = models.CharField(max_length=50)
@@ -37,6 +38,14 @@ def get_destination_image_path(instance, filename):
         return os.path.join(settings.MEDIA_ROOT, "destination", str(instance.id), filename)
     return os.path.join(settings.MEDIA_ROOT, filename)
 
+def validate_time_required(value):
+    if not value:
+        raise ValidationError('Please enter a value for time required.')
+    double_val = float(value)
+    if double_val  <= 0 or double_val > 10:
+        print 'condition satisfied'
+        raise ValidationError('Please enter a value between 0 and 10.')
+
 class Destination(models.Model):
     name = models.CharField(max_length=50)
     state = models.ForeignKey(State, default=2)
@@ -50,7 +59,7 @@ class Destination(models.Model):
     description = models.CharField(max_length=200, default="")
     best_time = models.CharField(max_length=50, default="")
     open_hours = models.CharField(max_length=50, default="")
-    time_required = models.CharField(max_length=50, default="")
+    time_required = models.CharField(max_length=50, default="1", validators=[validate_time_required])
     photo = models.ImageField("Picture", upload_to=get_destination_image_path, blank=True, null=True)
     added_on = models.DateTimeField(default="2001-01-01 00:00")
     added_by = models.CharField(max_length=20, default="")
@@ -81,7 +90,7 @@ class PointOfInterest(models.Model):
     salience = models.IntegerField(default=0)
     best_time = models.CharField(max_length=50, default="")
     open_hours = models.CharField(max_length=50, default="")
-    time_required = models.CharField(max_length=50, default="")
+    time_required = models.CharField(max_length=50, default="1", validators=[validate_time_required])
     added_on = models.DateTimeField(default="2001-01-01 00:00")
     added_by = models.CharField(max_length=20, default="")
     url = models.CharField(max_length=50, default="")
@@ -109,7 +118,6 @@ class Accommodation(models.Model):
     added_by = models.CharField(max_length=20, default="")
     last_updated_on = models.DateTimeField(default="2001-01-01 00:00")
     latest_update = models.CharField(max_length=100, default="")
-
 
     def __unicode__(self):
         return self.address
