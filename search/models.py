@@ -1,7 +1,6 @@
 from django.db import models
 from datetime import datetime 
 from django.db import models, connection, transaction
-from geoposition.fields import GeopositionField
 from math import sin, cos, radians, acos
 import os
 from django.conf import settings

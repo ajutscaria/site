@@ -2,7 +2,6 @@ from django import forms
 from search.models import PointOfInterestCategory, DestinationCategory, Destination, PointOfInterest, State, Country, Accommodation
 from datetime import datetime 
 from pygeocoder import Geocoder
-from geoposition.fields import GeopositionField, Geoposition
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 import autocomplete_light
