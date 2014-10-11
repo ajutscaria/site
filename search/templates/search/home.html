@@ -6,6 +6,24 @@
     <link rel="stylesheet" type="text/css" href='/static/css/font-awesome.min.css'>
     <link rel="stylesheet" type="text/css" href='/static/css/style.css'>
     <script type='text/javascript' src='/static/js/jquery-1.11.1.min.js'></script>
+    <script type="text/javascript" src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBF_ghimLOB28fkKBKv6Nn8c7k1cbaSD-A&libraries=places'></script>
+    <script type='text/javascript'>
+      $(document).ready(function() {
+        var input = document.getElementById('input-box');
+        var searchBox = new google.maps.places.SearchBox(input);
+        google.maps.event.addListener(searchBox, 'places_changed', function() {
+          window.location.replace('/search/plan/?searchfor=' + $('#input-box').val())
+        });
+      });
+
+      function searchForLocation() {
+        if ($('#input-box').val() != '') {
+          window.location.replace('/search/plan/?searchfor=' + $('#input-box').val());
+        } else {
+          return false;
+        }
+      }
+    </script>
   </head>
   <body id="home">
     {% include "search/menu.html" %}
@@ -14,7 +32,10 @@
       <div class="jumbotron">
         <h1>Explore the world!</h1>
         <p class="lead">Have you planned your next vacation? Not sure where to go? Not sure what to do at a destination? You can discover places, find interesting things to do and finally also plan your itinerary to minute by minute detail here! Bon Voyage!</p>
-        <p><a class="btn btn-lg btn-success" href="/search/plan/" role="button">Plan your trip now!</a></p>
+
+        <p>Find places near an address or search for a destination.</p>
+        <input id="input-box" class="controls" type="text" placeholder="Explore"></input>
+        <button type="submit" class="btn btn-primary" onclick="return searchForLocation();">Search</button>
       </div>
 
       <!-- Example row of columns -->

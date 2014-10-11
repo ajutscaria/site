@@ -25,6 +25,20 @@ $.ajaxSetup({
      }
 });
 
+(function($) {
+  $.QueryString = (function(a) {
+      if (a == "") return {};
+      var b = {};
+      for (var i = 0; i < a.length; ++i)
+      {
+          var p=a[i].split('=');
+          if (p.length != 2) continue;
+          b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));
+      }
+      return b;
+  })(window.location.search.substr(1).split('&'))
+})(jQuery);
+
 var attractions = [];
 var directionsDisplay;
 var directionsService = new google.maps.DirectionsService();
@@ -38,8 +52,21 @@ var selected_destination_marker; // stores the destination that we are focused o
 var search_marker;               // stores the location we searched for in the text box
 var selected_info_window;
 
+
+
 $(document).ready(function() {
-    initialize();
+    // If we reach the page from the home page, we have the destination set as 'searchfor' query string
+    // parameter.
+    search_location = $.QueryString["searchfor"];
+    if (search_location && search_location != "") {
+      // Initialize, but don't set default map bounds
+      initialize(false);
+      $('#input-box').val(search_location);
+      searchForPointsOfInterest(search_location);
+    } else {
+      // Initialize and set default map bounds
+      initialize(true);
+    }
 
     $('#range-slider').on('change', function(){
         //$('#range').html(Math.round(logslider($('#slider').val())));
@@ -63,7 +90,7 @@ $(document).ready(function() {
             success: function(response) {
                 // We have data type as JSON. so we can directly decode.
                 clearAllPointOfInterestMarkers();
-                renderMap(response.attractions);
+                renderMap(response.attractions,false, false);
             },
             failure: function(data) { 
                 alert('Got an error!');
@@ -169,7 +196,7 @@ function getHoursAndMins(time_required) {
 }
 
 
-function initialize() {
+function initialize(set_default_map_bound) {
   map = new google.maps.Map(document.getElementById('map-canvas'), {
     mapTypeId: google.maps.MapTypeId.ROADMAP
   });
@@ -178,10 +205,12 @@ function initialize() {
     selected_info_window.close();
   });
 
-  var defaultBounds = new google.maps.LatLngBounds(
-      new google.maps.LatLng(-33.8902, 151.1759),
-      new google.maps.LatLng(-33.8474, 151.2631));
-  map.fitBounds(defaultBounds);
+  if (set_default_map_bound) {
+    var geocoder = new google.maps.Geocoder();
+    geocoder.geocode({'address': 'US'}, function (results, status) {
+       map.fitBounds(results[0].geometry.viewport);               
+    }); 
+  }
 
   // Create the search box and link it to the UI element.
   var input = /** @type {HTMLInputElement} */(
@@ -226,8 +255,9 @@ function searchForPointsOfInterest(search_location) {
         success: function(response) {
             clearForNewSearch();
             //calcRoute(response.attractions)
-            renderMap(response.attractions);
-            renderMapControls(response.attractions, response.destination_exists)
+            renderMap(response.attractions, response.is_state, response.is_country);
+            renderMapControls(response.attractions, response.destination_exists,
+                              response.is_state, response.is_country)
             max_distance = Math.round(response.max_distance)
             $('#range-value').html(max_distance);
             $('#range-slider').val(antilogslider(max_distance))
@@ -366,7 +396,11 @@ function clickedReadMore(type, id) {
       success: function(response) {
           selected_info_window.close();
           selected_info_window = null;
-          resizeMapWithMarkers([point_of_interest_markers, [search_marker]], 75, 100);
+          if (search_marker) {
+            resizeMapWithMarkers([point_of_interest_markers, [search_marker]], 75, 100);
+          } else {
+            resizeMapWithMarkers([destination_markers], 75, 100);
+          }
           var summaryPanel = document.getElementById('plan-container');
           summaryPanel.innerHTML = response.details;
           $('#planBox').show();
@@ -395,7 +429,7 @@ function resizeMapWithMarkers(list_of_marker_arrays, width_percent, height_perce
   map.fitBounds(latlngbounds);
 }
 
-function renderMap(attractions) {
+function renderMap(attractions, is_state, is_country) {
     var latlngbounds = new google.maps.LatLngBounds();
     if (selected_destination_marker != null) {
         latlngbounds.extend(selected_destination_marker.position);
@@ -413,7 +447,7 @@ function renderMap(attractions) {
             latlngbounds.extend(latlng); 
           }
           // First record in the response is always the location we searched for. Save it to go back to the results.
-          if (search_marker == null && count == 0) {
+          if (!is_state && !is_country && search_marker == null && count == 0) {
             search_marker = marker;
           }
           
@@ -423,14 +457,19 @@ function renderMap(attractions) {
 
     map.setCenter(latlngbounds.getCenter());
 
-    // If only the destination is added, we don't want to zoom into just that.
-    if (attractions.length == 1) {
-      map.setZoom(10)
-      if (search_marker && search_marker.type == "Destination") {
-        showMessage("No point of interests. <a href=\"/search/add_point_of_interest/destination/" + search_marker.id + "\/\">Add one?</a>")
+    if (is_state || is_country) {
+      var geocoder = new google.maps.Geocoder();
+      geocoder.geocode({'address': $('#input-box').val()}, function (results, status) {
+         map.fitBounds(results[0].geometry.viewport);               
+      }); 
+    }
+    else {
+      // If only the destination is added, we don't want to zoom into just that.
+      if (attractions.length == 1) {
+        map.setZoom(10)
+      } else {
+        map.fitBounds(latlngbounds); 
       }
-    } else {
-      map.fitBounds(latlngbounds); 
     }
 }
 
@@ -439,15 +478,24 @@ function showMessage(message) {
   $('#message').show();
 }
 
-function renderMapControls(attractions, destination_exists) {
+function renderMapControls(attractions, destination_exists, is_state, is_country) {
   $('#filterBox').show();
-  if (!destination_exists) {
+  if (is_country || is_state) {
+    $('#filterBox').hide();
+    $('#tripDetailBox').hide();
+  } else if (!destination_exists) {
     $('#filters_additional').hide();
     $('#tripDetailBox').hide();
     $('#promptAddDestination').show();
   } else {
     $('#filters_additional').show();
     $('#tripDetailBox').show();
+  }
+
+  if (!is_state && !is_country && search_marker && search_marker.type == "Destination" && attractions.length == 1) {
+    showMessage("No point of interests. <a href=\"/search/add_point_of_interest/destination/" + search_marker.id + "\/\">Add one?</a>")
+  } else if ((is_country || is_state) && attractions.length == 0) {
+    showMessage("No destination added. <a href=\"/search/add_destination/\">Add one?</a>")
   }
     
   loadCategories(attractions);
@@ -496,8 +544,8 @@ function addMarker(place, latlng) {
                     dataType: 'json',        
                     data      : {"id":this.get("id")},
                     success: function(response) {
-                        renderMap(response.attractions);
-                        renderMapControls(response.attractions, true)
+                        renderMap(response.attractions, false, false);
+                        renderMapControls(response.attractions, true, false, false)
                         max_distance = Math.round(response.max_distance)
                         $('#range-slider').val(antilogslider(max_distance))
                         $('#range-value').html(max_distance);
@@ -718,7 +766,11 @@ function planTrip() {
 function closePlan() {
   $('#planBox').hide();
   $('#input-box').show();
-  $('#filterBox').show();
-  $('#tripDetailBox').show();
-  resizeMapWithMarkers([point_of_interest_markers, [search_marker]], 100, 100)
+  if (search_marker) {
+    resizeMapWithMarkers([point_of_interest_markers, [search_marker]], 100, 100)
+    $('#filterBox').show();
+    $('#tripDetailBox').show();
+  } else {
+    resizeMapWithMarkers([destination_markers], 100, 100);
+  }
 }

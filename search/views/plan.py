@@ -1,7 +1,7 @@
 from search.forms import DestinationForm, PointOfInterestForm, SearchForm, AccommodationForm, RegistrationForm
 from django.template import RequestContext
 from django.shortcuts import render_to_response
-from search.models import PointOfInterest, Destination, State, Accommodation
+from search.models import PointOfInterest, Destination, State, Country, Accommodation
 from pygeocoder import Geocoder
 from django.http import HttpResponse
 import json
@@ -31,33 +31,67 @@ def explore(request):
         form = SearchForm(request.POST)
         searchlocation = request.POST['searchfor']
         geoloc = Geocoder.geocode(searchlocation)[0]
-        address = generate_address(geoloc)
-        print "searchfor:", searchlocation
-        print "converted address", address
-        loc = Geoposition(geoloc.coordinates[0], geoloc.coordinates[1])
-        destinations = Destination.objects.filter(address=address);
-        if destinations.exists():
-            print "Destination exists in database"
-            destination = destinations[0]
-            (closest_attractions, max_distance) = find_points_of_interest_for_destination(destination.id)
-            print "Closest attractions:", closest_attractions, "max_distance:", max_distance
-            result = convert_destinations_to_json([destination])
-            result.extend(convert_points_of_interest_to_json(closest_attractions))
-            (accommodation, max_acco_distance) = find_accommodation_for_destination(destination.id)
-            result.extend(convert_accommodation_to_json(accommodation))
-            print 'all done', result
-            return HttpResponse(json.dumps({'attractions': result, 'address':address,
-                                            'max_distance':max_distance, 'destination_exists':True}));
-        else:
-            print "Destination DOES NOT EXIST in database"
-            (closest_destinations, max_distance) = find_destinations_in_range(loc, 200)
-            #closest_attractions = find_points_of_interest_in_range(loc, 200)
-            print "Closest destinations:", closest_destinations, "max_distance:", max_distance
-            result = convert_location_to_json(geoloc.coordinates[0], geoloc.coordinates[1], address, "")
-            result.extend(convert_destinations_to_json(closest_destinations))
-            return HttpResponse(json.dumps({'attractions': result, 'address':address, 
-                                            'max_distance':max_distance, 'destination_exists':False}));
+        address_dict = generate_address(geoloc)
+        print "Generated address:", address_dict
 
+        # Prepare the variables for returning.
+        result = [];
+        address = address_dict['address']
+        is_state = address_dict['is_state'];
+        is_country = address_dict['is_country'];
+        destination_exists = False;
+        max_distance = 0;
+
+        if is_state:
+        	state_name = address_dict['state']
+        	print 'Searched for state:', state_name
+        	state, created = State.objects.get_or_create(name=state_name)
+        	if created:
+        		print 'State did not exist, but created. No data.'
+        	else:
+        		print 'Getting data for the state.', state.id
+        		destinations = find_destinations_in_state(state.id)
+        		print 'Got destinations', destinations
+        		result = (convert_destinations_to_json(destinations))
+
+        elif is_country:
+        	country_name = address_dict['country']
+        	print 'Searched for country:', country_name
+        	country, created = Country.objects.get_or_create(name=country_name)
+        	if created:
+        		print 'Country did not exist, but created. No data.'
+        	else:
+        		print 'Getting data for the country.', country.id
+        		destinations = find_destinations_in_country(country.id)
+        		print 'Got destinations', destinations
+        		result = (convert_destinations_to_json(destinations))
+
+        else:
+        	print 'Searched for location:', address
+	        loc = Geoposition(geoloc.coordinates[0], geoloc.coordinates[1])
+	        destinations = Destination.objects.filter(address=address);
+	        if destinations.exists():
+	            print "Destination exists in database"
+	            destination_exists = True
+	            destination = destinations[0]
+	            (closest_attractions, max_distance) = find_points_of_interest_for_destination(destination.id)
+	            print "Closest attractions:", closest_attractions, "max_distance:", max_distance
+	            result = convert_destinations_to_json([destination])
+	            result.extend(convert_points_of_interest_to_json(closest_attractions))
+	            (accommodation, max_acco_distance) = find_accommodation_for_destination(destination.id)
+	            result.extend(convert_accommodation_to_json(accommodation))
+
+	        else:
+	            print "Destination DOES NOT EXIST in database"
+	            (closest_destinations, max_distance) = find_destinations_in_range(loc, 200)
+	            #closest_attractions = find_points_of_interest_in_range(loc, 200)
+	            print "Closest destinations:", closest_destinations, "max_distance:", max_distance
+	            result = convert_location_to_json(geoloc.coordinates[0], geoloc.coordinates[1], address, "")
+	            result.extend(convert_destinations_to_json(closest_destinations))
+
+        return HttpResponse(json.dumps({'attractions': result, 'address':address, 'is_state': is_state,
+	                                    'is_country': is_country, 'max_distance':max_distance, 
+	                                    'destination_exists':destination_exists}));
     else:
         print 'creating new form'
         form = SearchForm()
@@ -154,6 +188,18 @@ def find_destinations_in_range(from_location, range):
             if d > max_distance:
                 max_distance = d;
     return (closest_destinations, max_distance)
+
+def find_destinations_in_state(state_id):
+    destinations = []
+    for obj in Destination.objects.filter(state_id = state_id):
+        destinations.append(obj)
+    return destinations
+
+def find_destinations_in_country(country_id):
+    destinations = []
+    for obj in Destination.objects.filter(country_id = country_id):
+        destinations.append(obj)
+    return destinations
 
 def find_points_of_interest_for_destination(id):
     print "View:find_points_of_interest_for_destination! id:", id
@@ -309,12 +355,28 @@ def generate_address(geoloc):
     print "Name", str(geoloc).split(',')[0].strip()
     print "State", geoloc.state
     print "Country", geoloc.country
+
+    # Set the address to just the name first.
     address = str(geoloc).split(',')[0].strip()
+    is_state = False;
+    is_country = False;
+    state = ""
+    country = ""
     if geoloc.state:
-        address += ", " + str(geoloc.state)
-    address += ", " + str(geoloc.country)
+    	state = str(geoloc.state)
+    	if address == state:
+    		is_state = True
+    	else:
+        	address += ", " + state
+    if geoloc.country:
+    	country = str(geoloc.country)
+    	if address == country:
+    		is_country = True;
+    	else:
+    		address += ", " + country
     print "address found",  address
-    return address
+    return { 'address': address, 'state': state, 'country': country, 
+    		 'is_state': is_state, 'is_country': is_country }
 
 def distance(origin, destination):
     lat1 = origin.latitude
