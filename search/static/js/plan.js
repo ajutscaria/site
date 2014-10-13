@@ -39,6 +39,7 @@ $.ajaxSetup({
   })(window.location.search.substr(1).split('&'))
 })(jQuery);
 
+var INFO_DIV_WIDTH = 30;
 var attractions = [];
 var directionsDisplay;
 var directionsService = new google.maps.DirectionsService();
@@ -397,9 +398,9 @@ function clickedReadMore(type, id) {
           selected_info_window.close();
           selected_info_window = null;
           if (search_marker) {
-            resizeMapWithMarkers([point_of_interest_markers, [search_marker]], 75, 100);
+            resizeMapWithMarkers([point_of_interest_markers, [search_marker]], 100 - INFO_DIV_WIDTH, 100);
           } else {
-            resizeMapWithMarkers([destination_markers], 75, 100);
+            resizeMapWithMarkers([destination_markers], 100 - INFO_DIV_WIDTH, 100);
           }
           var summaryPanel = document.getElementById('plan-container');
           summaryPanel.innerHTML = response.details;
@@ -754,7 +755,7 @@ function planTrip() {
     }
   });
   //alert(destination_markers[0].position)
-  resizeMapWithMarkers([waypoints, [start, end]], 75, 100)
+  resizeMapWithMarkers([waypoints, [start, end]], 100 - INFO_DIV_WIDTH, 100)
   calcRoute(start, waypoints, end)
 
   $('#input-box').hide();

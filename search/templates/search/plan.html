@@ -18,10 +18,10 @@
     </form>
     <div style="height:100%; margin: 0px; padding: 0px">
       <div id="map-canvas"></div>
-      <div id="planBox" style="position:absolute; bottom:0px; right:0px; width:25%; height:100%; border: 1px solid #CCC; z-index:1;background:white; display:none; padding-top:100px">
-        <div id="plan-container" stype="padding:10px; background-color:#FFFFFF;">
+      <div id="planBox" style="position:absolute; bottom:0px; right:0px; width:25%; height:100%; border: 1px solid #CCC; z-index:1;background:white; display:none; padding-top:70px">
+        <div style="float:right;"> <a id="toggleFilters" onclick="closePlan();" href="#"> <img id="closePlanImg" title="Close" src="/static/images/close.png"></a></div>
+        <div id="plan-container" stype="padding:10px; background-color:#FFFFFF;margin-left: auto;margin-right: auto;">
         </div>
-        <button class="btn btn-primary" id="closePlan" onclick="closePlan();">Close</button>
       </div>
     </div>
     <div id="filterBox" class="shadowy transparent" style="position:absolute; bottom:35px; left:50px; width:410px; border: 1px solid #CCC; z-index:1;background:white;display: none;">

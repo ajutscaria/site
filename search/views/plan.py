@@ -16,6 +16,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponseRedirect
 from django.contrib.auth import authenticate, login
+import operator
 
 def plan(request):
     print "View:plan!"
@@ -205,7 +206,8 @@ def find_points_of_interest_for_destination(id):
     print "View:find_points_of_interest_for_destination! id:", id
     destination = Destination.objects.get(id=id);
     from_location = Geoposition(destination.latitude, destination.longitude)
-    attractions = PointOfInterest.objects.filter(destination_id=id);
+    results = PointOfInterest.objects.filter(destination_id=id);
+    attractions = sorted(results, key=operator.attrgetter('name'))
     max_distance = 0;
     for obj in attractions:
         loc = Geoposition(obj.latitude, obj.longitude)
