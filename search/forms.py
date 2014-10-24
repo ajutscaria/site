@@ -1,5 +1,5 @@
 from django import forms
-from search.models import PointOfInterestCategory, DestinationCategory, Destination, PointOfInterest, State, Country, Accommodation
+from search.models import PointOfInterestCategory, DestinationCategory, Destination, PointOfInterest, State, Country
 from datetime import datetime 
 from pygeocoder import Geocoder
 from django.contrib.auth.forms import UserCreationForm
@@ -48,6 +48,10 @@ class DestinationForm(forms.ModelForm):
         state, created = State.objects.get_or_create(name=geoloc_state, country_id=instance.country_id)
 
         instance.state_id = state.id
+
+        if not instance.time_required:
+            instance.time_required = "0"
+
         instance.latitude = geoloc.coordinates[0]
         instance.longitude = geoloc.coordinates[1]
         #I'm wondering why this is not handled by the the default value tha tis being set. Enough time wasted on this.
@@ -147,7 +151,7 @@ class AccommodationForm(forms.ModelForm):
         return cleaned_data
 
     def save(self, *args, **kwargs):
-        print "Form:PointOfInterestForm_save"
+        print "Form:AccommodationForm_save"
         commit = kwargs.pop('commit', True)
         instance = super(AccommodationForm, self).save(*args, commit = False, **kwargs)
         searchlocation = self.cleaned_data['address']
@@ -163,6 +167,8 @@ class AccommodationForm(forms.ModelForm):
         instance.state_id = state.id
         instance.added_on = datetime.utcnow()
         instance.last_updated_on = datetime.utcnow()
+        accommodation_id = PointOfInterestCategory.objects.filter(name="Accommodation")[0].id
+        instance.category_id = accommodation_id
         #instance.latitude = geoloc.coordinates[0]
         #instance.longitude = geoloc.coordinates[1]
         print 'Going to commit data'
@@ -172,8 +178,10 @@ class AccommodationForm(forms.ModelForm):
         return instance
 
     class Meta:
-        model = Accommodation
-        exclude = ('name', 'state', 'country', 'last_updated_on', 'latest_update', 'added_on', 'added_by')
+        model = PointOfInterest
+        exclude = ('name', 'state', 'country', 'last_updated_on', 'latest_update', 'added_on', 'added_by', 'rating',
+                   'ticket_price', 'open_hours', 'best_time', 'time_required', 'url', 'photo', 'category', 
+                   'number_of_ratings', 'salience')
 
 class RegistrationForm(UserCreationForm):
     first_name = forms.CharField(max_length=30)

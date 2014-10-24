@@ -1,5 +1,5 @@
 from django.contrib import admin
-from search.models import State, Country, DestinationCategory, PointOfInterestCategory, Destination, PointOfInterest, Accommodation
+from search.models import State, Country, DestinationCategory, PointOfInterestCategory, Destination, PointOfInterest, Trip, TripDestination, TripDestinationPointOfInterest, TripDestinationPointOfInterestCategory
 
 #class AttractionCategoryInline(admin.StackedInline):
 #    model = AttractionCategory
@@ -21,4 +21,7 @@ admin.site.register(PointOfInterestCategory)
 admin.site.register(DestinationCategory)
 admin.site.register(Destination)
 admin.site.register(PointOfInterest)
-admin.site.register(Accommodation)
+admin.site.register(Trip)
+admin.site.register(TripDestination)
+admin.site.register(TripDestinationPointOfInterest)
+admin.site.register(TripDestinationPointOfInterestCategory)

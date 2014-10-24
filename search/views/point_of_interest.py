@@ -1,7 +1,7 @@
 from search.forms import DestinationForm, PointOfInterestForm, SearchForm, AccommodationForm, RegistrationForm
 from django.template import RequestContext
 from django.shortcuts import render_to_response
-from search.models import PointOfInterest, Destination, State, Accommodation
+from search.models import PointOfInterest, Destination, State
 from pygeocoder import Geocoder
 from django.http import HttpResponse
 import json
@@ -71,6 +71,7 @@ def add_for_destination(request, id):
     print 'In add_point_of_interest_for_destination method. Id:', id
     context = RequestContext(request)
     saved = False
+    edit = False
     if request.method == 'POST':
         form = PointOfInterestForm(request.POST)
         if form.is_valid():
@@ -85,14 +86,26 @@ def add_for_destination(request, id):
             saved = True;
             print "Got ID", form.instance.id
     else:
-        poi = PointOfInterest(destination_id=id);
-        form = PointOfInterestForm(instance=poi)
+        searchlocation = request.GET.get('searchfor','')
+        if searchlocation:
+            print "Found location from search:", searchlocation
+            geoloc = Geocoder.geocode(searchlocation)[0]
+            latitude = geoloc.coordinates[0]
+            longitude = geoloc.coordinates[1]
+            address = generate_address(geoloc)
+
+            poi_instance = PointOfInterest(address = address, latitude = latitude, longitude = longitude, destination_id=id);
+            edit = True
+        else:
+            poi_instance = PointOfInterest(destination_id=id);
+        form = PointOfInterestForm(instance=poi_instance)
     print "set id to", form.instance.destination
     print "Saved?", saved    
-    return render_to_response('search/add_point_of_interest.html', {'form': form, 'edit': False, 'saved':saved}, context);
+    return render_to_response('search/add_point_of_interest.html', {'form': form, 'edit': edit, 'saved':saved}, context);
 
 def search(request):
     print "View:search_to_add_point_of_interest!"
+    edit = False
     # To handle AJAX requests from the form
     if request.method == "POST":
         searchlocation = request.POST['searchfor']
@@ -168,3 +181,15 @@ def edit(request, id):
         else:
             form = PointOfInterestForm(instance=interests[0])
         return render_to_response('search/add_point_of_interest.html', {'form': form, 'edit': True}, context);
+
+def generate_address(geoloc):
+    print "generate_address", str(geoloc)
+    print "Name", str(geoloc).split(',')[0].strip()
+    print "State", geoloc.state
+    print "Country", geoloc.country
+    address = str(geoloc).split(',')[0].strip()
+    if geoloc.state:
+        address += ", " + str(geoloc.state)
+    address += ", " + str(geoloc.country)
+    print "address found",  address
+    return address

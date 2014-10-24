@@ -119,6 +119,13 @@
     }
 },
 {
+    "pk": 13, 
+    "model": "search.pointofinterestcategory", 
+    "fields": {
+        "name": "Accommodation"
+    }
+},
+{
     "pk": 1, 
     "model": "search.country", 
     "fields": {
@@ -158,6 +165,20 @@
     "model": "search.country", 
     "fields": {
         "name": "French Polynesia"
+    }
+},
+{
+    "pk": 7, 
+    "model": "search.country", 
+    "fields": {
+        "name": "Peru"
+    }
+},
+{
+    "pk": 8, 
+    "model": "search.country", 
+    "fields": {
+        "name": "Brazil"
     }
 },
 {
@@ -314,6 +335,60 @@
     }
 },
 {
+    "pk": 18, 
+    "model": "search.state", 
+    "fields": {
+        "country": 1, 
+        "code": "", 
+        "name": "Wyoming"
+    }
+},
+{
+    "pk": 19, 
+    "model": "search.state", 
+    "fields": {
+        "country": 1, 
+        "code": "", 
+        "name": "District of Columbia"
+    }
+},
+{
+    "pk": 20, 
+    "model": "search.state", 
+    "fields": {
+        "country": 7, 
+        "code": "", 
+        "name": "Cusco"
+    }
+},
+{
+    "pk": 21, 
+    "model": "search.state", 
+    "fields": {
+        "country": 1, 
+        "code": "", 
+        "name": "Alaska"
+    }
+},
+{
+    "pk": 22, 
+    "model": "search.state", 
+    "fields": {
+        "country": 1, 
+        "code": "", 
+        "name": "Texas"
+    }
+},
+{
+    "pk": 23, 
+    "model": "search.state", 
+    "fields": {
+        "country": 1, 
+        "code": "", 
+        "name": "Nebraska"
+    }
+},
+{
     "pk": 1, 
     "model": "search.destination", 
     "fields": {
@@ -413,12 +488,12 @@
         "best_time": "dd", 
         "country": 1, 
         "number_of_ratings": 0, 
-        "longitude": "-122.1053071", 
+        "longitude": "-122.1053066", 
         "state": 3, 
-        "time_required": "2 days", 
+        "time_required": "1.5", 
         "added_by": "aju", 
         "address": "Crater Lake National Park, Oregon, United States", 
-        "latitude": "42.9423752", 
+        "latitude": "42.943883", 
         "added_on": "2014-08-04T21:59:03Z", 
         "description": "dd"
     }
@@ -992,6 +1067,28 @@
         "address": "Capitol Reef National Park, UT, United States", 
         "latitude": "38.3669703", 
         "added_on": "2014-09-03T04:30:16.943Z", 
+        "description": ""
+    }
+},
+{
+    "pk": 35, 
+    "model": "search.destination", 
+    "fields": {
+        "category": 5, 
+        "rating": "0", 
+        "photo": "", 
+        "name": "Washington", 
+        "open_hours": "", 
+        "best_time": "", 
+        "country": 1, 
+        "number_of_ratings": 0, 
+        "longitude": "-77.0368707", 
+        "state": 19, 
+        "time_required": "3", 
+        "added_by": "root", 
+        "address": "Washington, District of Columbia, United States", 
+        "latitude": "38.9071923", 
+        "added_on": "2014-10-09T03:31:10.169Z", 
         "description": ""
     }
 },
@@ -2284,219 +2381,451 @@
     }
 },
 {
-    "pk": 1, 
-    "model": "search.accommodation", 
+    "pk": 50, 
+    "model": "search.pointofinterest", 
     "fields": {
-        "name": "South Lake Tahoe", 
+        "rating": "0", 
+        "photo": "", 
+        "number_of_ratings": 0, 
+        "last_updated_on": "2014-10-19T18:43:39Z", 
+        "category": 13, 
+        "best_time": "d", 
+        "destination": 8, 
+        "state": 3, 
+        "salience": 0, 
+        "latitude": "42.224867", 
+        "time_required": "1", 
+        "added_by": "d", 
+        "description": "d", 
+        "open_hours": "d", 
+        "latest_update": "d", 
+        "address": "Klamath Falls, Oregon, United States", 
+        "name": "Klamath Falls", 
+        "url": "d", 
         "country": 1, 
-        "destination": 18, 
+        "longitude": "-121.7816704", 
+        "ticket_price": "d", 
+        "added_on": "2014-10-19T18:43:39Z"
+    }
+},
+{
+    "pk": 51, 
+    "model": "search.pointofinterest", 
+    "fields": {
+        "rating": "0", 
+        "photo": "", 
+        "number_of_ratings": 0, 
+        "last_updated_on": "2014-10-19T18:45:11Z", 
+        "category": 13, 
+        "best_time": "d", 
+        "destination": 8, 
+        "state": 3, 
+        "salience": 0, 
+        "latitude": "42.3265152", 
+        "time_required": "1", 
+        "added_by": "d", 
+        "description": "d", 
+        "open_hours": "d", 
+        "latest_update": "d", 
+        "address": "Medford, Oregon, United States", 
+        "name": "Medford", 
+        "url": "d", 
+        "country": 1, 
+        "longitude": "-122.8755949", 
+        "ticket_price": "d", 
+        "added_on": "2014-10-19T18:45:11Z"
+    }
+},
+{
+    "pk": 52, 
+    "model": "search.pointofinterest", 
+    "fields": {
+        "rating": "0", 
+        "photo": "", 
+        "number_of_ratings": 0, 
+        "last_updated_on": "2014-10-19T18:46:13Z", 
+        "category": 13, 
+        "best_time": "", 
+        "destination": 6, 
+        "state": 1, 
+        "salience": 0, 
+        "latitude": "21.8870198", 
+        "time_required": "1", 
+        "added_by": "", 
+        "description": "", 
+        "open_hours": "", 
         "latest_update": "", 
-        "longitude": "-119.9771868", 
-        "last_updated_on": "2001-01-01T00:00:00Z", 
+        "address": "Poipu, Hawaii, United States", 
+        "name": "Poipu", 
+        "url": "", 
+        "country": 1, 
+        "longitude": "-159.4566317", 
+        "ticket_price": "", 
+        "added_on": "2014-10-19T18:46:13Z"
+    }
+},
+{
+    "pk": 53, 
+    "model": "search.pointofinterest", 
+    "fields": {
+        "rating": "0", 
+        "photo": "", 
+        "number_of_ratings": 0, 
+        "last_updated_on": "2014-10-19T18:48:57Z", 
+        "category": 13, 
+        "best_time": "", 
+        "destination": 6, 
+        "state": 1, 
+        "salience": 0, 
+        "latitude": "22.2236111", 
+        "time_required": "1", 
+        "added_by": "", 
+        "description": "", 
+        "open_hours": "", 
+        "latest_update": "", 
+        "address": "Princeville, Hawaii, United States", 
+        "name": "Princeville", 
+        "url": "", 
+        "country": 1, 
+        "longitude": "-159.4852778", 
+        "ticket_price": "", 
+        "added_on": "2014-10-19T18:48:57Z"
+    }
+},
+{
+    "pk": 54, 
+    "model": "search.pointofinterest", 
+    "fields": {
+        "rating": "0", 
+        "photo": "", 
+        "number_of_ratings": 0, 
+        "last_updated_on": "2014-10-19T18:50:24Z", 
+        "category": 13, 
+        "best_time": "", 
+        "destination": 10, 
+        "state": 9, 
+        "salience": 0, 
+        "latitude": "21.074796", 
+        "time_required": "1", 
+        "added_by": "", 
+        "description": "", 
+        "open_hours": "", 
+        "latest_update": "", 
+        "address": "Canc\u00fan Hotel Area, Quintana Roo, Mexico", 
+        "name": "Cancun", 
+        "url": "", 
+        "country": 4, 
+        "longitude": "-86.7759969", 
+        "ticket_price": "", 
+        "added_on": "2014-10-19T18:50:24Z"
+    }
+},
+{
+    "pk": 55, 
+    "model": "search.pointofinterest", 
+    "fields": {
+        "rating": "0", 
+        "photo": "", 
+        "number_of_ratings": 0, 
+        "last_updated_on": "2014-10-19T18:50:57Z", 
+        "category": 13, 
+        "best_time": "", 
+        "destination": 10, 
+        "state": 9, 
+        "salience": 0, 
+        "latitude": "21.1474996", 
+        "time_required": "1", 
+        "added_by": "", 
+        "description": "", 
+        "open_hours": "", 
+        "latest_update": "", 
+        "address": "Canc\u00fan Downtown, Quintana Roo, Mexico", 
+        "name": "Canc\u00fan Downtown", 
+        "url": "", 
+        "country": 4, 
+        "longitude": "-86.8233754", 
+        "ticket_price": "", 
+        "added_on": "2014-10-19T18:50:57Z"
+    }
+},
+{
+    "pk": 56, 
+    "model": "search.pointofinterest", 
+    "fields": {
+        "rating": "0", 
+        "photo": "", 
+        "number_of_ratings": 0, 
+        "last_updated_on": "2014-10-19T19:11:53.724Z", 
+        "category": 13, 
+        "best_time": "", 
+        "destination": 27, 
         "state": 2, 
-        "added_by": "aju", 
-        "address": "South Lake Tahoe, California, United States", 
-        "latitude": "38.939926", 
-        "added_on": "2001-01-01T00:00:00Z", 
-        "description": "Best place to stay in summer with all water sports around."
+        "salience": 0, 
+        "latitude": "40.8823811", 
+        "time_required": "1", 
+        "added_by": "", 
+        "description": "This is a good place to stay.", 
+        "open_hours": "", 
+        "latest_update": "", 
+        "address": "Burney, California, United States", 
+        "name": "Burney", 
+        "url": "", 
+        "country": 1, 
+        "longitude": "-121.6608205", 
+        "ticket_price": "", 
+        "added_on": "2014-10-19T19:11:53.724Z"
+    }
+},
+{
+    "pk": 57, 
+    "model": "search.pointofinterest", 
+    "fields": {
+        "rating": "0", 
+        "photo": "", 
+        "number_of_ratings": 0, 
+        "last_updated_on": "2014-10-19T20:38:48.226Z", 
+        "category": 13, 
+        "best_time": "", 
+        "destination": 6, 
+        "state": 1, 
+        "salience": 0, 
+        "latitude": "22.0881391", 
+        "time_required": "1", 
+        "added_by": "", 
+        "description": "", 
+        "open_hours": "", 
+        "latest_update": "", 
+        "address": "Kapaa, Hawaii, United States", 
+        "name": "Kapaa", 
+        "url": "", 
+        "country": 1, 
+        "longitude": "-159.3379818", 
+        "ticket_price": "", 
+        "added_on": "2014-10-19T20:38:48.226Z"
+    }
+},
+{
+    "pk": 1, 
+    "model": "search.trip", 
+    "fields": {
+        "name": "Crater Lake Trip", 
+        "end_date": "2014-10-20T03:53:01.054Z", 
+        "added_by": "root", 
+        "start_date": "2014-10-20T03:53:01.054Z", 
+        "added_on": "2014-10-20T03:53:01.054Z", 
+        "description": "Finally doing it."
     }
 },
 {
     "pk": 2, 
-    "model": "search.accommodation", 
+    "model": "search.trip", 
     "fields": {
-        "name": "Reno", 
-        "country": 1, 
-        "destination": 18, 
-        "latest_update": "", 
-        "longitude": "-119.8138027", 
-        "last_updated_on": "2001-01-01T00:00:00Z", 
-        "state": 5, 
-        "added_by": "aju", 
-        "address": "Reno, Nevada, United States", 
-        "latitude": "39.5296329", 
-        "added_on": "2001-01-01T00:00:00Z", 
-        "description": "A little far but cheap place. Several casinos around. "
+        "name": "Cancun Trip", 
+        "end_date": "2014-10-20T05:25:13.426Z", 
+        "added_by": "root", 
+        "start_date": "2014-10-20T05:25:13.426Z", 
+        "added_on": "2014-10-20T05:25:13.426Z", 
+        "description": "Should be exicting."
+    }
+},
+{
+    "pk": 1, 
+    "model": "search.tripdestination", 
+    "fields": {
+        "description": "", 
+        "end_date": "2014-10-20T03:53:01.065Z", 
+        "destination": 8, 
+        "trip": 1, 
+        "start_date": "2014-10-20T03:53:01.065Z", 
+        "added_on": "2014-10-20T03:53:01.065Z"
+    }
+},
+{
+    "pk": 2, 
+    "model": "search.tripdestination", 
+    "fields": {
+        "description": "", 
+        "end_date": "2014-10-20T03:54:28.814Z", 
+        "destination": 3, 
+        "trip": 1, 
+        "start_date": "2014-10-20T03:54:28.814Z", 
+        "added_on": "2014-10-20T03:54:28.814Z"
     }
 },
 {
     "pk": 3, 
-    "model": "search.accommodation", 
+    "model": "search.tripdestination", 
     "fields": {
-        "name": "Carson City", 
-        "country": 1, 
-        "destination": 18, 
-        "latest_update": "", 
-        "longitude": "-119.7674034", 
-        "last_updated_on": "2001-01-01T00:00:00Z", 
-        "state": 5, 
-        "added_by": "aju", 
-        "address": "Carson City, Nevada, United States", 
-        "latitude": "39.1637984", 
-        "added_on": "2001-01-01T00:00:00Z", 
-        "description": "Pretty cheap"
+        "description": "", 
+        "end_date": "2014-10-20T05:25:13.434Z", 
+        "destination": 10, 
+        "trip": 2, 
+        "start_date": "2014-10-20T05:25:13.434Z", 
+        "added_on": "2014-10-20T05:25:13.434Z"
+    }
+},
+{
+    "pk": 1, 
+    "model": "search.tripdestinationpointofinterestcategory", 
+    "fields": {
+        "name": "Start"
+    }
+},
+{
+    "pk": 2, 
+    "model": "search.tripdestinationpointofinterestcategory", 
+    "fields": {
+        "name": "End"
+    }
+},
+{
+    "pk": 3, 
+    "model": "search.tripdestinationpointofinterestcategory", 
+    "fields": {
+        "name": "Waypoint"
+    }
+},
+{
+    "pk": 1, 
+    "model": "search.tripdestinationpointofinterest", 
+    "fields": {
+        "category": 1, 
+        "added_on": "2014-10-20T03:53:01.069Z", 
+        "trip_destination": 1, 
+        "description": "", 
+        "point_of_interest": 50
+    }
+},
+{
+    "pk": 2, 
+    "model": "search.tripdestinationpointofinterest", 
+    "fields": {
+        "category": 2, 
+        "added_on": "2014-10-20T03:53:01.072Z", 
+        "trip_destination": 1, 
+        "description": "", 
+        "point_of_interest": 38
+    }
+},
+{
+    "pk": 3, 
+    "model": "search.tripdestinationpointofinterest", 
+    "fields": {
+        "category": 3, 
+        "added_on": "2014-10-20T03:53:01.075Z", 
+        "trip_destination": 1, 
+        "description": "", 
+        "point_of_interest": 44
     }
 },
 {
     "pk": 4, 
-    "model": "search.accommodation", 
+    "model": "search.tripdestinationpointofinterest", 
     "fields": {
-        "name": "North Lake Tahoe", 
-        "country": 1, 
-        "destination": 18, 
-        "latest_update": "", 
-        "longitude": "-120.12286", 
-        "last_updated_on": "2001-01-01T00:00:00Z", 
-        "state": 2, 
-        "added_by": "aju", 
-        "address": "North Lake Tahoe, California, United States", 
-        "latitude": "39.184622", 
-        "added_on": "2001-01-01T00:00:00Z", 
-        "description": "Good in winter. Good ski resorts close by. Also, short drive to Reno."
+        "category": 3, 
+        "added_on": "2014-10-20T03:53:01.078Z", 
+        "trip_destination": 1, 
+        "description": "", 
+        "point_of_interest": 40
     }
 },
 {
     "pk": 5, 
-    "model": "search.accommodation", 
+    "model": "search.tripdestinationpointofinterest", 
     "fields": {
-        "name": "Canc\u00fan Downtown", 
-        "country": 4, 
-        "destination": 10, 
-        "latest_update": "", 
-        "longitude": "-86.8233754", 
-        "last_updated_on": "2001-01-01T00:00:00Z", 
-        "state": 9, 
-        "added_by": "aju", 
-        "address": "Canc\u00fan Downtown, Quintana Roo, Mexico", 
-        "latitude": "21.1474996", 
-        "added_on": "2001-01-01T00:00:00Z", 
-        "description": "Cheap place to stay."
+        "category": 3, 
+        "added_on": "2014-10-20T03:53:01.081Z", 
+        "trip_destination": 1, 
+        "description": "", 
+        "point_of_interest": 36
     }
 },
 {
     "pk": 6, 
-    "model": "search.accommodation", 
+    "model": "search.tripdestinationpointofinterest", 
     "fields": {
-        "name": "Canc\u00fan Hotel Area", 
-        "country": 4, 
-        "destination": 10, 
-        "latest_update": "", 
-        "longitude": "-86.7759969", 
-        "last_updated_on": "2001-01-01T00:00:00Z", 
-        "state": 9, 
-        "added_by": "aju", 
-        "address": "Canc\u00fan Hotel Area, Quintana Roo, Mexico", 
-        "latitude": "21.074796", 
-        "added_on": "2001-01-01T00:00:00Z", 
-        "description": "Expensive resort type hotels. But, all tour buses pickup from here. Convenient location."
+        "category": 3, 
+        "added_on": "2014-10-20T03:53:01.084Z", 
+        "trip_destination": 1, 
+        "description": "", 
+        "point_of_interest": 37
     }
 },
 {
     "pk": 7, 
-    "model": "search.accommodation", 
+    "model": "search.tripdestinationpointofinterest", 
     "fields": {
-        "name": "Red Bluff", 
-        "country": 1, 
-        "destination": 3, 
-        "latest_update": "", 
-        "longitude": "-122.2358302", 
-        "last_updated_on": "2001-01-01T00:00:00Z", 
-        "state": 2, 
-        "added_by": "aju", 
-        "address": "Red Bluff, California, United States", 
-        "latitude": "40.1784886", 
-        "added_on": "2001-01-01T00:00:00Z", 
-        "description": ""
+        "category": 1, 
+        "added_on": "2014-10-20T03:54:28.827Z", 
+        "trip_destination": 2, 
+        "description": "", 
+        "point_of_interest": 10
     }
 },
 {
     "pk": 8, 
-    "model": "search.accommodation", 
+    "model": "search.tripdestinationpointofinterest", 
     "fields": {
-        "name": "Burney", 
-        "country": 1, 
-        "destination": 3, 
-        "latest_update": "", 
-        "longitude": "-121.6608205", 
-        "last_updated_on": "2001-01-01T00:00:00Z", 
-        "state": 2, 
-        "added_by": "aju", 
-        "address": "Burney, California, United States", 
-        "latitude": "40.8823811", 
-        "added_on": "2001-01-01T00:00:00Z", 
-        "description": ""
+        "category": 3, 
+        "added_on": "2014-10-20T03:54:28.832Z", 
+        "trip_destination": 2, 
+        "description": "", 
+        "point_of_interest": 16
     }
 },
 {
     "pk": 9, 
-    "model": "search.accommodation", 
+    "model": "search.tripdestinationpointofinterest", 
     "fields": {
-        "name": "Princeville", 
-        "country": 1, 
-        "destination": 6, 
-        "latest_update": "", 
-        "longitude": "-159.4852778", 
-        "last_updated_on": "2001-01-01T00:00:00Z", 
-        "state": 1, 
-        "added_by": "aju", 
-        "address": "Princeville, Hawaii, United States", 
-        "latitude": "22.2236111", 
-        "added_on": "2001-01-01T00:00:00Z", 
-        "description": "Stay at the beautiful north shore."
+        "category": 2, 
+        "added_on": "2014-10-20T03:54:28.837Z", 
+        "trip_destination": 2, 
+        "description": "", 
+        "point_of_interest": 26
     }
 },
 {
     "pk": 10, 
-    "model": "search.accommodation", 
+    "model": "search.tripdestinationpointofinterest", 
     "fields": {
-        "name": "Poipu", 
-        "country": 1, 
-        "destination": 6, 
-        "latest_update": "", 
-        "longitude": "-159.4566317", 
-        "last_updated_on": "2001-01-01T00:00:00Z", 
-        "state": 1, 
-        "added_by": "aju", 
-        "address": "Poipu, Hawaii, United States", 
-        "latitude": "21.8870198", 
-        "added_on": "2001-01-01T00:00:00Z", 
-        "description": "Near the busy town. Central to everything else in the island"
+        "category": 3, 
+        "added_on": "2014-10-20T05:25:13.437Z", 
+        "trip_destination": 3, 
+        "description": "", 
+        "point_of_interest": 19
     }
 },
 {
     "pk": 11, 
-    "model": "search.accommodation", 
+    "model": "search.tripdestinationpointofinterest", 
     "fields": {
-        "name": "Medford", 
-        "country": 1, 
-        "destination": 8, 
-        "latest_update": "", 
-        "longitude": "-122.8755949", 
-        "last_updated_on": "2001-01-01T00:00:00Z", 
-        "state": 3, 
-        "added_by": "aju", 
-        "address": "Medford, Oregon, United States", 
-        "latitude": "42.3265152", 
-        "added_on": "2001-01-01T00:00:00Z", 
-        "description": ""
+        "category": 3, 
+        "added_on": "2014-10-20T05:25:13.441Z", 
+        "trip_destination": 3, 
+        "description": "", 
+        "point_of_interest": 17
     }
 },
 {
     "pk": 12, 
-    "model": "search.accommodation", 
+    "model": "search.tripdestinationpointofinterest", 
     "fields": {
-        "name": "Klamath Falls", 
-        "country": 1, 
-        "destination": 8, 
-        "latest_update": "", 
-        "longitude": "-121.7816704", 
-        "last_updated_on": "2001-01-01T00:00:00Z", 
-        "state": 3, 
-        "added_by": "aju", 
-        "address": "Klamath Falls, Oregon, United States", 
-        "latitude": "42.224867", 
-        "added_on": "2001-01-01T00:00:00Z", 
-        "description": ""
+        "category": 3, 
+        "added_on": "2014-10-20T05:25:13.444Z", 
+        "trip_destination": 3, 
+        "description": "", 
+        "point_of_interest": 18
+    }
+},
+{
+    "pk": 13, 
+    "model": "search.tripdestinationpointofinterest", 
+    "fields": {
+        "category": 3, 
+        "added_on": "2014-10-20T05:25:13.447Z", 
+        "trip_destination": 3, 
+        "description": "", 
+        "point_of_interest": 20
     }
 }
 ]

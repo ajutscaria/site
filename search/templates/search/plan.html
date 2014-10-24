@@ -13,14 +13,38 @@
     {% include "search/menu.html" %}
     <form action="" method="post" id="searchform">{% csrf_token %}
       <input id="input-box" class="controls" type="text" placeholder="Search for a destination"></input>
-      <div id="promptAddDestination" class="alert alert-info" role="alert" style="display:none">Destination does not exist. <a id="add-destination-link" href="#" onclick="addDestinationLinkClicked();">Add one?</a></div>
+      <div id="promptAddDestination" class="alert alert-info" role="alert" style="display:none">Location does not exist. <a id="add-destination-link" href="#" onclick="addDestinationLinkClicked();">Add destination?</a><a>Add point of interest.</a></div>
       <div id="message" class="alert alert-info" role="alert" style="display:none"></div>
     </form>
     <div style="height:100%; margin: 0px; padding: 0px">
       <div id="map-canvas"></div>
+      <div id="infoBox" style="position:absolute; bottom:0px; right:0px; width:25%; height:100%; border: 1px solid #CCC; z-index:1;background:white; display:none; padding-top:70px">
+        <div style="float:right;"> <a onclick="closeInfo();" href="#"> <img id="closePlanImg" title="Close" src="/static/images/close.png"></a></div>
+          <div id="info-container" stype="padding:10px; background-color:#FFFFFF;margin-left: auto;margin-right: auto;"></div>
+      </div>
       <div id="planBox" style="position:absolute; bottom:0px; right:0px; width:25%; height:100%; border: 1px solid #CCC; z-index:1;background:white; display:none; padding-top:70px">
-        <div style="float:right;"> <a id="toggleFilters" onclick="closePlan();" href="#"> <img id="closePlanImg" title="Close" src="/static/images/close.png"></a></div>
-        <div id="plan-container" stype="padding:10px; background-color:#FFFFFF;margin-left: auto;margin-right: auto;">
+        <div style="float:right;"> <a onclick="closePlan();" href="#"> <img id="closePlanImg" title="Close" src="/static/images/close.png"></a></div>
+          <div id="plan-container" stype="padding:10px; background-color:#FFFFFF;margin-left: auto;margin-right: auto;"></div>
+          <button type="button" class="btn btn-primary" onclick="clickedSaveTrip();">Save!</button>
+      </div>
+      <div id="saveBox" style="position:absolute; bottom:0px; right:0px; width:25%; height:100%; border: 1px solid #CCC; z-index:1;background:white; display:none; padding-top:70px">
+        <div style="float:right;"> <a onclick="closeSave();" href="#"> <img id="closePlanImg" title="Close" src="/static/images/close.png"></a></div>
+        <div id="save-container" stype="padding:10px; background-color:#FFFFFF;margin-left: auto;margin-right: auto;">
+          <div id="createNewTrip">
+            <div>
+              <span>Create a new trip?</span>
+                &nbsp;&nbsp;<input type="radio" name="createNewTrip" value="Yes" onchange="createNewTripChange()">&nbsp;Yes</input>
+                &nbsp;&nbsp;<input type="radio" name="createNewTrip" value="No" onchange="createNewTripChange()">&nbsp;No</input>
+              <div id="newTripDiv" style="display:none;">
+                <input placeholder="Enter trip name" id="newTripName"/>
+                <input placeholder="Enter description" id="newTripDescription"/>
+              </div>
+              <div id="oldTripDiv" style="display:none;">
+                <span>Select your trip:</span>
+                <select id="selectTrip"></select>
+              </div>
+            </div>
+            <button type="button" class="btn btn-primary" id="saveTripButton" onclick="saveTripToDatabase();" style="display:none;">Save!</button>
         </div>
       </div>
     </div>
@@ -60,7 +84,12 @@
           <div><label><b>Visit:</b></label><span id="poi"></span></div>
           <div><label><b>Start from:</b></label><span id="startfrom"><select id="select_startfrom"></select></span></div>
           <div><label><b>End at:</b></label><span id="endat"></span><select id="select_endat"></select></div>
-          <div><button type="button" class="btn btn-primary" onclick="planTrip();">Plan!</button></div>
+          <div id="startEndMessage" class="alert alert-danger" role="alert" style="display:none; width:350px; height:50px; margin:0 auto;">Choose start and end to plan.</div>
+          <div id="pointsOfInterestMessage" class="alert alert-danger" role="alert" style="display:none; width:350px; height:50px; margin:0 auto;">Choose at least a point of interest to save.</div>
+          <div>
+            <button type="button" class="btn btn-primary" onclick="planTrip();">Plan!</button>
+            <button type="button" class="btn btn-primary" onclick="clickedSaveTrip();">Save!</button>
+          </div>
         </div>
       </div>
     </div>

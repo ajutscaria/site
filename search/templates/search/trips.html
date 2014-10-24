@@ -1,0 +1,39 @@
+<html>
+<head>
+    <style type="text/css">
+        #trips-map-canvas { height: 500px; width:700px }
+        #trips-map-canvas img { max-width:none }
+    </style>
+    <link rel="stylesheet" type="text/css" href='/static/css/bootstrap.min.css'>
+    <link rel="stylesheet" type="text/css" href='/static/css/font-awesome.min.css'>
+    <link rel="stylesheet" type="text/css" href='/static/css/style.css'>
+    <script type="text/javascript" src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBF_ghimLOB28fkKBKv6Nn8c7k1cbaSD-A&libraries=places'></script>
+    <script type='text/javascript' src='/static/js/jquery-1.11.1.min.js'></script>
+    <script type='text/javascript' src='/static/js/trips.js'></script>
+</head>
+<body id="trips">
+    {% include "search/menu.html" %}
+    <div id="content" style="width:1000px; padding-top:30px">
+        <form action="" method="post" id="mytripsform">{% csrf_token %}
+            <div>
+                <h4 align="left">Your trips (click a trip for details):</h4>
+                <table width="100%">
+                    <tr>
+                        <td width="50%" valign="top">
+                            <div id="myTripsDiv">
+                            </div>
+                        </td>
+                        <td width="50%" valign="top">
+                            <div id="tripDestinationsDiv">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="center"><div id="trips-map-canvas"></div></td>
+                    </tr>
+                </table>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

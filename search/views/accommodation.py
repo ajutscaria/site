@@ -1,7 +1,7 @@
 from search.forms import DestinationForm, PointOfInterestForm, SearchForm, AccommodationForm, RegistrationForm
 from django.template import RequestContext
 from django.shortcuts import render_to_response
-from search.models import PointOfInterest, Destination, State, Accommodation
+from search.models import PointOfInterest, Destination, State
 from pygeocoder import Geocoder
 from django.http import HttpResponse
 import json

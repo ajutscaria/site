@@ -1,11 +1,12 @@
 from search.forms import DestinationForm, PointOfInterestForm, SearchForm, AccommodationForm, RegistrationForm
 from django.template import RequestContext
 from django.shortcuts import render_to_response
-from search.models import PointOfInterest, Destination, State, Country, Accommodation
+from search.models import PointOfInterest, Destination, State, Country, Trip, TripDestination, TripDestinationPointOfInterest, PointOfInterestCategory, TripDestinationPointOfInterestCategory
 from pygeocoder import Geocoder
 from django.http import HttpResponse
 import json
 import math
+from datetime import datetime
 from geoposition.fields import Geoposition
 from PIL import Image as PImage
 from os.path import join as pjoin
@@ -90,8 +91,9 @@ def explore(request):
 	            result = convert_location_to_json(geoloc.coordinates[0], geoloc.coordinates[1], address, "")
 	            result.extend(convert_destinations_to_json(closest_destinations))
 
-        return HttpResponse(json.dumps({'attractions': result, 'address':address, 'is_state': is_state,
-	                                    'is_country': is_country, 'max_distance':max_distance, 
+        return HttpResponse(json.dumps({'attractions': result, 'max_distance':max_distance, 
+        								'details':{'address':address, 'is_state': is_state, 'is_country': is_country,
+        								           'latitude':geoloc.coordinates[0], 'longitude': geoloc.coordinates[1]},
 	                                    'destination_exists':destination_exists}));
     else:
         print 'creating new form'
@@ -163,11 +165,45 @@ def get_points_of_interest_for_destination(request):
         print 'done with conversions', result
         return HttpResponse(json.dumps({'attractions': result, 'max_distance': max_distance, 
                             'accommodation': acco_json}));
+def save_plan(request):
+	if request.method == "POST":
+		post_data = json.loads(request.POST['data'])
+		print "View:save_plan!", post_data['trip_id']
+		print post_data
+		if int(post_data['trip_id']) == -1:
+			trip = Trip(name = post_data['name'],
+			            description = post_data['description'],
+			            added_on = datetime.utcnow(),
+						start_date = datetime.utcnow(),
+						end_date = datetime.utcnow(),
+						added_by = request.user.username)
+			print trip.name, trip.description
+			trip.save();
+		else:
+			trip = Trip.objects.get(id=int(post_data['trip_id']))
+		tripdestination = TripDestination(destination_id = post_data['destination_id'],
+										  trip_id = trip.id,
+										  start_date = datetime.utcnow(),
+										  end_date = datetime.utcnow(),
+										  added_on = datetime.utcnow())
+		tripdestination.save();
+
+		for attraction in post_data['point_of_interest']:
+			category_id = TripDestinationPointOfInterestCategory.objects.filter(name=attraction['category'])[0].id
+			print category_id
+			trippoi = TripDestinationPointOfInterest(point_of_interest_id = attraction['id'],
+										             trip_destination_id = tripdestination.id,
+										             category_id = category_id,
+										             added_on = datetime.utcnow())
+			trippoi.save()
+		print "ID", trip.id;
+		return HttpResponse(json.dumps({}));
 
 def find_points_of_interest_in_range(from_location, range):
     closest_attractions=[]
     max_distance = 0;
-    for obj in PointOfInterest.objects.all():
+    accommodation_id = PointOfInterestCategory.objects.filter(name="Accommodation")[0].id
+    for obj in PointOfInterest.objects.all().exclude(category_id=accommodation_id):
         loc = Geoposition(obj.latitude, obj.longitude)
         d = distance(loc, from_location)
         if d < range:
@@ -175,6 +211,7 @@ def find_points_of_interest_in_range(from_location, range):
             closest_attractions.append(obj)
             if d > max_distance:
                 max_distance = d
+
     return (closest_attractions, max_distance)
 
 def find_destinations_in_range(from_location, range):
@@ -188,7 +225,8 @@ def find_destinations_in_range(from_location, range):
             closest_destinations.append(obj)
             if d > max_distance:
                 max_distance = d;
-    return (closest_destinations, max_distance)
+    return_val = sorted(closest_destinations, key=operator.attrgetter('name'))
+    return (return_val, max_distance)
 
 def find_destinations_in_state(state_id):
     destinations = []
@@ -206,7 +244,8 @@ def find_points_of_interest_for_destination(id):
     print "View:find_points_of_interest_for_destination! id:", id
     destination = Destination.objects.get(id=id);
     from_location = Geoposition(destination.latitude, destination.longitude)
-    results = PointOfInterest.objects.filter(destination_id=id);
+    accommodation_id = PointOfInterestCategory.objects.filter(name="Accommodation")[0].id
+    results = PointOfInterest.objects.filter(destination_id=id).exclude(category_id=accommodation_id);
     attractions = sorted(results, key=operator.attrgetter('name'))
     max_distance = 0;
     for obj in attractions:
@@ -220,7 +259,8 @@ def find_accommodation_for_destination(id):
     print "View:find_accommodation_for_destination! id:", id
     destination = Destination.objects.get(id=id);
     from_location = Geoposition(destination.latitude, destination.longitude)
-    acco = Accommodation.objects.filter(destination_id=id);
+    accommodation_id = PointOfInterestCategory.objects.filter(name="Accommodation")[0].id
+    acco = PointOfInterest.objects.filter(destination_id=id, category_id=accommodation_id);
     max_distance = 0;
     for obj in acco:
         loc = Geoposition(obj.latitude, obj.longitude)

@@ -60,7 +60,7 @@ class Destination(models.Model):
     open_hours = models.CharField(max_length=50, default="")
     time_required = models.CharField(max_length=50, default="1", validators=[validate_time_required])
     photo = models.ImageField("Picture", upload_to=get_destination_image_path, blank=True, null=True)
-    added_on = models.DateTimeField(default="2001-01-01 00:00")
+    added_on = models.DateTimeField(default=datetime.now, blank=True)
     added_by = models.CharField(max_length=20, default="")
 
     def __unicode__(self):
@@ -85,18 +85,18 @@ class PointOfInterest(models.Model):
     category = models.ForeignKey(PointOfInterestCategory, default=1)
     rating = models.DecimalField(max_digits=11, decimal_places=7, default=0.00)
     number_of_ratings = models.IntegerField(default=0)
-    description = models.CharField(max_length=200, default="")
+    description = models.CharField(max_length=200, default="", blank=True)
     salience = models.IntegerField(default=0)
-    best_time = models.CharField(max_length=50, default="")
-    open_hours = models.CharField(max_length=50, default="")
+    best_time = models.CharField(max_length=50, default="", blank=True)
+    open_hours = models.CharField(max_length=50, default="", blank=True)
     time_required = models.CharField(max_length=50, default="1", validators=[validate_time_required])
-    added_on = models.DateTimeField(default="2001-01-01 00:00")
-    added_by = models.CharField(max_length=20, default="")
-    url = models.CharField(max_length=50, default="")
+    added_on = models.DateTimeField(default=datetime.now, blank=True)
+    added_by = models.CharField(max_length=20, default="", blank=True)
+    url = models.CharField(max_length=50, default="", blank=True)
     photo = models.ImageField("Picture", upload_to=get_point_of_interest_image_path, blank=True, null=True)
-    ticket_price = models.CharField(max_length=50, default="")
-    last_updated_on = models.DateTimeField(default="2001-01-01 00:00")
-    latest_update = models.CharField(max_length=100, default="")
+    ticket_price = models.CharField(max_length=50, default="", blank=True)
+    last_updated_on = models.DateTimeField(default=datetime.now, blank=True)
+    latest_update = models.CharField(max_length=100, blank=True, default="")
 
     def __unicode__(self):
         return self.full_name()
@@ -104,20 +104,40 @@ class PointOfInterest(models.Model):
     def full_name(self):
         return self.address
 
-class Accommodation(models.Model):
+class Trip(models.Model):
     name = models.CharField(max_length=50)
-    state = models.ForeignKey(State, default=2)
-    country = models.ForeignKey(Country, default=1)
-    address = models.CharField(max_length=100, default="")
-    latitude = models.DecimalField(max_digits=11, decimal_places=7)
-    longitude = models.DecimalField(max_digits=11, decimal_places=7)
-    destination = models.ForeignKey(Destination, default=1)
     description = models.CharField(max_length=200, default="")
-    added_on = models.DateTimeField(default="2001-01-01 00:00")
+    start_date = models.DateTimeField(default=datetime.now, blank=True)
+    end_date = models.DateTimeField(default=datetime.now, blank=True)
+    added_on = models.DateTimeField(default=datetime.now, blank=True)
     added_by = models.CharField(max_length=20, default="")
-    last_updated_on = models.DateTimeField(default="2001-01-01 00:00")
-    latest_update = models.CharField(max_length=100, default="")
 
     def __unicode__(self):
-        return self.address
+        return self.name
+
+class TripDestination(models.Model):
+    trip = models.ForeignKey(Trip, default=1)
+    destination = models.ForeignKey(Destination, default=1)
+    description = models.CharField(max_length=200, default="")
+    start_date = models.DateTimeField(default=datetime.now, blank=True)
+    end_date = models.DateTimeField(default=datetime.now, blank=True)
+    added_on = models.DateTimeField(default=datetime.now, blank=True)
+    def __unicode__(self):
+        return self.trip.name + "/" + self.destination.name
+
+class TripDestinationPointOfInterestCategory(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __unicode__(self):
+        return self.name
+
+class TripDestinationPointOfInterest(models.Model):
+    trip_destination = models.ForeignKey(TripDestination, default=1)
+    point_of_interest = models.ForeignKey(PointOfInterest, default=1)
+    category = models.ForeignKey(TripDestinationPointOfInterestCategory, default = 1)
+    description = models.CharField(max_length=200, default="")
+    added_on = models.DateTimeField(default=datetime.now, blank=True)
+
+    def __unicode__(self):
+        return self.trip_destination.trip.name + "/" + self.trip_destination.destination.name + "/" + self.point_of_interest.name
 
