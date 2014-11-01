@@ -1,7 +1,7 @@
 from search.forms import DestinationForm, PointOfInterestForm, SearchForm, AccommodationForm, RegistrationForm
 from django.template import RequestContext
 from django.shortcuts import render_to_response
-from search.models import PointOfInterest, Destination, State
+from search.models import PointOfInterest, Destination, State, DestinationCategory, Country
 from pygeocoder import Geocoder
 from django.http import HttpResponse
 import json
@@ -15,6 +15,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponseRedirect
 from django.contrib.auth import authenticate, login
+import utils
 
 @login_required
 def add(request):
@@ -154,6 +155,39 @@ def edit(request, id):
         else:
             form = DestinationForm(instance=destinations[0])
         return render_to_response('search/add_destination.html', {'form': form, 'edit': True, 'saved': saved, 'destination_id': id}, context);
+
+@login_required
+def save_destination(request):
+    print "In save_destination"
+    if request.method == 'POST':
+        print request.POST
+        state_name = request.POST['address'].split(',')[1].strip()
+        country_name = request.POST['address'].split(',')[2].strip()
+        print state_name
+        print State.objects.filter(name=state_name)
+        state_id = State.objects.filter(name=state_name)[0].id
+        print country_name
+        print Country.objects.filter(name=country_name)
+        country_id = Country.objects.filter(name=country_name)[0].id
+        print state_id, country_id
+        destination_instance = Destination(name = request.POST['address'].split(',')[0],
+            address = request.POST['address'], latitude = request.POST['latitude'], longitude = request.POST['longitude'],
+            description = request.POST['description'], state_id = state_id, country_id = country_id,
+            category_id = int(request.POST['category']), time_required = request.POST['time_required']);
+        destination_instance.save();
+        print "Saved. Got ID:", destination_instance.id
+        return HttpResponse(json.dumps({'saved': True, 'info': utils.build_destination_info(destination_instance),
+                                        'id': destination_instance.id}))
+
+
+@login_required
+def get_destination_categories(request):
+    print "In get_destination_categories"
+    categories = DestinationCategory.objects.all()
+    json_data = []
+    for category in categories:
+        json_data.append({ "name" : category.name, "id" : category.id })
+    return HttpResponse(json.dumps(json_data));
 
 def generate_address(geoloc):
     print "generate_address", str(geoloc)

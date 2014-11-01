@@ -91,6 +91,8 @@ class PointOfInterestForm(forms.ModelForm):
         cleaned_data = self.cleaned_data
         #I'm wondering why this is not handled by the the default value tha tis being set. Enough time wasted on this.
         cleaned_data['added_on'] = datetime.utcnow()
+        if not cleaned_data['salience']:
+            cleaned_data['salience'] = 0
         print "Cleaned POI data", cleaned_data
         return cleaned_data
 

@@ -6,6 +6,7 @@
     <link rel="stylesheet" type="text/css" href='/static/css/font-awesome.min.css'>
     <link rel="stylesheet" type="text/css" href='/static/css/style.css'>
     <script type='text/javascript' src='/static/js/jquery-1.11.1.min.js'></script>
+        <script type='text/javascript' src='/static/js/bootstrap.min.js'></script>
     <script type="text/javascript" src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBF_ghimLOB28fkKBKv6Nn8c7k1cbaSD-A&libraries=places'></script>
     <script type='text/javascript'>
       $(document).ready(function() {
@@ -23,6 +24,33 @@
           return false;
         }
       }
+
+      function clickedViewMoreOrganize() {
+        if ($('#organizeDiv').is(":visible")) {
+          $('#organizeButton').html("Read more &raquo;")
+        } else {
+          $('#organizeButton').html("Show less &laquo;")
+        }
+        $('#organizeDiv').toggle();
+      }
+
+      function clickedViewMorePlan() {
+        if ($('#planDiv').is(":visible")) {
+          $('#planButton').html("Read more &raquo;")
+        } else {
+          $('#planButton').html("Show less &laquo;")
+        }
+        $('#planDiv').toggle();
+      }
+
+      function clickedViewMoreExplore() {
+        if ($('#exploreDiv').is(":visible")) {
+          $('#exploreButton').html("Read more &raquo;")
+        } else {
+          $('#exploreButton').html("Show less &laquo;")
+        }
+        $('#exploreDiv').toggle();
+      }
     </script>
   </head>
   <body id="home">
@@ -31,40 +59,39 @@
       <!-- Jumbotron -->
       <div class="jumbotron">
         <h1>Explore the world!</h1>
-        <p class="lead">Have you planned your next vacation? Not sure where to go? Not sure what to do at a destination? You can discover places, find interesting things to do and finally also plan your itinerary to minute by minute detail here! Bon Voyage!</p>
+        <!--<p class="lead">Have you planned your next vacation? Not sure where to go? Not sure what to do at a destination? You can discover places, find interesting things to do and finally also plan your itinerary to minute by minute detail here! Bon Voyage!</p>
 
-        <p>Find places near an address or search for a destination.</p>
-        <input id="input-box" class="controls" type="text" placeholder="Explore"></input>
-        <button type="submit" class="btn btn-primary" onclick="return searchForLocation();">Search</button>
+        <p>Find places near an address or search for a destination.</p>-->
+        <br/><br/>
+        <input id="input-box" class="controls" type="text" placeholder="Where do you want to go?" style="width:600px;height:40px"></input>
+        <button type="submit" class="btn btn-primary" onclick="return searchForLocation();" style="width:90px; height:40px">Search</button>
       </div>
 
       <!-- Example row of columns -->
       <div class="row">
         <div class="col-lg-4">
-          <h2>Search for destinations</h2>
-          <p>Discover destinations by finding what's near you or close to any address!</p>
-          <p><a class="btn btn-primary" href="#" role="button">View details &raquo;</a></p>
+          <h2>Organize your trip</h2>
+          <p>Add all the places you want to visit at a destination. See them all in one place and share your trip!</p>
+          <p><a class="btn btn-primary" href="#" role="button" id="organizeButton" onclick="clickedViewMoreOrganize();" style="width:120px;">Read more &raquo;</a></p>
+          <div id="organizeDiv" style="display:none">You can add all the attractions you want to visit at a destination easily and see them on a map. Once you have added and saved a trip, share them easily with anyone!</div>
         </div>
-        <div class="col-lg-4">
-          <h2>Explore attractions</h2>
-          <p>Find out everything you can do at a destination by reading about attractions, filtering them by type, range etc. You can also add attractions you want to go to with a few easy steps.</p>
-          <p><a class="btn btn-primary" href="#" role="button">View details &raquo;</a></p>
-       </div>
         <div class="col-lg-4">
           <h2>Plan your trip</h2>
           <p>Once you have figured out all the attractions you want to visit, plan your itinerary in great detail. See how much traveling/ visiting time you need.</p>
-          <p><a class="btn btn-primary" href="#" role="button">View details &raquo;</a></p>
+          <p><a class="btn btn-primary" href="#" role="button" id="planButton" onclick="clickedViewMorePlan();" style="width:120px;">Read more &raquo;</a></p>
+          <div id="planDiv" style="display:none">You can choose which all attractions to visit at a destination and we will tell you the best order to visit the places and how much time the total trip will take.</div>
+        </div>
+        <div class="col-lg-4">
+          <h2>Explore destinations</h2>
+          <p>Discover destinations by finding what's near you or close to any address! Find out everything you can do at a destination by reading about attractions, filtering them by type, range etc.</p>
+          <p><a class="btn btn-primary" href="#" role="button" id="exploreButton" onclick="clickedViewMoreExplore();" style="width:120px;">Read more &raquo;</a></p>
+          <div id="exploreDiv" style="display:none">Don't find a destination or an attraction within a point of interest? Add them easily with a few clicks.</div>
         </div>
       </div>
       <!-- Site footer -->
-      <div class="footer">
+      <!--<div class="footer">
         <p>&copy; XPLOR 2014</p>
-      </div>
-
+      </div>-->
     </div> <!-- /container -->
-
-
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
   </body>
 </html>

@@ -89,7 +89,7 @@ class PointOfInterest(models.Model):
     salience = models.IntegerField(default=0)
     best_time = models.CharField(max_length=50, default="", blank=True)
     open_hours = models.CharField(max_length=50, default="", blank=True)
-    time_required = models.CharField(max_length=50, default="1", validators=[validate_time_required])
+    time_required = models.CharField(max_length=50, default="0 mins", validators=[validate_time_required])
     added_on = models.DateTimeField(default=datetime.now, blank=True)
     added_by = models.CharField(max_length=20, default="", blank=True)
     url = models.CharField(max_length=50, default="", blank=True)

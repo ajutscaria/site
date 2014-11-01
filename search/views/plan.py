@@ -18,6 +18,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponseRedirect
 from django.contrib.auth import authenticate, login
 import operator
+import utils
 
 def plan(request):
     print "View:plan!"
@@ -29,10 +30,14 @@ def explore(request):
     print "View:explore!"
     context = RequestContext(request)
     converted=""
+    should_create_new_destination = False
     if request.method == 'POST':
-        form = SearchForm(request.POST)
+        #form = SearchForm(request.POST)
+        print 'post'
         searchlocation = request.POST['searchfor']
+        print Geocoder.geocode(searchlocation)
         geoloc = Geocoder.geocode(searchlocation)[0]
+        print geoloc
         address_dict = generate_address(geoloc)
         print "Generated address:", address_dict
 
@@ -72,6 +77,11 @@ def explore(request):
         	print 'Searched for location:', address
 	        loc = Geoposition(geoloc.coordinates[0], geoloc.coordinates[1])
 	        destinations = Destination.objects.filter(address=address);
+	        if not destinations.exists():
+	       		place_name = request.POST['searchfor'].split(',')[0].strip()
+        		print 'Second attempt in finding destination. Place name:', place_name
+	        	destinations = Destination.objects.filter(name__startswith = place_name);
+
 	        if destinations.exists():
 	            print "Destination exists in database"
 	            destination_exists = True
@@ -82,7 +92,6 @@ def explore(request):
 	            result.extend(convert_points_of_interest_to_json(closest_attractions))
 	            (accommodation, max_acco_distance) = find_accommodation_for_destination(destination.id)
 	            result.extend(convert_accommodation_to_json(accommodation))
-
 	        else:
 	            print "Destination DOES NOT EXIST in database"
 	            (closest_destinations, max_distance) = find_destinations_in_range(loc, 200)
@@ -90,11 +99,17 @@ def explore(request):
 	            print "Closest destinations:", closest_destinations, "max_distance:", max_distance
 	            result = convert_location_to_json(geoloc.coordinates[0], geoloc.coordinates[1], address, "")
 	            result.extend(convert_destinations_to_json(closest_destinations))
+	            distance_to_closest = find_distance_to_closest_destination(loc, closest_destinations)
+	            print "Distance to closest destination:", distance_to_closest
+	            if distance_to_closest > 100:
+	            	should_create_new_destination = True
+	            	print "Should create new destination."
 
         return HttpResponse(json.dumps({'attractions': result, 'max_distance':max_distance, 
         								'details':{'address':address, 'is_state': is_state, 'is_country': is_country,
         								           'latitude':geoloc.coordinates[0], 'longitude': geoloc.coordinates[1]},
-	                                    'destination_exists':destination_exists}));
+	                                    'destination_exists':destination_exists,
+	                                    'create_new_destination':should_create_new_destination}));
     else:
         print 'creating new form'
         form = SearchForm()
@@ -228,6 +243,15 @@ def find_destinations_in_range(from_location, range):
     return_val = sorted(closest_destinations, key=operator.attrgetter('name'))
     return (return_val, max_distance)
 
+def find_distance_to_closest_destination(from_location, destinations):
+    min_distance = float("inf");
+    for destination in destinations:
+        loc = Geoposition(destination.latitude, destination.longitude)
+        d = distance(loc, from_location)
+        if d < min_distance:
+            min_distance = d
+    return min_distance
+
 def find_destinations_in_state(state_id):
     destinations = []
     for obj in Destination.objects.filter(state_id = state_id):
@@ -319,7 +343,7 @@ def convert_points_of_interest_to_json(places):
                           'time_required': place.time_required,
                           'type':'PointOfInterest',
                           'name': place.name,
-                          'info':build_point_of_interest_info(place)})
+                          'info': utils.build_point_of_interest_info(place)})
     return json_data
 
 def convert_accommodation_to_json(accommodation):
@@ -331,7 +355,7 @@ def convert_accommodation_to_json(accommodation):
                           'category': "Accommodation",
                           'name': acco.name,
                           'type':'Accommodation',
-                          'info':build_accommodation_info(acco)})
+                          'info': utils.build_accommodation_info(acco)})
     return json_data
 
 def convert_destinations_to_json(destinations):
@@ -343,45 +367,8 @@ def convert_destinations_to_json(destinations):
                           'category': str(destination.category),
                           'name': destination.name,
                           'type':'Destination',
-                          'info': build_destination_info(destination)})
+                          'info': utils.build_destination_info(destination)})
     return json_data
-
-def build_point_of_interest_info(poi):
-    photo_url = ""
-    if poi.photo:
-        photo_url = poi.photo.url;
-    info = "<b>" + poi.name + "</b>&nbsp;<a href=\"\" onclick=\"return clickedReadMore('PointOfInterest'," + str(poi.id) + ");\">Read more..</a>&nbsp;" \
-           "<a href=\"/search/edit_point_of_interest/" + str(poi.id) + "/\" target=\"_blank\">Edit..</a><br/><table>" + \
-           "<tr><td><b>Description:</td><td>" + poi.description + "</td></tr>" + \
-           "<tr><td><b>Category:</td><td>" + str(poi.category) + "</td></tr>" + \
-           "<tr><td><b>Salience:</td><td>" + str(poi.salience) + "</td></tr>" + \
-           "<tr><td><b>Best time:</td><td>" + poi.best_time + "</td></tr>" + \
-           "<tr><td><b>Time required:</td><td>" + poi.time_required + "</td></tr>" + \
-           "<tr><td colspan=\"2\"><img src=\"" + photo_url + "\" width = \"295\" height=\"197\"/></td></tr>" + \
-           "</table>"
-    return info
-
-def build_accommodation_info(acco):
-    info = "<b>" + acco.name + "</b>&nbsp;<a href=\"\">Read more..</a>&nbsp;<a href=\"\">Edit..</a><br/><table>" + \
-           "<tr><td><b>Address:</b></td><td>" + acco.address + "</td></tr>" + \
-           "<tr><td><b>Description:</td><td>" + acco.description + "</td></tr>" + \
-           "</table>"
-    return info
-
-def build_destination_info(destination):
-    photo_url = ""
-    if destination.photo:
-        photo_url = destination.photo.url;
-    info = "<b>" + destination.name + "</b>&nbsp;<a href=\"\" onclick=\"return clickedReadMore('Destination'," + str(destination.id) + ");\">Read more..</a>&nbsp;" \
-           "<a href=\"/search/edit_destination/" + str(destination.id) + "/\" target=\"_blank\">Edit..</a>" \
-           "<a href=\"/search/add_point_of_interest/destination/" + str(destination.id) + "/\" target=\"_blank\">Add..</a><br/><table>" + \
-           "<tr><td><b>Description:</td><td>" + destination.description + "</td></tr>" + \
-           "<tr><td><b>Category:</td><td>" + str(destination.category) + "</td></tr>" + \
-           "<tr><td><b>Best time:</td><td>" + destination.best_time + "</td></tr>" + \
-           "<tr><td><b>Time required:</td><td>" + destination.time_required + "</td></tr>" + \
-           "<tr><td colspan=\"2\"><img src=\"" + photo_url + "\" width = \"295\" height=\"197\"/></td></tr>" + \
-           "</table>"
-    return info
 
 def convert_location_to_json(latitude, longitude, name, description):
     json_data = [{'id':str(-1),
