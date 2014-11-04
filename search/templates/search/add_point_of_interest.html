@@ -8,6 +8,7 @@
     <link rel="stylesheet" type="text/css" href='/static/css/font-awesome.min.css'>
     <link rel="stylesheet" type="text/css" href='/static/css/style.css'>
     <script type='text/javascript' src='/static/js/jquery-1.11.1.min.js'></script>
+    <script type='text/javascript' src='/static/js/bootstrap.min.js'></script>
     <script type='text/javascript' src='/static/js/add_point_of_interest.js'></script>
     <script type="text/javascript" src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBF_ghimLOB28fkKBKv6Nn8c7k1cbaSD-A&libraries=places'></script>
 </head>
@@ -22,6 +23,12 @@
             </form>
         {% endif %}
         <form action="" method="post" id="looksgoodform" enctype="multipart/form-data" class="form-horizontal">{% csrf_token %}
+            {% if form.errors %}
+            <div class="alert alert-danger">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <div>The form has errors. Please check the information.</div>
+            </div>
+            {% endif %}
             {% if saved %}
             <div class="alert alert-info" role="alert">Point of interest added. Add another one? Just search for it above.</div>
             {% endif %}
@@ -34,11 +41,11 @@
                <table><tr><td>
                     <table>
                         {% for field in form.visible_fields %}
-                        <div class="form-group">
-                            <label class="control-label col-sm-3">{{ field.help_text }}</label>
-                            <div class="col-sm-9">{{ field }}</div>
-                            {{ field.errors }}
-                        </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-3">{{ field.help_text }}</label>
+                                <div class="col-sm-9">{{ field }}</div>
+                                {{ form.field.errors }}
+                            </div>
                         {% endfor %}
                     </table></td>
                     <td style="padding:20px"><div id="poi-map-canvas"></div></td></tr>

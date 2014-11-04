@@ -188,15 +188,3 @@ def get_destination_categories(request):
     for category in categories:
         json_data.append({ "name" : category.name, "id" : category.id })
     return HttpResponse(json.dumps(json_data));
-
-def generate_address(geoloc):
-    print "generate_address", str(geoloc)
-    print "Name", str(geoloc).split(',')[0].strip()
-    print "State", geoloc.state
-    print "Country", geoloc.country
-    address = str(geoloc).split(',')[0].strip()
-    if geoloc.state:
-        address += ", " + str(geoloc.state)
-    address += ", " + str(geoloc.country)
-    print "address found",  address
-    return address

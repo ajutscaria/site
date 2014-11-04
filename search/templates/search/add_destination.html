@@ -23,7 +23,10 @@
         {% endif %}
         <form action="" method="post" id="looksgoodform" enctype="multipart/form-data" class="form-horizontal">{% csrf_token %}
             {% if form.errors %}
-            <div class="alert alert-danger">The form has errors. Please check the information.</div>
+            <div class="alert alert-danger">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <div>The form has errors. Please check the information.</div>
+            </div>
             {% endif %}
             {% if saved %}
             <div class="alert alert-info" role="alert">Destination added. <a href="{% url 'add_point_of_interest_for_destination' destination_id %}">Add points of interest</a> for the destination?</div>

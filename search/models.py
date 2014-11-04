@@ -58,7 +58,7 @@ class Destination(models.Model):
     description = models.CharField(max_length=200, default="")
     best_time = models.CharField(max_length=50, default="")
     open_hours = models.CharField(max_length=50, default="")
-    time_required = models.CharField(max_length=50, default="1", validators=[validate_time_required])
+    time_required = models.CharField(max_length=50, default="0 mins", validators=[validate_time_required])
     photo = models.ImageField("Picture", upload_to=get_destination_image_path, blank=True, null=True)
     added_on = models.DateTimeField(default=datetime.now, blank=True)
     added_by = models.CharField(max_length=20, default="")

@@ -30,6 +30,8 @@ class DestinationForm(forms.ModelForm):
     def clean(self):
         print "Form:DestinationForm_clean"
         cleaned_data = self.cleaned_data
+        if not cleaned_data['time_required']:
+            cleaned_data['time_required'] = 0
         print "Cleanded data", cleaned_data
         return cleaned_data
 
@@ -93,6 +95,8 @@ class PointOfInterestForm(forms.ModelForm):
         cleaned_data['added_on'] = datetime.utcnow()
         if not cleaned_data['salience']:
             cleaned_data['salience'] = 0
+        if not cleaned_data['time_required']:
+            cleaned_data['time_required'] = 0
         print "Cleaned POI data", cleaned_data
         return cleaned_data
 
@@ -111,9 +115,6 @@ class PointOfInterestForm(forms.ModelForm):
         instance.country_id = country.id
         state, created = State.objects.get_or_create(name=state_name, country_id=instance.country_id)
         instance.state_id = state.id
-
-        if not instance.time_required:
-            instance.time_required = "0"
 
         #instance.latitude = geoloc.coordinates[0]
         #instance.longitude = geoloc.coordinates[1]

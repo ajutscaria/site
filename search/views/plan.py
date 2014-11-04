@@ -300,35 +300,11 @@ def get_complete_details(request):
         print "View:get_complete_details! id:", id, "type:", type
         if type == "PointOfInterest":
             poi = PointOfInterest.objects.get(id=id);
-            photo_url = ""
-            if poi.photo:
-                photo_url = poi.photo.url;
-            details = "<b>" + poi.name + "</b>&nbsp;&nbsp;" \
-                   "<a href=\"/search/edit_point_of_interest/" + str(poi.id) + "/\" target=\"_blank\">Edit..</a><br/><table>" + \
-                   "<tr><td><b>Address:</b></td><td>" + poi.address + "</td></tr>" + \
-                   "<tr><td><b>Description:</td><td>" + poi.description + "</td></tr>" + \
-                   "<tr><td><b>Category:</td><td>" + str(poi.category) + "</td></tr>" + \
-                   "<tr><td><b>Salience:</td><td>" + str(poi.salience) + "</td></tr>" + \
-                   "<tr><td><b>Best time:</td><td>" + poi.best_time + "</td></tr>" + \
-                   "<tr><td><b>Time required:</td><td>" + poi.time_required + "</td></tr>" + \
-                   "<tr><td><b>Ticket price:</td><td>" + poi.ticket_price + "</td></tr>" + \
-                   "<tr><td colspan=\"2\"><img src=\"" + photo_url + "\" width = \"295\" height=\"197\"/></td></tr>" + \
-                   "</table>"
+            details = utils.build_complete_point_of_interest_info(poi);
 
         if type == "Destination":
             destination = Destination.objects.get(id=id);
-            photo_url = ""
-            if destination.photo:
-                photo_url = destination.photo.url;
-            details = "<b>" + destination.name + "</b>&nbsp;&nbsp;" \
-                   "<a href=\"/search/edit_destination/" + str(destination.id) + "/\" target=\"_blank\">Edit..</a><br/><table>" + \
-                   "<tr><td><b>Address:</b></td><td>" + destination.address + "</td></tr>" + \
-                   "<tr><td><b>Description:</td><td>" + destination.description + "</td></tr>" + \
-                   "<tr><td><b>Category:</td><td>" + str(destination.category) + "</td></tr>" + \
-                   "<tr><td><b>Best time:</td><td>" + destination.best_time + "</td></tr>" + \
-                   "<tr><td><b>Time required:</td><td>" + destination.time_required + "</td></tr>" + \
-                   "<tr><td colspan=\"2\"><img src=\"" + photo_url + "\" width = \"295\" height=\"197\"/></td></tr>" + \
-                   "</table>"
+            details = utils.build_complete_destination_info(destination)
         return HttpResponse(json.dumps({'details': details}));
 
 def convert_points_of_interest_to_json(places):

@@ -38,7 +38,7 @@
         <div style="float:right;"> <a onclick="closeInfo();" href="#"> <img id="closePlanImg" title="Close" src="/static/images/close.png"></a></div>
           <div id="info-container" stype="padding:10px; background-color:#FFFFFF;margin-left: auto;margin-right: auto;"></div>
       </div>
-      <div id="planBox" style="position:absolute; bottom:0px; right:0px; width:25%; height:100%; border: 1px solid #CCC; z-index:1;background:white; display:none; padding-top:70px">
+      <div id="planBox" style="position:absolute; bottom:0px; right:0px; width:25%; height:100%; border: 1px solid #CCC; z-index:1;background:white; display:none; padding-top:70px; overflow-y:auto">
         <div style="float:right;"> <a onclick="closePlan();" href="#"> <img id="closePlanImg" title="Close" src="/static/images/close.png"></a></div>
           <div id="plan-container" stype="padding:10px; background-color:#FFFFFF;margin-left: auto;margin-right: auto;"></div>
           <button type="button" class="btn btn-primary" onclick="clickedSaveTrip();">Save!</button>
@@ -96,8 +96,16 @@
           </div>
         </div>
         <div id="tripDetails">
-          <div><label><b>Stay at:</b></label><span id="accommodation"></span></div>
-          <div><label><b>Visit:</b></label><span id="poi"></span></div>
+          <div id="stayAtDiv">
+            <label><b>Stay at:</b></label>
+            <span id="accommodation"></span>
+            <a href="#" id="clearStay" onclick="clearStay();">Clear</a>
+          </div>
+          <div>
+            <label><b>Visit:</b></label><span id="poi"></span>
+            <a href="#" id="selectAllPOICheckbox" onclick="selectAllPOICheckbox();">Select all</a>
+            <a href="#" id="clearAllPOICheckbox" onclick="clearAllPOICheckbox();">Clear all</a>
+          </div>
           <div><label><b>Start from:</b></label><span id="startfrom"><select id="select_startfrom"></select></span></div>
           <div><label><b>End at:</b></label><span id="endat"></span><select id="select_endat"></select></div>
           <div id="startEndMessageContainer" style="display:none; width:350px; height:50px; margin:0 auto;">
@@ -108,7 +116,11 @@
             <button type="button" class="close" data-dismiss="alert">&times;</button>
             <div id="pointsOfInterestMessage" class="alert alert-danger" role="alert">Choose at least a point of interest to save.</div>
           </div>
-          <div>
+          <div id="maxWaypointsMessageContainer" style="display:none; width:350px; height:50px; margin:0 auto;">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <div id="maxWaypointsMessage" class="alert alert-danger" role="alert">Choose at most 8 way points to plan.</div>
+          </div>
+          <div style="padding-top:10px; padding-bottom:10px">
             <button type="button" class="btn btn-primary" onclick="planTrip();">Plan!</button>
             <button type="button" class="btn btn-primary" onclick="clickedSaveTrip();">Save!</button>
           </div>
