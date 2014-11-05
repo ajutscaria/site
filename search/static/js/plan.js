@@ -48,6 +48,7 @@ var directionsService = new google.maps.DirectionsService();
 var map;
 var modalMap;
 var init = false;
+var modal_marker = null;
 var destination_markers = [];
 var point_of_interest_markers = [];
 var accommodation_markers = [];
@@ -208,11 +209,9 @@ function initialize(set_default_map_bound) {
   map = new google.maps.Map(document.getElementById('map-canvas'), {
     mapTypeId: google.maps.MapTypeId.ROADMAP
   });
-  var latlng = new google.maps.LatLng(42, -112);
   modalMap = new google.maps.Map(document.getElementById('modal-map-canvas'), {
     mapTypeId: google.maps.MapTypeId.ROADMAP,
-    zoom: 9,
-    center: latlng
+    zoom: 8
   });
 
   google.maps.event.addListener(map, 'click', function(event) {
@@ -401,12 +400,19 @@ function clickedAddNewPOI() {
           cat_opt.value = data[i].id
           category_dropdown.options.add(cat_opt);
         }
-        var len = point_of_interest_markers.length
-        modalMap.setCenter(point_of_interest_markers[len - 1].position)
-        var marker = new google.maps.Marker({
-          position: point_of_interest_markers[len - 1].position,
-          map: modalMap
+        google.maps.event.addListenerOnce(modalMap, 'idle', function() {
+           google.maps.event.trigger(modalMap, 'resize');
+           modalMap.panTo(newly_added_marker.position);
         });
+        if (modal_marker) {
+          modal_marker.setPosition(newly_added_marker.position)
+        } else {
+          modal_marker = new google.maps.Marker({
+            position: newly_added_marker.position,
+            map: modalMap
+          });
+        }
+        modalMap.setCenter(newly_added_marker.position)
       },
       failure: function(data) { 
           alert('Got an error!');
@@ -433,10 +439,12 @@ function clickedAddNewDestination() {
           cat_opt.value = data[i].id
           category_dropdown.options.add(cat_opt);
         }
-        var len = point_of_interest_markers.length
-        modalMap.setCenter(point_of_interest_markers[len - 1].position)
+        google.maps.event.addListenerOnce(modalMap, 'idle', function() {
+           google.maps.event.trigger(modalMap, 'resize');
+           modalMap.panTo(newly_added_marker.position);
+        });
         var marker = new google.maps.Marker({
-          position: point_of_interest_markers[len - 1].position,
+          position: newly_added_marker.position,
           map: modalMap
         });
       },

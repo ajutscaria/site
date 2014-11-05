@@ -181,6 +181,7 @@ function addMarker(latlng, name) {
     });
     google.maps.event.addListener(marker, 'mouseout', function() {
         infowindow.close();
+        infowindow = null;
     });
     return marker;
 }

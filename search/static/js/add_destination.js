@@ -153,6 +153,7 @@ function searchForLocation(location, name, latlng, state, country) {
 	clearFormFields();
   $('#infobox').hide();
 	var urlSubmit = '/search/search_to_add_destination/'
+  alert(latlng)
   $.ajax({  
       type: "POST",
       url: urlSubmit,             
