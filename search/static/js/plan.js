@@ -821,7 +821,7 @@ function addMarker(place, latlng) {
     if (place.category != "New") {
       infowindow = new google.maps.InfoWindow({
           content: place.info,
-          disableAutoPan : false,
+          disableAutoPan : true,
           maxWidth: 300
       });
     } else {

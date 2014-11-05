@@ -84,7 +84,8 @@ class PointOfInterestForm(forms.ModelForm):
     best_time = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'size':80,'class':'form-control'}), help_text="Best time to visit", required=False)
     open_hours = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'size':80,'class':'form-control'}), help_text="Open hours", required=False)
     ticket_price = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'size':80,'class':'form-control'}), help_text="Ticket price", required=False)
-    time_required = forms.DecimalField(help_text="Time required (in hours e.g. 2.5)", required=False)
+    #time_required = forms.DecimalField(help_text="Time required (in hours e.g. 2.5)", required=False)
+    time_required = forms.CharField(max_length=20, help_text="Time required (e.g. 2 hours 15 mins)", required=False)
     url = forms.CharField(max_length=50, widget=forms.HiddenInput(), required=False)
     photo = forms.ImageField(help_text="Upload picture", required=False)
 
