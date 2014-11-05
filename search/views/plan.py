@@ -212,7 +212,7 @@ def save_plan(request):
 										             added_on = datetime.utcnow())
 			trippoi.save()
 		print "ID", trip.id;
-		return HttpResponse(json.dumps({}));
+		return HttpResponse(json.dumps({'saved': True}));
 
 def find_points_of_interest_in_range(from_location, range):
     closest_attractions=[]

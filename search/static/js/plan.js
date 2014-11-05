@@ -1094,6 +1094,7 @@ function clickedAccommodation(id) {
 
 function clickedSaveTrip() {
   $('#pointsOfInterestMessageContainer').hide();
+  $('#savedSuccessfullyMessageContainer').hide();
   num_poi = 0;
   $('#poi input').each(function() {
     if ($(this).prop('checked')) {
@@ -1159,7 +1160,9 @@ function saveTripToDatabase() {
       dataType: 'json',  
       data      :  {"data" : JSON.stringify(jsonData)},//$(this).serialize(),
       success: function(response) {
-          
+        if (response.saved) {
+          $('#savedSuccessfullyMessageContainer').show();
+        }
       },
       failure: function(data) { 
           alert('Got an error!');
