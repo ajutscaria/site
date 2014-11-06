@@ -93,7 +93,7 @@ def add_for_destination(request, id):
             geoloc = Geocoder.geocode(searchlocation)[0]
             latitude = geoloc.coordinates[0]
             longitude = geoloc.coordinates[1]
-            address = generate_address(geoloc)
+            address = utils.generate_address(geoloc)
 
             poi_instance = PointOfInterest(address = address, latitude = latitude, longitude = longitude, destination_id=id);
             edit = True
@@ -127,7 +127,7 @@ def search(request):
             geoloc = Geocoder.geocode(searchlocation)[0]
             latitude = geoloc.coordinates[0]
             longitude = geoloc.coordinates[1]
-            address = generate_address(geoloc)
+            address = utils.generate_address(geoloc)
         print "Address generated:", address
         interests = PointOfInterest.objects.filter(address=address);
         if interests.exists():
@@ -179,6 +179,8 @@ def edit(request, id):
                     interest.photo.delete(False);
                     interest.photo = request.FILES['photo']
                     interest.save()
+            else:
+                print "ERRORS:", form.errors
         else:
             form = PointOfInterestForm(instance=interests[0])
         return render_to_response('search/add_point_of_interest.html', {'form': form, 'edit': True}, context);
@@ -214,16 +216,3 @@ def get_point_of_interest_categories(request):
     for category in categories:
         json_data.append({ "name" : category.name, "id" : category.id })
     return HttpResponse(json.dumps(json_data));
-
-
-def generate_address(geoloc):
-    print "generate_address", str(geoloc)
-    print "Name", str(geoloc).split(',')[0].strip()
-    print "State", geoloc.state
-    print "Country", geoloc.country
-    address = str(geoloc).split(',')[0].strip()
-    if geoloc.state:
-        address += ", " + str(geoloc.state)
-    address += ", " + str(geoloc.country)
-    print "address found",  address
-    return address

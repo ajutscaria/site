@@ -1,3 +1,6 @@
+DESTINATION_MAX_LENGTH_INFOBOX = 250
+POI_MAX_LENGTH_INFOBOX = 250
+
 def generate_address(geoloc):
     print "generate_address", str(geoloc)
     print "Name", str(geoloc).split(',')[0].strip()
@@ -14,10 +17,14 @@ def build_destination_info(destination):
     photo_url = ""
     if destination.photo:
         photo_url = destination.photo.url;
+    if len(destination.description) > DESTINATION_MAX_LENGTH_INFOBOX:
+      description = destination.description[0:DESTINATION_MAX_LENGTH_INFOBOX] + " ... [Click 'Read more..']"
+    else:
+      description = destination.description
     info = "<div><b style=\"font-size:large\">" + destination.name + "</b>&nbsp;<a href=\"\" onclick=\"return clickedReadMore('Destination'," + str(destination.id) + ");\">Read more..</a>&nbsp;" \
            "<a href=\"/search/edit_destination/" + str(destination.id) + "/\" target=\"_blank\">Edit..</a>" \
            "<a href=\"/search/add_point_of_interest/destination/" + str(destination.id) + "/\" target=\"_blank\">Add..</a><br/><table>" + \
-           "<tr><td colspan=\"2\">" + destination.description + "</td></tr>" + \
+           "<tr><td colspan=\"2\">" + description + "</td></tr>" + \
            "<tr><td><b>Category:</td><td>" + str(destination.category) + "</td></tr>"
     if destination.best_time:
       info += "<tr><td><b>Best time:</td><td>" + destination.best_time + "</td></tr>"
@@ -52,9 +59,13 @@ def build_point_of_interest_info(poi):
     photo_url = ""
     if poi.photo:
         photo_url = poi.photo.url;
+    if len(poi.description) > DESTINATION_MAX_LENGTH_INFOBOX:
+      description = poi.description[0:POI_MAX_LENGTH_INFOBOX] + " ... [Click 'Read more..']"
+    else:
+      description = poi.description
     info = "<div><b style=\"font-size:large\">" + poi.name + "</b>&nbsp;<a href=\"\" onclick=\"return clickedReadMore('PointOfInterest'," + str(poi.id) + ");\">Read more..</a>&nbsp;" \
            "<a href=\"/search/edit_point_of_interest/" + str(poi.id) + "/\" target=\"_blank\">Edit..</a><br/><table>" + \
-           "<tr><td colspan=\"2\">" + poi.description + "</td></tr>" + \
+           "<tr><td colspan=\"2\">" + description + "</td></tr>" + \
            "<tr><td><b>Category:</b></td><td>" + str(poi.category) + "</td></tr>"
     if poi.salience and poi.salience != 0:
       info += "<tr><td><b>Salience:</b></td><td>" + str(poi.salience) + "</td></tr>"

@@ -17,7 +17,7 @@ class DestinationForm(forms.ModelForm):
     longitude = forms.DecimalField(widget=forms.TextInput(attrs={'size':50,'class':'form-control'}), help_text="Longitude", required=False)
     category = forms.ModelChoiceField(queryset=DestinationCategory.objects.all(), widget=forms.Select(attrs={'class':'form-control'}),
                                       help_text="Choose category", required=False, initial=1, empty_label=None)
-    description = forms.CharField(max_length=200, widget=forms.Textarea(attrs={'class': 'form-control'}),
+    description = forms.CharField(max_length=1000, widget=forms.Textarea(attrs={'class': 'form-control'}),
                                   help_text="Add description", required=False)
     best_time = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'size':80, 'class': 'form-control'}), 
                                 help_text="Best time to visit", required=False)
@@ -78,7 +78,7 @@ class PointOfInterestForm(forms.ModelForm):
                                          widget=autocomplete_light.ChoiceWidget('DestinationAutocomplete'))
     category = forms.ModelChoiceField(queryset=PointOfInterestCategory.objects.all(), widget=forms.Select(attrs={'class':'form-control'}),
                                       help_text="Choose category", required=False, initial=1, empty_label=None)
-    description = forms.CharField(max_length=200, widget=forms.Textarea(attrs={'cols': 57, 'rows': 10,'class':'form-control'}), 
+    description = forms.CharField(max_length=1000, widget=forms.Textarea(attrs={'cols': 57, 'rows': 10,'class':'form-control'}), 
                                   help_text="Add description", required=False)
     salience = forms.IntegerField(widget=forms.TextInput(attrs={'size':50,'class':'form-control'}), help_text="Salience", required=False)
     best_time = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'size':80,'class':'form-control'}), help_text="Best time to visit", required=False)

@@ -904,6 +904,10 @@ function getPositionEncoding(mapcenter, marker) {
     return quadrant;
 }
 
+function clearPlan() {
+  
+}
+
 function clearStay() {
   $('input[name="accommodation"]').removeAttr('checked');
 }

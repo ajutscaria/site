@@ -126,6 +126,20 @@
     }
 },
 {
+    "pk": 14, 
+    "model": "search.pointofinterestcategory", 
+    "fields": {
+        "name": "Landmark"
+    }
+},
+{
+    "pk": 15, 
+    "model": "search.pointofinterestcategory", 
+    "fields": {
+        "name": "Shopping"
+    }
+},
+{
     "pk": 1, 
     "model": "search.country", 
     "fields": {
@@ -389,6 +403,15 @@
     }
 },
 {
+    "pk": 24, 
+    "model": "search.state", 
+    "fields": {
+        "country": 1, 
+        "code": "", 
+        "name": "Iowa"
+    }
+},
+{
     "pk": 1, 
     "model": "search.destination", 
     "fields": {
@@ -495,7 +518,7 @@
         "address": "Crater Lake National Park, Oregon, United States", 
         "latitude": "42.943883", 
         "added_on": "2014-08-04T21:59:03Z", 
-        "description": "dd"
+        "description": "Crater Lake National Park is a 183,224-acre United States National Park containing America's deepest lake, striking geologic features & a historic lodge. Established in 1902, Crater Lake National Park is the fifth oldest national park in the United States and the only one in the state of Oregon."
     }
 },
 {
@@ -1097,7 +1120,7 @@
     "model": "search.pointofinterest", 
     "fields": {
         "rating": "0", 
-        "photo": "", 
+        "photo": "search/images/point_of_interest/1/WaimeaCanyon.jpg", 
         "number_of_ratings": 0, 
         "last_updated_on": "2001-01-01T00:00:00Z", 
         "category": 4, 
@@ -1209,16 +1232,16 @@
     "model": "search.pointofinterest", 
     "fields": {
         "rating": "0", 
-        "photo": "", 
+        "photo": "search/images/point_of_interest/6/PoipuBeach.jpg", 
         "number_of_ratings": 0, 
         "last_updated_on": "2001-01-01T00:00:00Z", 
         "category": 9, 
-        "best_time": "d", 
+        "best_time": "Summer", 
         "destination": 6, 
         "state": 1, 
         "salience": 2, 
         "latitude": "21.8733704", 
-        "time_required": "d", 
+        "time_required": "1 hour 25 mins", 
         "added_by": "aju", 
         "description": "Great beach on the South West edge of Kauai. ", 
         "open_hours": "d", 
@@ -1241,15 +1264,15 @@
         "number_of_ratings": 0, 
         "last_updated_on": "2001-01-01T00:00:00Z", 
         "category": 3, 
-        "best_time": "s", 
+        "best_time": "Summer", 
         "destination": 6, 
         "state": 1, 
         "salience": 3, 
         "latitude": "22.2316145", 
-        "time_required": "d", 
+        "time_required": "30 mins", 
         "added_by": "aju", 
         "description": "A light house in a land projecting into the ocean.", 
-        "open_hours": "d", 
+        "open_hours": "10am to 4 pm", 
         "latest_update": "dd", 
         "address": "Kilauea Lighthouse, Hawaii, United States", 
         "name": "Kilauea Lighthouse", 
@@ -1353,22 +1376,22 @@
         "number_of_ratings": 0, 
         "last_updated_on": "2001-01-01T00:00:00Z", 
         "category": 7, 
-        "best_time": "d", 
+        "best_time": "", 
         "destination": 6, 
         "state": 1, 
         "salience": 3, 
         "latitude": "22.052222", 
-        "time_required": "d", 
+        "time_required": "1 hour", 
         "added_by": "aju", 
-        "description": "d", 
-        "open_hours": "d", 
+        "description": "A nice waterfall. Not a must see.", 
+        "open_hours": "24 hours", 
         "latest_update": "d", 
         "address": "Opaeka'a Falls, Hawaii, United States", 
         "name": "'Opaeka'a Falls", 
         "url": "ddd", 
         "country": 1, 
         "longitude": "-159.364167", 
-        "ticket_price": "d", 
+        "ticket_price": "", 
         "added_on": "2001-01-01T00:00:00Z"
     }
 },
@@ -1612,7 +1635,7 @@
         "latitude": "20.5809134", 
         "time_required": "", 
         "added_by": "aju", 
-        "description": "", 
+        "description": "This is a better description for Xcaret.", 
         "open_hours": "", 
         "latest_update": "", 
         "address": "Xcaret, Quintana Roo, Mexico", 
@@ -1853,19 +1876,19 @@
     "model": "search.pointofinterest", 
     "fields": {
         "rating": "6", 
-        "photo": "", 
+        "photo": "search/images/point_of_interest/31/SleepingGiant.jpg", 
         "number_of_ratings": 0, 
         "last_updated_on": "2001-01-01T00:00:00Z", 
         "category": 2, 
-        "best_time": "d", 
+        "best_time": "Summer", 
         "destination": 6, 
         "state": 1, 
         "salience": 4, 
         "latitude": "22.063559", 
-        "time_required": "d", 
+        "time_required": "3 hours", 
         "added_by": "aju", 
-        "description": "s", 
-        "open_hours": "d", 
+        "description": "A moderately strenuous 2 mile round trip hike.", 
+        "open_hours": "24 hours", 
         "latest_update": "d", 
         "address": "Sleeping Giant, Hawaii, United States", 
         "name": "Sleeping Giant", 
@@ -1881,19 +1904,19 @@
     "model": "search.pointofinterest", 
     "fields": {
         "rating": "0", 
-        "photo": "", 
+        "photo": "search/images/point_of_interest/32/HanaleiPier.jpg", 
         "number_of_ratings": 0, 
         "last_updated_on": "2001-01-01T00:00:00Z", 
         "category": 4, 
-        "best_time": "d", 
+        "best_time": "Summer", 
         "destination": 6, 
         "state": 1, 
         "salience": 4, 
         "latitude": "22.2126746", 
-        "time_required": "f", 
+        "time_required": "1 hour", 
         "added_by": "aju", 
-        "description": "s", 
-        "open_hours": "f", 
+        "description": "Sunsets are beautiful from Hanalei pier. Nice view of the mountains too.", 
+        "open_hours": "24 hours", 
         "latest_update": "d", 
         "address": "Hanalei Pier, Hawaii, United States", 
         "name": "Hanalei Pier", 
@@ -2004,7 +2027,7 @@
         "latitude": "42.84983", 
         "time_required": "30 mins", 
         "added_by": "aju", 
-        "description": "Beautiful pinnacles.", 
+        "description": "These towering needle-like formations of rock, called fossil fumaroles, projecting from the Sand Creek Canyon floor, were formed under sheets of volcanic pumice that preceded Mazama's collapse.\r\nAs the surface of the hot pumice cooled over the years, steam and gases were released by the hot rocks underneath through vents and tubes that were welded into cement hardness by their passage. These ancient vents now stand alone due to the erosion of the surrounding softer materials.", 
         "open_hours": "", 
         "latest_update": "", 
         "address": "Pinnacles, Oregon, United States", 
@@ -2032,7 +2055,7 @@
         "latitude": "42.9111717", 
         "time_required": "30 mins", 
         "added_by": "aju", 
-        "description": "22 minute videos here played every half hour.", 
+        "description": "This facility is the place to discover the natural history of the lake. A 22 minute videos here played every half hour.", 
         "open_hours": "", 
         "latest_update": "", 
         "address": "Rim Village Visitor Center, Oregon, United States", 
@@ -2053,22 +2076,22 @@
         "number_of_ratings": 0, 
         "last_updated_on": "2001-01-01T00:00:00Z", 
         "category": 2, 
-        "best_time": "asdf", 
+        "best_time": "Summer", 
         "destination": 8, 
         "state": 3, 
         "salience": 2, 
         "latitude": "42.9752966", 
         "time_required": "1 hour 30 mins", 
         "added_by": "aju", 
-        "description": "Moderately strenuous trail. 1.1 miles one way. Boating/ Fishing at the end of the trail.", 
-        "open_hours": "asdf", 
+        "description": "The only legal access to the shore of Crater Lake, this is a strenuous and steep switchback trail with a steep grade (11%). The trail descends to a rocky shoreline at Cleetwood Cove where concessionaire tour boats will take you around the lake or drop you off at Wizard Island. The trail is recommended only for those in good physical condition. It should not be attempted by anyone with heart, breathing, or walking problems. It is not accessible for people with mobility impairments. Hikers should wear sturdy shoes and carry water. Vault toilets are located at the top and bottom of the trail.", 
+        "open_hours": "24 hours", 
         "latest_update": "42", 
         "address": "Cleetwood Cove, Oregon, United States", 
         "name": "Cleetwood Cove", 
         "url": "ddd", 
         "country": 1, 
         "longitude": "-122.078206", 
-        "ticket_price": "", 
+        "ticket_price": "None", 
         "added_on": "2001-01-01T00:00:00Z"
     }
 },
@@ -2088,7 +2111,7 @@
         "latitude": "42.9026297", 
         "time_required": "30 mins", 
         "added_by": "aju", 
-        "description": "Good views of the Phantom ship.", 
+        "description": "Short and easy with several incredible views. There are multiple lookouts, each with a different glimpse of the lake. Has nice views of the Phantom Ship.", 
         "open_hours": "", 
         "latest_update": "", 
         "address": "Sun Notch, Oregon, United States", 
@@ -2116,7 +2139,7 @@
         "latitude": "42.914116", 
         "time_required": "10 mins", 
         "added_by": "aju", 
-        "description": "Good views of the phantom ship island.", 
+        "description": "Excepting Wizard Island, the most noteworthy feature on the surface of the lake is probably The Phantom Ship. The \"ship\" part of the name, of course, is derived from the appearance of the formation, which very much resembles a sailing ship. The Phantom Ship is just the tip of a sizable, jagged ridge below the surface which sticks up into the caldera. ", 
         "open_hours": "asdf", 
         "latest_update": "asefd", 
         "address": "Phantom Ship Overlook, Oregon, United States", 
@@ -2200,7 +2223,7 @@
         "latitude": "42.9051826", 
         "time_required": "1 hour", 
         "added_by": "aju", 
-        "description": "", 
+        "description": "Plaikni Falls trail is a pleasant hike and relatively easy at 1.1 miles to the waterfall (2.2 miles round trip). The only real issue for most is that because it\u2019s so short, it\u2019s difficult to get away from other people if you\u2019re looking for a bit of solitude \u2014 it can get congested. The trail travels through the trees and along rocky bluffs until it hits Sand Creek where it opens up to wildflowers and lush vegetation at the base of Plaikni Falls.", 
         "open_hours": "", 
         "latest_update": "", 
         "address": "Plaikni Falls Trail, Oregon, United States", 
@@ -2228,7 +2251,7 @@
         "latitude": "42.9248506", 
         "time_required": "1 hour", 
         "added_by": "aju", 
-        "description": "", 
+        "description": "This is an easy trail to follow as it meanders along the rim to the spot at which some would-be miners first came upon Crater Lake in 1853. It is one of the best family hikes for people of all ages.\r\n\r\nMuch of the rim is forested with Mountain hemlock and whitebark pine. There are several openings from which to view the lake, it's rim, and Wizard Island. Be careful of the steep edges.", 
         "open_hours": "", 
         "latest_update": "", 
         "address": "Discovery Point, Oregon, United States", 
@@ -2249,22 +2272,22 @@
         "number_of_ratings": 0, 
         "last_updated_on": "2001-01-01T00:00:00Z", 
         "category": 4, 
-        "best_time": "asdf", 
+        "best_time": "Summer", 
         "destination": 8, 
         "state": 3, 
         "salience": 4, 
         "latitude": "42.9309213", 
         "time_required": "10 mins", 
         "added_by": "aju", 
-        "description": "asdf", 
-        "open_hours": "asdf", 
+        "description": "The highest road-access overlook on the Crater Lake rim, Cloudcap has a westward view across the lake to Wizard Island and an eastward view of Mt. Scott, the volcanic cone that is the park's highest point, just 2 miles away.", 
+        "open_hours": "24 hours", 
         "latest_update": "asdf", 
         "address": "Cloudcap, Oregon, United States", 
         "name": "Cloudcap", 
         "url": "ddd", 
         "country": 1, 
         "longitude": "-122.0464886", 
-        "ticket_price": "asdf", 
+        "ticket_price": "None", 
         "added_on": "2001-01-01T00:00:00Z"
     }
 },
@@ -2284,7 +2307,7 @@
         "latitude": "42.9262415", 
         "time_required": "3 hours", 
         "added_by": "aju", 
-        "description": "", 
+        "description": "In a park with spectacular views, Mount Scott has some of the most awe-inspiring views. This is also a fantastic alpine wildflower trail.\r\n\r\nDespite the length and high altitude to which this trail reaches, it is relatively gradual for it's entire length.  The fire lookout (built in 1926) lies at the north end of the ridge. To the south can be seen the Klamath Basin and other southern High Cascades points and to the north (past the fire lookout) can be seen.\r\n\r\nBe very sure to take a coat and other warm weather gear as the top is often windy, cold, and the weather can turn very quickly...even during the late summer months.", 
         "open_hours": "", 
         "latest_update": "", 
         "address": "Mt Scott Trail, Oregon, United States", 
@@ -2357,16 +2380,16 @@
     "model": "search.pointofinterest", 
     "fields": {
         "rating": "0", 
-        "photo": "", 
+        "photo": "search/images/point_of_interest/49/Kalalau.jpeg", 
         "number_of_ratings": 0, 
         "last_updated_on": "2001-01-01T00:00:00Z", 
-        "category": 1, 
+        "category": 2, 
         "best_time": "", 
         "destination": 6, 
         "state": 1, 
         "salience": 0, 
         "latitude": "22.1958872", 
-        "time_required": "", 
+        "time_required": "4 hours", 
         "added_by": "", 
         "description": "", 
         "open_hours": "", 
@@ -2605,6 +2628,118 @@
     }
 },
 {
+    "pk": 58, 
+    "model": "search.pointofinterest", 
+    "fields": {
+        "rating": "0", 
+        "photo": "", 
+        "number_of_ratings": 0, 
+        "last_updated_on": "2014-10-24T00:28:57.609Z", 
+        "category": 15, 
+        "best_time": "", 
+        "destination": 13, 
+        "state": 4, 
+        "salience": 0, 
+        "latitude": "47.6205063", 
+        "time_required": "1", 
+        "added_by": "root", 
+        "description": "", 
+        "open_hours": "", 
+        "latest_update": "", 
+        "address": "Space Needle, Washington, United States", 
+        "name": "Space Needle", 
+        "url": "ddd", 
+        "country": 1, 
+        "longitude": "-122.3492774", 
+        "ticket_price": "", 
+        "added_on": "2014-10-24T00:28:57.609Z"
+    }
+},
+{
+    "pk": 60, 
+    "model": "search.pointofinterest", 
+    "fields": {
+        "rating": "0", 
+        "photo": "", 
+        "number_of_ratings": 0, 
+        "last_updated_on": "2014-10-24T00:30:24.658Z", 
+        "category": 3, 
+        "best_time": "", 
+        "destination": 13, 
+        "state": 4, 
+        "salience": 0, 
+        "latitude": "47.6093817", 
+        "time_required": "1", 
+        "added_by": "root", 
+        "description": "", 
+        "open_hours": "", 
+        "latest_update": "", 
+        "address": "Pike Place Market, Washington, United States", 
+        "name": "Pike Place Market", 
+        "url": "ddd", 
+        "country": 1, 
+        "longitude": "-122.3419743", 
+        "ticket_price": "", 
+        "added_on": "2014-10-24T00:30:24.658Z"
+    }
+},
+{
+    "pk": 61, 
+    "model": "search.pointofinterest", 
+    "fields": {
+        "rating": "0", 
+        "photo": "", 
+        "number_of_ratings": 0, 
+        "last_updated_on": "2014-11-01T06:20:53.915Z", 
+        "category": 1, 
+        "best_time": "", 
+        "destination": 10, 
+        "state": 9, 
+        "salience": 0, 
+        "latitude": "20.4875", 
+        "time_required": "", 
+        "added_by": "", 
+        "description": "", 
+        "open_hours": "", 
+        "latest_update": "", 
+        "address": "Cob\u00e1, Quintana Roo, Mexico", 
+        "name": "Cob\u00e1", 
+        "url": "", 
+        "country": 4, 
+        "longitude": "-87.736111", 
+        "ticket_price": "", 
+        "added_on": "2014-11-01T06:20:53.915Z"
+    }
+},
+{
+    "pk": 62, 
+    "model": "search.pointofinterest", 
+    "fields": {
+        "rating": "0", 
+        "photo": "", 
+        "number_of_ratings": 0, 
+        "last_updated_on": "2014-11-01T21:47:42.767Z", 
+        "category": 4, 
+        "best_time": "", 
+        "destination": 23, 
+        "state": 6, 
+        "salience": 0, 
+        "latitude": "37.6159562", 
+        "time_required": "", 
+        "added_by": "", 
+        "description": "", 
+        "open_hours": "", 
+        "latest_update": "", 
+        "address": "Inspiration Point, Utah, United States", 
+        "name": "Inspiration Point", 
+        "url": "", 
+        "country": 1, 
+        "longitude": "-112.1701087", 
+        "ticket_price": "", 
+        "added_on": "2014-11-01T21:47:42.767Z"
+    }
+},
+{
     "pk": 1, 
     "model": "search.trip", 
     "fields": {
@@ -2626,6 +2761,42 @@
         "start_date": "2014-10-20T05:25:13.426Z", 
         "added_on": "2014-10-20T05:25:13.426Z", 
         "description": "Should be exicting."
+    }
+},
+{
+    "pk": 3, 
+    "model": "search.trip", 
+    "fields": {
+        "name": "Crater lake trip", 
+        "end_date": "2014-11-03T23:36:29.081Z", 
+        "added_by": "testuser", 
+        "start_date": "2014-11-03T23:36:29.081Z", 
+        "added_on": "2014-11-03T23:36:29.081Z", 
+        "description": "Finally making the crater lake trip!"
+    }
+},
+{
+    "pk": 4, 
+    "model": "search.trip", 
+    "fields": {
+        "name": "Kauai", 
+        "end_date": "2014-11-04T19:13:25.081Z", 
+        "added_by": "testuser", 
+        "start_date": "2014-11-04T19:13:25.081Z", 
+        "added_on": "2014-11-04T19:13:25.081Z", 
+        "description": "Kauai trip in May"
+    }
+},
+{
+    "pk": 5, 
+    "model": "search.trip", 
+    "fields": {
+        "name": "Yosemite", 
+        "end_date": "2014-11-05T01:59:45.007Z", 
+        "added_by": "", 
+        "start_date": "2014-11-05T01:59:45.007Z", 
+        "added_on": "2014-11-05T01:59:45.007Z", 
+        "description": "hahah"
     }
 },
 {
@@ -2662,6 +2833,54 @@
         "trip": 2, 
         "start_date": "2014-10-20T05:25:13.434Z", 
         "added_on": "2014-10-20T05:25:13.434Z"
+    }
+},
+{
+    "pk": 4, 
+    "model": "search.tripdestination", 
+    "fields": {
+        "description": "", 
+        "end_date": "2014-11-03T23:36:29.098Z", 
+        "destination": 8, 
+        "trip": 3, 
+        "start_date": "2014-11-03T23:36:29.098Z", 
+        "added_on": "2014-11-03T23:36:29.098Z"
+    }
+},
+{
+    "pk": 5, 
+    "model": "search.tripdestination", 
+    "fields": {
+        "description": "", 
+        "end_date": "2014-11-04T00:04:52.198Z", 
+        "destination": 3, 
+        "trip": 3, 
+        "start_date": "2014-11-04T00:04:52.198Z", 
+        "added_on": "2014-11-04T00:04:52.198Z"
+    }
+},
+{
+    "pk": 6, 
+    "model": "search.tripdestination", 
+    "fields": {
+        "description": "", 
+        "end_date": "2014-11-04T19:13:25.091Z", 
+        "destination": 6, 
+        "trip": 4, 
+        "start_date": "2014-11-04T19:13:25.091Z", 
+        "added_on": "2014-11-04T19:13:25.091Z"
+    }
+},
+{
+    "pk": 7, 
+    "model": "search.tripdestination", 
+    "fields": {
+        "description": "", 
+        "end_date": "2014-11-05T01:59:45.017Z", 
+        "destination": 1, 
+        "trip": 5, 
+        "start_date": "2014-11-05T01:59:45.017Z", 
+        "added_on": "2014-11-05T01:59:45.017Z"
     }
 },
 {
@@ -2826,6 +3045,193 @@
         "trip_destination": 3, 
         "description": "", 
         "point_of_interest": 20
+    }
+},
+{
+    "pk": 14, 
+    "model": "search.tripdestinationpointofinterest", 
+    "fields": {
+        "category": 1, 
+        "added_on": "2014-11-03T23:36:29.102Z", 
+        "trip_destination": 4, 
+        "description": "", 
+        "point_of_interest": 38
+    }
+},
+{
+    "pk": 15, 
+    "model": "search.tripdestinationpointofinterest", 
+    "fields": {
+        "category": 3, 
+        "added_on": "2014-11-03T23:36:29.105Z", 
+        "trip_destination": 4, 
+        "description": "", 
+        "point_of_interest": 44
+    }
+},
+{
+    "pk": 16, 
+    "model": "search.tripdestinationpointofinterest", 
+    "fields": {
+        "category": 3, 
+        "added_on": "2014-11-03T23:36:29.107Z", 
+        "trip_destination": 4, 
+        "description": "", 
+        "point_of_interest": 46
+    }
+},
+{
+    "pk": 17, 
+    "model": "search.tripdestinationpointofinterest", 
+    "fields": {
+        "category": 3, 
+        "added_on": "2014-11-03T23:36:29.110Z", 
+        "trip_destination": 4, 
+        "description": "", 
+        "point_of_interest": 36
+    }
+},
+{
+    "pk": 18, 
+    "model": "search.tripdestinationpointofinterest", 
+    "fields": {
+        "category": 3, 
+        "added_on": "2014-11-03T23:36:29.113Z", 
+        "trip_destination": 4, 
+        "description": "", 
+        "point_of_interest": 37
+    }
+},
+{
+    "pk": 19, 
+    "model": "search.tripdestinationpointofinterest", 
+    "fields": {
+        "category": 3, 
+        "added_on": "2014-11-03T23:36:29.116Z", 
+        "trip_destination": 4, 
+        "description": "", 
+        "point_of_interest": 39
+    }
+},
+{
+    "pk": 20, 
+    "model": "search.tripdestinationpointofinterest", 
+    "fields": {
+        "category": 2, 
+        "added_on": "2014-11-03T23:36:29.119Z", 
+        "trip_destination": 4, 
+        "description": "", 
+        "point_of_interest": 43
+    }
+},
+{
+    "pk": 21, 
+    "model": "search.tripdestinationpointofinterest", 
+    "fields": {
+        "category": 3, 
+        "added_on": "2014-11-04T00:04:52.208Z", 
+        "trip_destination": 5, 
+        "description": "", 
+        "point_of_interest": 10
+    }
+},
+{
+    "pk": 22, 
+    "model": "search.tripdestinationpointofinterest", 
+    "fields": {
+        "category": 3, 
+        "added_on": "2014-11-04T00:04:52.211Z", 
+        "trip_destination": 5, 
+        "description": "", 
+        "point_of_interest": 16
+    }
+},
+{
+    "pk": 23, 
+    "model": "search.tripdestinationpointofinterest", 
+    "fields": {
+        "category": 3, 
+        "added_on": "2014-11-04T00:04:52.215Z", 
+        "trip_destination": 5, 
+        "description": "", 
+        "point_of_interest": 48
+    }
+},
+{
+    "pk": 24, 
+    "model": "search.tripdestinationpointofinterest", 
+    "fields": {
+        "category": 3, 
+        "added_on": "2014-11-04T00:04:52.219Z", 
+        "trip_destination": 5, 
+        "description": "", 
+        "point_of_interest": 47
+    }
+},
+{
+    "pk": 25, 
+    "model": "search.tripdestinationpointofinterest", 
+    "fields": {
+        "category": 1, 
+        "added_on": "2014-11-04T19:13:25.095Z", 
+        "trip_destination": 6, 
+        "description": "", 
+        "point_of_interest": 53
+    }
+},
+{
+    "pk": 26, 
+    "model": "search.tripdestinationpointofinterest", 
+    "fields": {
+        "category": 3, 
+        "added_on": "2014-11-04T19:13:25.099Z", 
+        "trip_destination": 6, 
+        "description": "", 
+        "point_of_interest": 12
+    }
+},
+{
+    "pk": 27, 
+    "model": "search.tripdestinationpointofinterest", 
+    "fields": {
+        "category": 3, 
+        "added_on": "2014-11-04T19:13:25.102Z", 
+        "trip_destination": 6, 
+        "description": "", 
+        "point_of_interest": 49
+    }
+},
+{
+    "pk": 28, 
+    "model": "search.tripdestinationpointofinterest", 
+    "fields": {
+        "category": 3, 
+        "added_on": "2014-11-04T19:13:25.105Z", 
+        "trip_destination": 6, 
+        "description": "", 
+        "point_of_interest": 1
+    }
+},
+{
+    "pk": 29, 
+    "model": "search.tripdestinationpointofinterest", 
+    "fields": {
+        "category": 2, 
+        "added_on": "2014-11-04T19:13:25.108Z", 
+        "trip_destination": 6, 
+        "description": "", 
+        "point_of_interest": 53
+    }
+},
+{
+    "pk": 30, 
+    "model": "search.tripdestinationpointofinterest", 
+    "fields": {
+        "category": 3, 
+        "added_on": "2014-11-05T01:59:45.022Z", 
+        "trip_destination": 7, 
+        "description": "", 
+        "point_of_interest": 2
     }
 }
 ]
